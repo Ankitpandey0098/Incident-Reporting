@@ -21,6 +21,8 @@ import AdminDashboard from "./components/AdminDashboard";
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
 import VerifyOTP from "./components/VerifyOTP";
+import IncidentMap from "./components/IncidentMap";
+import DepartmentDashboard from "./components/DepartmentDashboard";
 
 /* 🔹 BACKGROUND IMAGES */
 const BACKGROUNDS = [
@@ -33,6 +35,8 @@ const BACKGROUNDS = [
 
 function App() {
   const isLoggedIn = !!localStorage.getItem("access");
+  const role = localStorage.getItem("role");
+
   const [bgIndex, setBgIndex] = useState(0);
 
   /* 🔹 CHANGE BACKGROUND EVERY 5 SECONDS */
@@ -65,6 +69,7 @@ function App() {
                 <Route path="/contact" element={<Contact />} />
                 
                 <Route path="/admin" element={<AdminDashboard />} />
+                <Route path="/map" element={<IncidentMap />} />
                 {/* Protected */}
                 <Route
                   path="/dashboard"
@@ -110,12 +115,28 @@ function App() {
                   path="/"
                   element={
                     isLoggedIn ? (
-                      <Navigate to="/dashboard" replace />
+                      role === "admin" ? (
+                        <Navigate to="/admin" replace />
+                      ) : role === "department" ? (
+                        <Navigate to="/department" replace />
+                      ) : (
+                        <Navigate to="/dashboard" replace />
+                      )
                     ) : (
                       <Navigate to="/login" replace />
                     )
                   }
                 />
+
+                <Route
+                  path="/department"
+                  element={
+                    <PrivateRoute>
+                      <DepartmentDashboard />
+                    </PrivateRoute>
+                  }
+                />
+
 
                 <Route path="*" element={<div>Page not found</div>} />
               </Routes>
