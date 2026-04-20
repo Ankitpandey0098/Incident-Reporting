@@ -15,13 +15,13 @@ import {
   Form
 } from "react-bootstrap";
 import { EnvelopeFill, GeoAltFill, Search } from "react-bootstrap-icons";
-import { useNavigate } from "react-router-dom";
+
 import AdminHeader from "./AdminHeader";
 import api from "../api/axios";
 const AdminDashboard = () => {
 
   const token = localStorage.getItem("access");
-  const navigate = useNavigate();
+ 
   const [incidents, setIncidents] = useState([]);
   const [visibleIncidents, setVisibleIncidents] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -40,8 +40,9 @@ const AdminDashboard = () => {
   const [categoryStats, setCategoryStats] = useState([]);
 
   useEffect(() => {
-    fetchIncidents();
-  }, []);
+  fetchIncidents();
+}, [fetchIncidents]);
+
 
   useEffect(() => {
 
@@ -73,31 +74,33 @@ const AdminDashboard = () => {
 
   // ... keeping your logic unchanged ...
 
-  const fetchIncidents = async () => {
+  const fetchIncidents = useCallback(async () => {
 
-    setLoading(true);
+  setLoading(true);
 
-    try {
+  try {
 
-      const res = await api.get("/incidents/", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+    const res = await api.get("/incidents/", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-      const sorted = sortIncidents(res.data);
+    const sorted = sortIncidents(res.data);
 
-      setIncidents(sorted);
+    setIncidents(sorted);
 
-      calculateStats(sorted);
-      calculateCategoryStats(sorted);
+    calculateStats(sorted);
+    calculateCategoryStats(sorted);
 
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  } catch (err) {
+    console.error(err);
+  } finally {
+    setLoading(false);
+  }
+
+}, [token]);
+
 
   const sortIncidents = (data) => {
 
