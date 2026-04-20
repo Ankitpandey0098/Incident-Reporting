@@ -20,7 +20,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import utc from "dayjs/plugin/utc";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-
+import api from "../api/axios";
 import IncidentCharts from "./IncidentCharts";
 import IncidentHeatmap from "../components/IncidentHeatmap";
 import LiveIncidentFeed from "../components/LiveIncidentFeed";
@@ -28,7 +28,8 @@ import LiveIncidentFeed from "../components/LiveIncidentFeed";
 dayjs.extend(relativeTime);
 dayjs.extend(utc);
 
-const API = "http://127.0.0.1:8000/api";
+const API = "https://incident-reporting-rjwi.onrender.com/api";
+
 
 const IncidentList = () => {
 
@@ -171,9 +172,12 @@ useEffect(() => {
   }, [search, statusFilter, departmentFilter, incidents]);
 
   const getImageUrl = (url) => {
-    if (!url) return null;
-    return url.startsWith("http") ? url : `http://127.0.0.1:8000${url}`;
-  };
+  if (!url) return null;
+  return url.startsWith("http")
+    ? url
+    : `https://incident-reporting-rjwi.onrender.com${url}`;
+};
+
 
   const getConfidencePercent = (c) => c ? Math.round(c * 100) : 0;
 

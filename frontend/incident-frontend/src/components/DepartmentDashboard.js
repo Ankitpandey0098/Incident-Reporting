@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import api from "../api/axios";
 import {
   Table,
   Card,
@@ -38,9 +39,10 @@ const DepartmentDashboard = () => {
   try {
 
     const res = await axios.get(
-      "http://127.0.0.1:8000/api/incidents/",
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
+  "https://incident-reporting-rjwi.onrender.com/api/incidents/",
+  { headers: { Authorization: `Bearer ${token}` } }
+);
+
 
     const filtered = res.data.filter(
       (i) =>
@@ -82,7 +84,7 @@ const DepartmentDashboard = () => {
   try {
 
     const res = await axios.patch(
-      `http://127.0.0.1:8000/api/incidents/${incident.id}/`,
+      `https://incident-reporting-rjwi.onrender.com/api/incidents/${incident.id}/`,
       { status: statusMap[status] },
       {
         headers: {

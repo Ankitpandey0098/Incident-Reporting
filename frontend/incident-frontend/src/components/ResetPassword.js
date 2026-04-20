@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Card, Form, Button, Alert, Spinner } from "react-bootstrap";
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
-
+import api from "../api/axios";
 const ResetPassword = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -35,13 +35,14 @@ const ResetPassword = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:8000/api/auth/reset-password/",
-        {
-          email,
-          otp,
-          password,
-        }
-      );
+  "https://incident-reporting-rjwi.onrender.com/api/auth/reset-password/",
+  {
+    email,
+    otp,
+    password,
+  }
+);
+
 
       setMessage(res.data.message || "Password reset successful");
 

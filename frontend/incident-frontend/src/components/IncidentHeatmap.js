@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import api from "../api/axios";
 import { MapContainer, TileLayer, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -37,11 +38,12 @@ const IncidentHeatmap = () => {
       const token = localStorage.getItem("access");
 
       const res = await axios.get(
-        "http://127.0.0.1:8000/api/analytics/heatmap/",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+  "https://incident-reporting-rjwi.onrender.com/api/analytics/heatmap/",
+  {
+    headers: { Authorization: `Bearer ${token}` },
+  }
+);
+
 
       setPoints(res.data);
     };

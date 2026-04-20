@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
+import api from "../api/axios";
 import {
   Form,
   Button,
@@ -35,14 +36,12 @@ const EditIncident = () => {
       try {
         const token = localStorage.getItem("access");
 
-        const res = await axios.get(
-          `http://127.0.0.1:8000/api/incidents/${id}/`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        axios.post(
+  "https://incident-reporting-rjwi.onrender.com/api/departments/add/",
+  addForm,
+  { headers: { Authorization: `Bearer ${token}` } }
+);
+
 
         setTitle(res.data.title);
         setDescription(res.data.description);
@@ -104,14 +103,15 @@ const EditIncident = () => {
       }
 
       await axios.patch(
-        `http://127.0.0.1:8000/api/incidents/${id}/`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+  `https://incident-reporting-rjwi.onrender.com/api/incidents/${id}/`,
+  formData,
+  {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
+);
+
 
       alert("✅ Incident updated successfully!");
       navigate("/", { replace: true });
@@ -277,10 +277,11 @@ const EditIncident = () => {
 
                           <img
                             src={
-                              existingImage.startsWith("http")
-                                ? existingImage
-                                : `http://127.0.0.1:8000${existingImage}`
-                            }
+                                existingImage.startsWith("http")
+                                  ? existingImage
+                                  : `https://incident-reporting-rjwi.onrender.com${existingImage}`
+                              }
+
                             alt="Current"
                             style={{
                               maxWidth: "100%",

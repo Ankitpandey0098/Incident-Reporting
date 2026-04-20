@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import api from "../api/axios";
 import { 
   Form, 
   Button, 
@@ -112,14 +113,15 @@ function ReportIncident() {
       }
 
       await axios.post(
-        "http://127.0.0.1:8000/api/incidents/",
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+  "https://incident-reporting-rjwi.onrender.com/api/incidents/",
+  formData,
+  {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
+);
+
 
       setMessage("✅ Report submitted successfully.");
 

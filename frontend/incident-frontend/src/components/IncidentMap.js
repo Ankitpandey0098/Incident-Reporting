@@ -6,7 +6,7 @@ import MarkerClusterGroup from "react-leaflet-cluster";
 import "leaflet/dist/leaflet.css";
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
-
+import api from "../api/axios";
 import L from "leaflet";
 import "leaflet.heat";
 
@@ -128,9 +128,10 @@ const IncidentMap = () => {
     const fetchIncidents = async () => {
       try {
         const res = await axios.get(
-          "http://127.0.0.1:8000/api/incidents/",
-          axiosConfig
-        );
+  "https://incident-reporting-rjwi.onrender.com/api/incidents/",
+  axiosConfig
+);
+
 
         const data = Array.isArray(res.data) ? res.data : [];
 
@@ -201,9 +202,10 @@ const IncidentMap = () => {
   const fetchDepartments = async () => {
     try {
       const res = await axios.get(
-        "http://127.0.0.1:8000/api/departments/",
-        axiosConfig
-      );
+  "https://incident-reporting-rjwi.onrender.com/api/departments/",
+  axiosConfig
+);
+
       setDepartments(res.data);
     } catch (err) {
       console.error("Department fetch failed", err);

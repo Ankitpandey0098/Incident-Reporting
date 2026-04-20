@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Card, Form, Button, Alert, Spinner, Container, ProgressBar, Badge } from "react-bootstrap";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
+import api from "../api/axios";
 const OTP_EXPIRY_SECONDS = 300;
 
 const ForgotPassword = () => {
@@ -43,9 +43,10 @@ const ForgotPassword = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:8000/api/auth/forgot-password/",
-        { email }
-      );
+  "https://incident-reporting-rjwi.onrender.com/api/auth/forgot-password/",
+  { email }
+);
+
 
       setMessage(res.data.message);
       setStep(2);
@@ -64,9 +65,10 @@ const ForgotPassword = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:8000/api/auth/forgot-password/",
-        { email }
-      );
+  "https://incident-reporting-rjwi.onrender.com/api/auth/forgot-password/",
+  { email }
+);
+
       setMessage("OTP resent successfully");
       setTimer(OTP_EXPIRY_SECONDS);
     } catch (err) {
@@ -84,9 +86,10 @@ const ForgotPassword = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:8000/api/auth/verify-otp/",
-        { email, otp }
-      );
+  "https://incident-reporting-rjwi.onrender.com/api/auth/verify-otp/",
+  { email, otp }
+);
+
       setMessage(res.data.message);
       setStep(3);
     } catch (err) {
@@ -104,9 +107,10 @@ const ForgotPassword = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:8000/api/auth/reset-password/",
-        { email, otp, password }
-      );
+  "https://incident-reporting-rjwi.onrender.com/api/auth/reset-password/",
+  { email, otp, password }
+);
+
 
       setMessage(res.data.message);
 

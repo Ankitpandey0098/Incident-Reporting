@@ -9,7 +9,7 @@ import {
   InputGroup,
 } from "react-bootstrap";
 import { useNavigate, Link } from "react-router-dom";
-
+import api from "../api/axios";
 function Signup() {
 
   const [form, setForm] = useState({
@@ -46,9 +46,10 @@ function Signup() {
     try {
 
       const res = await axios.post(
-        "http://127.0.0.1:8000/api/register/",
-        form
-      );
+  "https://incident-reporting-rjwi.onrender.com/api/register/",
+  form
+);
+
 
       if (res.status === 200 || res.status === 201) {
         setSuccess(res.data.message || "Registration successful!");

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Card, Row, Col, Spinner, Alert, Badge, Container } from "react-bootstrap";
 import axios from "axios";
-
+import api from "../api/axios";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -59,9 +59,10 @@ const IncidentCharts = () => {
     } catch (err) {
       if (err.response?.status === 401 && refresh) {
         const tokenRes = await axios.post(
-          "http://127.0.0.1:8000/api/token/refresh/",
-          { refresh }
-        );
+  "https://incident-reporting-rjwi.onrender.com/api/token/refresh/",
+  { refresh }
+);
+
 
         access = tokenRes.data.access;
         localStorage.setItem("access", access);
@@ -82,11 +83,26 @@ const IncidentCharts = () => {
       try {
         setLoading(true);
 
-        const catRes = await requestWithToken("http://127.0.0.1:8000/api/analytics/category/");
-        const statRes = await requestWithToken("http://127.0.0.1:8000/api/analytics/status/");
-        const deptRes = await requestWithToken("http://127.0.0.1:8000/api/analytics/departments/");
-        const timeRes = await requestWithToken("http://127.0.0.1:8000/api/analytics/timeline/");
-        const riskRes = await requestWithToken("http://127.0.0.1:8000/api/analytics/risk-alerts/");
+        const catRes = await requestWithToken(
+  "https://incident-reporting-rjwi.onrender.com/api/analytics/category/"
+);
+
+const statRes = await requestWithToken(
+  "https://incident-reporting-rjwi.onrender.com/api/analytics/status/"
+);
+
+const deptRes = await requestWithToken(
+  "https://incident-reporting-rjwi.onrender.com/api/analytics/departments/"
+);
+
+const timeRes = await requestWithToken(
+  "https://incident-reporting-rjwi.onrender.com/api/analytics/timeline/"
+);
+
+const riskRes = await requestWithToken(
+  "https://incident-reporting-rjwi.onrender.com/api/analytics/risk-alerts/"
+);
+
 
         setRiskAlerts(riskRes || []);
 

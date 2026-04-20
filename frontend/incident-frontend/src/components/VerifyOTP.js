@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Card, Form, Button, Alert, Spinner } from "react-bootstrap";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
+import api from "../api/axios";
 const VerifyOTP = () => {
   const navigate = useNavigate();
 
@@ -20,9 +20,10 @@ const VerifyOTP = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:8000/api/auth/verify-otp/",
-        { email, otp }
-      );
+  "https://incident-reporting-rjwi.onrender.com/api/auth/verify-otp/",
+  { email, otp }
+);
+
 
       setMessage(res.data.message || "OTP verified successfully");
 

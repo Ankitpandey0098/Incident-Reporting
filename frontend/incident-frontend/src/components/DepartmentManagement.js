@@ -46,11 +46,12 @@ const DepartmentManagement = () => {
     setLoading(true);
 
     try {
-      console.log("CALLING API...");
-      const res = await axios.get(
-        "http://127.0.0.1:8000/api/departments/",
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+     console.log("CALLING API...");
+const res = await axios.get(
+  "https://incident-reporting-rjwi.onrender.com/api/departments/",
+  { headers: { Authorization: `Bearer ${token}` } }
+);
+
 
       setDepartments(res.data);
 
@@ -72,9 +73,10 @@ const DepartmentManagement = () => {
   const deleteDepartment = async (id) => {
     try {
       await axios.delete(
-        `http://127.0.0.1:8000/api/departments/delete/${id}/`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+  `https://incident-reporting-rjwi.onrender.com/api/departments/delete/${id}/`,
+  { headers: { Authorization: `Bearer ${token}` } }
+);
+
 
       setMessage("Department deleted successfully");
       fetchDepartments();
@@ -100,10 +102,11 @@ const DepartmentManagement = () => {
   const updateDepartment = async () => {
     try {
       await axios.patch(
-        `http://127.0.0.1:8000/api/departments/update/${selectedDept.id}/`,
-        editForm,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+  `https://incident-reporting-rjwi.onrender.com/api/departments/update/${selectedDept.id}/`,
+  editForm,
+  { headers: { Authorization: `Bearer ${token}` } }
+);
+
 
       setMessage("Department updated successfully");
       setShowEdit(false);
@@ -119,10 +122,11 @@ const DepartmentManagement = () => {
     try {
 
       axios.post(
-        "http://127.0.0.1:8000/api/departments/add/",
-        addForm,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+  "https://incident-reporting-rjwi.onrender.com/api/departments/add/",
+  addForm,
+  { headers: { Authorization: `Bearer ${token}` } }
+);
+
 
       setMessage("Department added successfully");
 

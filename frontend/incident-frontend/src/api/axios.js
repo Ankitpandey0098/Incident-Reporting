@@ -1,13 +1,12 @@
-
 // src/api/axios.js
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://127.0.0.1:8000/api", // your Django API base
-  withCredentials: true, // IMPORTANT: allow cookies for session auth
-    headers: {
+  baseURL: process.env.REACT_APP_API_URL,
+  withCredentials: true,
+  headers: {
     "Content-Type": "application/json",
-},
+  },
 });
 
 export default api;

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Form, Button, Alert, InputGroup } from "react-bootstrap";
 import { useNavigate, Link } from "react-router-dom";
-
+import api from "../api/axios";
 function Login() {
   const [form, setForm] = useState({
     username: "",
@@ -29,21 +29,23 @@ function Login() {
 
     try {
       const res = await axios.post(
-        "http://127.0.0.1:8000/api/login/",
-        form
-      );
+  "https://incident-reporting-rjwi.onrender.com/api/login/",
+  form
+);
+
 
       localStorage.setItem("access", res.data.access);
       localStorage.setItem("refresh", res.data.refresh);
 
       const user = await axios.get(
-        "http://127.0.0.1:8000/api/user/",
-        {
-          headers: {
-            Authorization: `Bearer ${res.data.access}`
-          }
-        }
-      );
+  "https://incident-reporting-rjwi.onrender.com/api/user/",
+  {
+    headers: {
+      Authorization: `Bearer ${res.data.access}`
+    }
+  }
+);
+
 
       localStorage.setItem("role", user.data.role);
       localStorage.setItem("department", user.data.department || "");

@@ -17,7 +17,7 @@ import {
 import { EnvelopeFill, GeoAltFill, Search } from "react-bootstrap-icons";
 import { useNavigate } from "react-router-dom";
 import AdminHeader from "./AdminHeader";
-
+import api from "../api/axios";
 const AdminDashboard = () => {
 
   const token = localStorage.getItem("access");
@@ -79,10 +79,11 @@ const AdminDashboard = () => {
 
     try {
 
-      const res = await axios.get(
-        "http://127.0.0.1:8000/api/incidents/",
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const res = await api.get("/incidents/", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       const sorted = sortIncidents(res.data);
 
@@ -164,10 +165,11 @@ const AdminDashboard = () => {
     try {
 
       const res = await axios.post(
-        `http://127.0.0.1:8000/api/incidents/${incident.id}/report/`,
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+  `https://incident-reporting-rjwi.onrender.com/api/incidents/${incident.id}/report/`,
+  {},
+  { headers: { Authorization: `Bearer ${token}` } }
+);
+
 
       setMessage(
         `Email sent to ${incident.department} (Total: ${res.data.email_count})`
@@ -198,10 +200,11 @@ const AdminDashboard = () => {
     try {
 
       await axios.patch(
-        `http://127.0.0.1:8000/api/incidents/${incident.id}/`,
+        `https://incident-reporting-rjwi.onrender.com/api/incidents/${incident.id}/`,
         { status: newStatus },
         { headers: { Authorization: `Bearer ${token}` } }
       );
+
 
       setMessage(`Status updated to ${newStatus}`);
 
