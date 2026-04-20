@@ -32,33 +32,36 @@ const EditIncident = () => {
 
   // 📥 Fetch incident
   useEffect(() => {
-    const fetchIncident = async () => {
-      try {
-        const token = localStorage.getItem("access");
+  const fetchIncident = async () => {
+    try {
+      const token = localStorage.getItem("access");
 
-        axios.post(
-  "https://incident-reporting-rjwi.onrender.com/api/departments/add/",
-  addForm,
-  { headers: { Authorization: `Bearer ${token}` } }
-);
+      const res = await axios.get(
+        `https://incident-reporting-rjwi.onrender.com/api/incidents/${id}/`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
+      setTitle(res.data.title);
+      setDescription(res.data.description);
+      setLatitude(res.data.latitude || "");
+      setLongitude(res.data.longitude || "");
+      setExistingImage(res.data.attachment);
 
-        setTitle(res.data.title);
-        setDescription(res.data.description);
-        setLatitude(res.data.latitude || "");
-        setLongitude(res.data.longitude || "");
-        setExistingImage(res.data.attachment);
+    } catch (err) {
+      console.error(err);
+      setError("❌ Failed to load incident.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-      } catch (err) {
-        console.error(err);
-        setError("❌ Failed to load incident.");
-      } finally {
-        setLoading(false);
-      }
-    };
+  fetchIncident();
+}, [id]);
 
-    fetchIncident();
-  }, [id]);
 
   // 📍 Get current GPS location
   const getCurrentLocation = () => {
