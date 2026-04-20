@@ -65,18 +65,56 @@ function Signup() {
     }
 
   };
+return (
 
-  return (
+  <div
+    style={{
+      minHeight: "100vh",
+      display: "flex",
+      background: "#f4f7fb"
+    }}
+  >
+
+    {/* LEFT SIDE */}
 
     <div
       style={{
-        minHeight: "100vh",
+        flex: 1,
+        background: "linear-gradient(135deg, #0fcad7, #70059a)",
+        color: "white",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        padding: "60px"
+      }}
+    >
+
+      <h2 style={{ fontWeight: "800" }}>
+        Smart Incident Management
+      </h2>
+
+      <p style={{ opacity: 0.9, marginTop: "10px" }}>
+        Create your account to report and manage incidents efficiently.
+      </p>
+
+      <div style={{ marginTop: "30px", opacity: 0.85 }}>
+        🚨 Real-time Incident Reporting <br/>
+        📊 Smart Analytics Dashboard <br/>
+        🔔 Instant Notifications <br/>
+        🏙️ Smart City Management
+      </div>
+
+    </div>
+
+    {/* RIGHT SIDE */}
+
+    <div
+      style={{
+        flex: 1,
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        background: "rgba(116, 105, 105, 0.45)",
-        padding: "20px",
-        borderRadius: "25px",
+        padding: "40px"
       }}
     >
 
@@ -85,21 +123,21 @@ function Signup() {
           width: "100%",
           maxWidth: "520px",
           background: "#ffffff",
-          borderRadius: "14px",
+          borderRadius: "16px",
           padding: "2.5rem",
-          boxShadow: "0 15px 40px rgba(0,0,0,0.25)",
+          boxShadow: "0 15px 40px rgba(0,0,0,0.1)",
         }}
       >
 
         <h2
           className="text-center mb-1"
-          style={{ fontWeight: "600", color: "#111827" }}
+          style={{ fontWeight: "700", color: "#111827" }}
         >
           Create Account
         </h2>
 
         <p className="text-center text-muted mb-4">
-          Report incidents responsibly
+          Join the Smart Incident Platform
         </p>
 
         {error && <Alert variant="danger">{error}</Alert>}
@@ -114,6 +152,7 @@ function Signup() {
                 name="first_name"
                 required
                 onChange={handleChange}
+                style={{ borderRadius: "10px" }}
               />
             </Col>
 
@@ -123,6 +162,7 @@ function Signup() {
                 name="last_name"
                 required
                 onChange={handleChange}
+                style={{ borderRadius: "10px" }}
               />
             </Col>
           </Row>
@@ -134,6 +174,7 @@ function Signup() {
               name="email"
               required
               onChange={handleChange}
+              style={{ borderRadius: "10px" }}
             />
           </Form.Group>
 
@@ -143,6 +184,7 @@ function Signup() {
               name="username"
               required
               onChange={handleChange}
+              style={{ borderRadius: "10px" }}
             />
           </Form.Group>
 
@@ -155,6 +197,7 @@ function Signup() {
                 name="password"
                 required
                 onChange={handleChange}
+                style={{ borderRadius: "10px 0 0 10px" }}
               />
 
               <Button
@@ -164,80 +207,69 @@ function Signup() {
               >
                 {showPassword ? "Hide" : "Show"}
               </Button>
+
             </InputGroup>
           </Form.Group>
 
-          {/* Role Selection */}
+          {/* Role */}
 
           <Form.Group className="mb-3">
             <Form.Label>Register As*</Form.Label>
             <Form.Select
               name="role"
               onChange={handleChange}
+              style={{ borderRadius: "10px" }}
             >
               <option value="user">User</option>
               <option value="department">Department</option>
             </Form.Select>
           </Form.Group>
 
-          {/* Department Selection */}
+          {/* Department */}
 
           {form.role === "department" && (
 
-  <Form.Group className="mb-4">
-    <Form.Label>Select Department*</Form.Label>
+            <Form.Group className="mb-4">
+              <Form.Label>Select Department*</Form.Label>
 
-    <Form.Select
-      name="department"
-      onChange={handleChange}
-      required
-    >
+              <Form.Select
+                name="department"
+                onChange={handleChange}
+                required
+                style={{ borderRadius: "10px" }}
+              >
 
-      <option value="">Choose Department</option>
+                <option value="">Choose Department</option>
+                <option value="Disaster Management">Disaster Management</option>
+                <option value="Emergency Services">Emergency Services</option>
+                <option value="Electricity Department">Electricity Department</option>
+                <option value="Cyber Crime Cell">Cyber Crime Cell</option>
+                <option value="Police Department">Police Department</option>
+                <option value="Fire Department">Fire Department</option>
+                <option value="Parks & Recreation">Parks & Recreation</option>
+                <option value="Wildlife / Animal Control">Wildlife / Animal Control</option>
+                <option value="Health Department">Health Department</option>
+                <option value="Pollution">Pollution</option>
+                <option value="Municipality">Municipality</option>
+                <option value="Traffic / Roads">Traffic / Roads</option>
+                <option value="Forest">Forest</option>
+                <option value="Waste Management">Waste Management</option>
+                <option value="Water Management">Water Management</option>
 
-      <option value="Disaster Management">Disaster Management</option>
+              </Form.Select>
 
-      <option value="Emergency Services">Emergency Services</option>
+            </Form.Group>
 
-      <option value="Electricity Department">Electricity Department</option>
-
-      <option value="Cyber Crime Cell">Cyber Crime Cell</option>
-
-      <option value="Police Department">Police Department</option>
-
-      <option value="Fire Department">Fire Department</option>
-
-      <option value="Parks & Recreation">Parks & Recreation</option>
-
-      <option value="Wildlife / Animal Control">Wildlife / Animal Control</option>
-
-      <option value="Health Department">Health Department</option>
-
-      <option value="Pollution">Pollution</option>
-
-      <option value="Municipality">Municipality</option>
-
-      <option value="Traffic / Roads">Traffic / Roads</option>
-
-      <option value="Forest">Forest</option>
-
-      <option value="Waste Management">Waste Management</option>
-
-      <option value="Water Management">Water Management</option>
-
-    </Form.Select>
-
-  </Form.Group>
-
-)}
+          )}
 
           <Button
             type="submit"
             className="w-100"
             disabled={loading}
             style={{
-              padding: "10px",
+              padding: "12px",
               fontWeight: 600,
+              borderRadius: "10px"
             }}
           >
             {loading
@@ -264,7 +296,10 @@ function Signup() {
 
     </div>
 
-  );
+  </div>
+
+);
+
 }
 
 export default Signup;

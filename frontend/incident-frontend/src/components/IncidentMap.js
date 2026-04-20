@@ -103,6 +103,7 @@ const IncidentMap = () => {
 
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [departments, setDepartments] = useState([]);
 
   const [stats, setStats] = useState({
     total: 0,
@@ -180,9 +181,11 @@ const IncidentMap = () => {
 
     if (categoryFilter !== "all") {
       filtered = filtered.filter((i) =>
-        (i.category || "").toLowerCase().includes(categoryFilter)
-      );
+  (i.department || "").trim().toLowerCase() === categoryFilter.trim().toLowerCase()
+);
+
     }
+
 
     if (statusFilter !== "all") {
       filtered = filtered.filter(
@@ -193,6 +196,23 @@ const IncidentMap = () => {
     setFilteredIncidents(filtered);
     calculateStats(filtered);
   }, [categoryFilter, statusFilter, incidents]);
+
+  useEffect(() => {
+  const fetchDepartments = async () => {
+    try {
+      const res = await axios.get(
+        "http://127.0.0.1:8000/api/departments/",
+        axiosConfig
+      );
+      setDepartments(res.data);
+    } catch (err) {
+      console.error("Department fetch failed", err);
+    }
+  };
+
+  fetchDepartments();
+}, []);
+
 
   /* ================= STATS ================= */
 
@@ -249,7 +269,18 @@ const IncidentMap = () => {
   };
 
   return (
-    <div style={{ height: "90vh", width: "100%", padding: "20px" }}>
+    <div
+  style={{
+    height: "calc(100vh - 80px)", // adjusts for header/footer
+    width: "100%",
+    padding: "20px",
+    display: "flex",
+    flexDirection: "column",
+    boxSizing: "border-box",
+    overflow: "hidden"
+  }}
+>
+
       <h3 className="text-primary mb-3">🏙️ City Incident Map</h3>
 
       {/* 🚨 ALERT BANNER */}
@@ -273,15 +304,21 @@ const IncidentMap = () => {
 
       <div style={{ marginBottom: "10px" }}>
         <select
-          value={categoryFilter}
-          onChange={(e) => setCategoryFilter(e.target.value)}
-        >
-          <option value="all">All Categories</option>
-          <option value="fire">Fire</option>
-          <option value="accident">Accident</option>
-          <option value="crime">Crime</option>
-          <option value="medical">Medical</option>
-        </select>
+  value={categoryFilter}
+  onChange={(e) => setCategoryFilter(e.target.value)}
+>
+  <option value="all">All Departments</option>
+
+  {departments.map((dept) => (
+    <option key={dept.id} value={dept.name}>
+  {dept.name}
+</option>
+
+
+  ))}
+</select>
+
+
 
         <select
           value={statusFilter}
@@ -302,11 +339,13 @@ const IncidentMap = () => {
         </button>
       </div>
 
-      <MapContainer
-        bounds={bounds}
-        scrollWheelZoom
-        style={{ height: "100%", width: "100%" }}
-      >
+      <div style={{ flex: 1, minHeight: 0 }}>
+  <MapContainer
+    bounds={bounds}
+    scrollWheelZoom
+    style={{ height: "100%", width: "100%" }}
+  >
+
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
         {newIncident && <AutoZoomToIncident incident={newIncident} />}
@@ -335,6 +374,7 @@ const IncidentMap = () => {
           </MarkerClusterGroup>
         )}
       </MapContainer>
+      </div>
 
       <style>{`
         .pulse-marker {

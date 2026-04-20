@@ -44,51 +44,113 @@ const ProfileBar = () => {
     return <Spinner animation="border" size="sm" className="me-2" />;
 
   return (
-    <Dropdown align="end">
-      <Dropdown.Toggle
-        variant="light"
-        size="sm"
-        className="profile-toggle d-flex align-items-center"
+  <Dropdown align="end">
+
+    {/* TOGGLE */}
+    <Dropdown.Toggle
+      variant="light"
+      className="d-flex align-items-center"
+      style={{
+        border: "1px solid #e9ecef",
+        borderRadius: "50px",
+        padding: "6px 12px",
+        background: "#fff",
+        boxShadow: "0 2px 10px rgba(0,0,0,0.05)"
+      }}
+    >
+      {user?.profile_image ? (
+        <Image
+          src={user.profile_image}
+          roundedCircle
+          style={{
+            width: 36,
+            height: 36,
+            objectFit: "cover",
+            border: "2px solid #f1f1f1"
+          }}
+          className="me-2"
+        />
+      ) : (
+        <div
+          className="me-2"
+          style={{
+            width: 36,
+            height: 36,
+            borderRadius: "50%",
+            background: "#0d6efd",
+            color: "white",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontWeight: "600"
+          }}
+        >
+          {user?.username?.charAt(0).toUpperCase()}
+        </div>
+      )}
+
+      <div style={{ lineHeight: "1.1" }}>
+        <div style={{ fontWeight: "600", fontSize: "13px" }}>
+          {user?.username}
+        </div>
+        <div style={{ fontSize: "11px", color: "#6c757d" }}>
+          {user?.role || "Member"}
+        </div>
+      </div>
+    </Dropdown.Toggle>
+
+    {/* DROPDOWN */}
+    <Dropdown.Menu
+      style={{
+        width: "260px",
+        borderRadius: "12px",
+        border: "none",
+        boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
+        padding: "10px"
+      }}
+    >
+
+      {/* HEADER */}
+      <div style={{ padding: "8px 10px" }}>
+        <div style={{ fontWeight: "700" }}>
+          {user?.username}
+        </div>
+        <div style={{ fontSize: "12px", color: "#6c757d" }}>
+          {user?.email}
+        </div>
+      </div>
+
+      <hr style={{ margin: "8px 0" }} />
+
+      {/* PROFILE ACTION */}
+      <Dropdown.Item
+        onClick={() => navigate("/profile")}
+        style={{
+          borderRadius: "8px",
+          padding: "8px 10px"
+        }}
       >
-        {user?.profile_image ? (
-          <Image
-            src={user.profile_image}
-            roundedCircle
-            className="me-2"
-            style={{ width: 34, height: 34, objectFit: "cover" }}
-          />
-        ) : (
-          <div className="avatar-fallback me-2">
-            {user?.username?.charAt(0).toUpperCase()}
-          </div>
-        )}
+        👤 View Profile
+      </Dropdown.Item>
 
-        <div className="text-start">
-          <div className="fw-semibold small">{user?.username}</div>
-          <div className="text-muted role-text">
-            {user?.role || "Member"}
-          </div>
-        </div>
-      </Dropdown.Toggle>
+      {/* LOGOUT */}
+      <Dropdown.Item
+        onClick={handleLogout}
+        style={{
+          borderRadius: "8px",
+          padding: "8px 10px",
+          color: "#dc3545",
+          fontWeight: "500"
+        }}
+      >
+        🚪 Logout
+      </Dropdown.Item>
 
-      <Dropdown.Menu className="profile-dropdown shadow border-0">
-        <div className="px-3 py-2">
-          <div className="fw-semibold">{user?.username}</div>
-          <div className="text-muted small">{user?.email}</div>
-        </div>
+    </Dropdown.Menu>
 
-        <Dropdown.Divider />
+  </Dropdown>
+);
 
-        <Dropdown.Item onClick={() => navigate("/profile")}>
-          👤 View Profile
-        </Dropdown.Item>
-
-        <Dropdown.Item onClick={handleLogout} className="text-danger">
-          🚪 Logout
-        </Dropdown.Item>
-      </Dropdown.Menu>
-    </Dropdown>
-  );
 };
 
 export default ProfileBar;

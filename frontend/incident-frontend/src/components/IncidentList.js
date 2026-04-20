@@ -46,6 +46,8 @@ const IncidentList = () => {
     username: "",
     is_staff: false
   });
+  const [departments, setDepartments] = useState([]);
+
 
   const [toast, setToast] = useState({
     show: false,
@@ -91,6 +93,18 @@ const IncidentList = () => {
 
     fetchUser();
   }, []);
+
+const fetchDepartments = async () => {
+  try {
+    const res = await axios.get(`${API}/departments/`, axiosConfig);
+    setDepartments(res.data);
+  } catch (err) {
+    console.error("Failed to fetch departments");
+  }
+};
+useEffect(() => {
+  fetchDepartments();
+}, []);
 
   // Fetch incidents
   const fetchIncidents = async () => {
@@ -368,19 +382,20 @@ const IncidentList = () => {
             </Form.Select>
           </Col>
 
-          <Col md={3}>
-            <Form.Select
+          <Form.Select
               value={departmentFilter}
               onChange={e => setDepartmentFilter(e.target.value)}
             >
               <option value="All">All Departments</option>
-              <option value="Forest">Forest</option>
-              <option value="Municipality">Municipality</option>
-              <option value="Pollution">Pollution</option>
-              <option value="Water Management">Water Management</option>
-              <option value="Traffic / Roads">Traffic / Roads</option>
+
+              {departments.map(dep => (
+                <option key={dep.id} value={dep.name}>
+                  {dep.name}
+                </option>
+              ))}
+
             </Form.Select>
-          </Col>
+
 
         </Row>
 
@@ -613,30 +628,6 @@ const IncidentList = () => {
         </Toast>
 
       </div>
-
-      <div className="container mt-5">
-
-        <h3 className="fw-bold text-primary mb-4">
-          Incident Statistics
-        </h3>
-
-        <IncidentCharts />
-
-      </div>
-      <Row className="mt-4">
-  <Col md={12}>
-    <Card className="shadow-sm">
-      <Card.Header className="fw-semibold bg-white">
-        🗺️ Incident Heatmap
-      </Card.Header>
-
-      <Card.Body>
-        <IncidentHeatmap />
-      </Card.Body>
-    </Card>
-  </Col>
-</Row>
-
 
     </div>
   );

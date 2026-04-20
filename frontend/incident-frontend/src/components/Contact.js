@@ -1,5 +1,14 @@
 import React, { useState } from "react";
-import { Form, Button, Alert, Spinner } from "react-bootstrap";
+import {
+  Form,
+  Button,
+  Alert,
+  Spinner,
+  Container,
+  Row,
+  Col,
+  Card
+} from "react-bootstrap";
 import axios from "axios";
 
 const Contact = () => {
@@ -25,7 +34,7 @@ const Contact = () => {
     setSuccessMsg("");
 
     try {
-      const token = localStorage.getItem("access"); // if protected
+      const token = localStorage.getItem("access");
       const response = await axios.post(
         "http://127.0.0.1:8000/api/contact/",
         formData,
@@ -47,62 +56,112 @@ const Contact = () => {
   };
 
   return (
-    <div className="contact-page" style={{ maxWidth: "600px", margin: "0 auto" }}>
-      <h2 className="mb-4 text-primary">Contact Us</h2>
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#f8f9fa",
+        paddingTop: "30px",
+        paddingBottom: "40px"
+      }}
+    >
+      <Container>
+        <Row className="justify-content-center">
+          <Col md={8} lg={6}>
 
-      {successMsg && <Alert variant="success">{successMsg}</Alert>}
-      {errorMsg && <Alert variant="danger">{errorMsg}</Alert>}
+            <Card className="shadow-sm border-0 rounded-3">
+              <Card.Body className="p-4">
 
-      <Form onSubmit={handleSubmit}>
-        <Form.Group className="mb-3">
-          <Form.Label>Name</Form.Label>
-          <Form.Control
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-          />
-        </Form.Group>
+                {/* Header */}
+                <div className="mb-4 text-center">
+                  <h2 className="fw-bold text-dark mb-1">
+                    📩 Contact Us
+                  </h2>
+                  <small className="text-muted">
+                    Have questions? We'd love to hear from you
+                  </small>
+                </div>
 
-        <Form.Group className="mb-3">
-          <Form.Label>Email</Form.Label>
-          <Form.Control
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-        </Form.Group>
+                {successMsg && (
+                  <Alert variant="success">{successMsg}</Alert>
+                )}
 
-        <Form.Group className="mb-3">
-          <Form.Label>Subject</Form.Label>
-          <Form.Control
-            type="text"
-            name="subject"
-            value={formData.subject}
-            onChange={handleChange}
-            required
-          />
-        </Form.Group>
+                {errorMsg && (
+                  <Alert variant="danger">{errorMsg}</Alert>
+                )}
 
-        <Form.Group className="mb-3">
-          <Form.Label>Message</Form.Label>
-          <Form.Control
-            as="textarea"
-            name="message"
-            rows={5}
-            value={formData.message}
-            onChange={handleChange}
-            required
-          />
-        </Form.Group>
+                <Form onSubmit={handleSubmit}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Name</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="name"
+                      placeholder="Enter your name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      required
+                    />
+                  </Form.Group>
 
-        <Button type="submit" variant="primary" disabled={loading}>
-          {loading ? <Spinner animation="border" size="sm" /> : "Send Message"}
-        </Button>
-      </Form>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Email</Form.Label>
+                    <Form.Control
+                      type="email"
+                      name="email"
+                      placeholder="Enter your email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
+                    />
+                  </Form.Group>
+
+                  <Form.Group className="mb-3">
+                    <Form.Label>Subject</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="subject"
+                      placeholder="Enter subject"
+                      value={formData.subject}
+                      onChange={handleChange}
+                      required
+                    />
+                  </Form.Group>
+
+                  <Form.Group className="mb-4">
+                    <Form.Label>Message</Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      name="message"
+                      rows={5}
+                      placeholder="Write your message..."
+                      value={formData.message}
+                      onChange={handleChange}
+                      required
+                    />
+                  </Form.Group>
+
+                  <div className="d-grid">
+                    <Button
+                      type="submit"
+                      variant="primary"
+                      size="lg"
+                      disabled={loading}
+                    >
+                      {loading ? (
+                        <Spinner animation="border" size="sm" />
+                      ) : (
+                        "Send Message"
+                      )}
+                    </Button>
+                  </div>
+
+                </Form>
+
+              </Card.Body>
+            </Card>
+
+          </Col>
+        </Row>
+      </Container>
     </div>
   );
 };

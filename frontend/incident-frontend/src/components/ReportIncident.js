@@ -1,6 +1,15 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Form, Button, Container, Alert, Card } from "react-bootstrap";
+import { 
+  Form, 
+  Button, 
+  Container, 
+  Alert, 
+  Card,
+  Row,
+  Col
+} from "react-bootstrap";
+
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
@@ -32,6 +41,7 @@ function ReportIncident() {
 
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [severity, setSeverity] = useState("medium");
 
   // 📡 Get GPS location
   const getCurrentLocation = () => {
@@ -129,160 +139,201 @@ function ReportIncident() {
   };
 
   return (
+  <div
+    style={{
+      minHeight: "100vh",
+      background: "#f4f7fb",
+      padding: "40px 20px"
+    }}
+  >
 
-    <Container className="mt-5" style={{ maxWidth: "650px" }}>
+    <Container style={{ maxWidth: "900px" }}>
 
-      <Card className="shadow-sm">
+      {/* HEADER */}
+      <div className="mb-4">
+        <h3 style={{ fontWeight: "800" }}>
+          🏙️ Report an Incident
+        </h3>
+        <p className="text-muted">
+          Report civic, infrastructure, or environmental issues in your city
+        </p>
+      </div>
 
-        <Card.Body>
+      <Card
+        className="shadow-sm"
+        style={{
+          borderRadius: "16px",
+          border: "none"
+        }}
+      >
 
-          <h3 className="text-center text-primary mb-4">
-            🏙️ Report a Civic or Environmental Issue
-          </h3>
+        <Card.Body className="p-4">
 
           {error && <Alert variant="danger">{error}</Alert>}
           {message && <Alert variant="success">{message}</Alert>}
 
           <Form onSubmit={handleSubmit}>
 
-            {/* Title */}
+            <Row>
 
-            <Form.Group className="mb-3">
-              <Form.Label>Incident Title</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Short summary"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                required
-              />
-            </Form.Group>
+              {/* LEFT COLUMN */}
+              <Col md={6}>
 
-            {/* Description */}
+                {/* Title */}
+                <Form.Group className="mb-3">
+                  <Form.Label>Incident Title</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Short summary"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    required
+                    style={{ borderRadius: "10px" }}
+                  />
+                </Form.Group>
 
-            <Form.Group className="mb-3">
-              <Form.Label>Description</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={4}
-                placeholder="Describe the incident"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                required
-              />
-            </Form.Group>
+                {/* Description */}
+                <Form.Group className="mb-3">
+                  <Form.Label>Description</Form.Label>
+                  <Form.Control
+                    as="textarea"
+                    rows={6}
+                    placeholder="Describe the issue..."
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    required
+                    style={{ borderRadius: "10px" }}
+                  />
+                </Form.Group>
 
-            {/* LOCATION SECTION */}
+                {/* File Upload */}
+                <Form.Group className="mb-3">
+                  <Form.Label>Attachment</Form.Label>
 
-            <Form.Group className="mb-3">
+                  <Form.Control
+                    type="file"
+                    onChange={(e) => {
+                      if (e.target.files.length > 0) {
+                        setAttachment(e.target.files[0]);
+                        setAttachmentName(e.target.files[0].name);
+                      }
+                    }}
+                  />
 
-              <Form.Label>📍 Incident Location</Form.Label>
+                  {attachmentName && (
+                    <div className="mt-2 text-muted small">
+                      📎 {attachmentName}
+                    </div>
+                  )}
+                </Form.Group>
 
-              <div className="d-flex gap-2">
+              </Col>
 
-                <Button
-                  variant="outline-primary"
-                  onClick={getCurrentLocation}
+              {/* RIGHT COLUMN */}
+              <Col md={6}>
+
+                <Card
+                  className="mb-3"
+                  style={{
+                    background: "#f8fafc",
+                    border: "1px solid #eee",
+                    borderRadius: "12px"
+                  }}
                 >
-                  📡 Use Current Location
-                </Button>
 
-                <Button
-                  variant="outline-success"
-                  onClick={() => setShowMap(!showMap)}
-                >
-                  🗺️ Select From Map
-                </Button>
+                  <Card.Body>
 
-              </div>
+                    <h6 className="mb-3">
+                      📍 Location Selection
+                    </h6>
 
-              {/* Map */}
+                    <div className="d-flex gap-2 mb-3">
 
-              {showMap && (
+                      <Button
+                        size="sm"
+                        variant="outline-primary"
+                        onClick={getCurrentLocation}
+                      >
+                        📡 GPS
+                      </Button>
 
-                <div className="mt-3">
+                      <Button
+                        size="sm"
+                        variant="outline-success"
+                        onClick={() => setShowMap(!showMap)}
+                      >
+                        🗺 Map
+                      </Button>
 
-                  <MapContainer
-                    center={[28.4744, 77.5040]}
-                    zoom={13}
-                    style={{ height: "300px", width: "100%" }}
-                  >
+                    </div>
 
-                    <TileLayer
-                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    />
+                    {/* Map */}
+                    {showMap && (
+                      <MapContainer
+                        center={[28.4744, 77.5040]}
+                        zoom={13}
+                        style={{
+                          height: "220px",
+                          width: "100%",
+                          borderRadius: "10px"
+                        }}
+                      >
+                        <TileLayer
+                          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        />
 
-                    <LocationMarker />
+                        <LocationMarker />
 
-                  </MapContainer>
+                      </MapContainer>
+                    )}
 
-                </div>
+                    {/* Coordinates */}
+                    {latitude && longitude && (
+                      <div className="mt-3 p-2 bg-white rounded border">
 
-              )}
+                        <small className="text-muted">
+                          Selected Location
+                        </small>
 
-              {/* Coordinates */}
+                        <div style={{ fontSize: "13px" }}>
+                          {latitude.toFixed(5)} , {longitude.toFixed(5)}
+                        </div>
 
-              {latitude && longitude && (
+                        <Button
+                          size="sm"
+                          variant="outline-secondary"
+                          className="mt-2"
+                          onClick={() =>
+                            window.open(
+                              `https://www.google.com/maps?q=${latitude},${longitude}`,
+                              "_blank"
+                            )
+                          }
+                        >
+                          View Map
+                        </Button>
 
-                <div className="mt-3 p-2 border rounded bg-light">
+                      </div>
+                    )}
 
-                  <strong>Selected Location</strong>
+                  </Card.Body>
 
-                  <div className="text-muted">
+                </Card>
 
-                    Latitude: {latitude.toFixed(5)} <br/>
-                    Longitude: {longitude.toFixed(5)}
+              </Col>
 
-                  </div>
+            </Row>
 
-                  <Button
-                    size="sm"
-                    variant="outline-secondary"
-                    className="mt-2"
-                    onClick={() =>
-                      window.open(
-                        `https://www.google.com/maps?q=${latitude},${longitude}`,
-                        "_blank"
-                      )
-                    }
-                  >
-                    View on Map
-                  </Button>
-
-                </div>
-
-              )}
-
-            </Form.Group>
-
-            {/* Attachment */}
-
-            <Form.Group className="mb-4">
-              <Form.Label>Attachment (optional)</Form.Label>
-
-              <Form.Control
-                type="file"
-                onChange={(e) => {
-
-                  if (e.target.files.length > 0) {
-
-                    setAttachment(e.target.files[0]);
-                    setAttachmentName(e.target.files[0].name);
-
-                  }
-
-                }}
-              />
-
-              {attachmentName && (
-                <div className="text-muted mt-1">
-                  Selected file: {attachmentName}
-                </div>
-              )}
-
-            </Form.Group>
-
-            <Button type="submit" variant="primary" className="w-100">
+            {/* SUBMIT */}
+            <Button
+              type="submit"
+              size="lg"
+              className="w-100 mt-3"
+              style={{
+                borderRadius: "10px",
+                fontWeight: "600"
+              }}
+            >
               Submit Report
             </Button>
 
@@ -293,7 +344,10 @@ function ReportIncident() {
       </Card>
 
     </Container>
-  );
+
+  </div>
+);
+
 }
 
 export default ReportIncident;

@@ -28,6 +28,12 @@ class Incident(models.Model):
         ("in progress", "In Progress"),
         ("resolved", "Resolved"),
     ]
+    SEVERITY_CHOICES = [
+        ("low", "Low"),
+        ("medium", "Medium"),
+        ("high", "High"),
+        ("critical", "Critical"),
+    ]
 
     title = models.CharField(max_length=100)
     description = models.TextField()
@@ -48,9 +54,24 @@ class Incident(models.Model):
         default="pending"
     )
 
+    severity = models.CharField(
+        max_length=20,
+        choices=SEVERITY_CHOICES,
+        default="medium"
+    )
+
+
     # ✅ NEW: Prevent duplicate department reporting
     reported_to_department = models.BooleanField(default=False)
     reported_at = models.DateTimeField(null=True, blank=True)
+
+    # ✅ NEW: Admin Email Tracking
+    email_sent_count = models.IntegerField(default=0)
+
+    last_email_sent_at = models.DateTimeField(
+        null=True,
+        blank=True
+    )
 
     user = models.ForeignKey(
         User,

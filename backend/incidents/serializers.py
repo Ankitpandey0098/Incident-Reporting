@@ -1,11 +1,12 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
+
 from .models import Incident, IncidentLog, ContactMessage, UserProfile, Notification
 from django.core.mail import send_mail
 from django.conf import settings
 from django.template.loader import render_to_string
 from django.core.mail import EmailMultiAlternatives
-
+from .models import Department
 
 # ---------------- CATEGORY → DEPARTMENT MAP ----------------
 CATEGORY_DEPARTMENT_MAP = {
@@ -33,7 +34,11 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ["id", "username", "role", "department"]
 
-
+# ---------------- Department Serializer ----------------
+class DepartmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Department
+        fields = "__all__"
 # ---------------- Incident Log Serializer ----------------
 class IncidentLogSerializer(serializers.ModelSerializer):
     performed_by = serializers.StringRelatedField()
@@ -78,12 +83,16 @@ class IncidentSerializer(serializers.ModelSerializer):
             "department",
             "confidence",
             "status",
+            "severity",
             "user",
             "attachment",
             "logs",
             "latitude",
             "longitude",
             "created_at",
+            "email_sent_count",
+            "reported_to_department",
+            "last_email_sent_at",
         ]
         read_only_fields = [
             "user",
@@ -109,17 +118,24 @@ class IncidentSerializer(serializers.ModelSerializer):
 
         # Send email to department when incident is created
         if incident.department:
-            send_mail(
-                subject=f"New Incident Reported: {incident.title}",
-                message=f"A new incident has been reported in the {incident.department} department.\n\n"
-                        f"Title: {incident.title}\n"
-                        f"Category: {incident.category}\n"
-                        f"Description: {incident.description}\n"
-                        f"Status: {incident.status}",
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[settings.DEFAULT_FROM_EMAIL],
-                fail_silently=True,
-            )
+            try:
+                dept = Department.objects.get(name=incident.department)
+
+                send_mail(
+                    subject=f"New Incident Reported: {incident.title}",
+                    message=f"A new incident has been reported in the {incident.department} department.\n\n"
+                            f"Title: {incident.title}\n"
+                            f"Category: {incident.category}\n"
+                            f"Description: {incident.description}\n"
+                            f"Status: {incident.status}",
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[dept.email],
+                    fail_silently=True,
+                )
+
+            except Department.DoesNotExist:
+                pass
+
 
         return incident
 
@@ -143,9 +159,21 @@ class IncidentSerializer(serializers.ModelSerializer):
         old_category = instance.category
 
         # Only admin can update status/category
-        if not (request and request.user.is_staff):
+        # Allow admin and department to update status
+        role = None
+        if request and hasattr(request.user, "userprofile"):
+            role = request.user.userprofile.role
+
+
+        if not (request and (request.user.is_staff or role == "department")):
+
+
             validated_data.pop("status", None)
+
+        # Only admin can change category
+        if not (request and request.user.is_staff):
             validated_data.pop("category", None)
+
 
         updated_instance = super().update(instance, validated_data)
 
@@ -209,6 +237,8 @@ class IncidentSerializer(serializers.ModelSerializer):
 
 # ---------------- Contact Message Serializer ----------------
 class ContactMessageSerializer(serializers.ModelSerializer):
+    
+
     class Meta:
         model = ContactMessage
         fields = "__all__"

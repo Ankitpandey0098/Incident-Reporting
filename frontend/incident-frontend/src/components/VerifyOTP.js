@@ -45,46 +45,142 @@ const VerifyOTP = () => {
   };
 
   return (
-    <Card className="p-4 shadow-lg mx-auto" style={{ maxWidth: "400px" }}>
-      <h4 className="text-center mb-3">Verify OTP</h4>
 
-      {message && <Alert variant="success">{message}</Alert>}
-      {error && <Alert variant="danger">{error}</Alert>}
+  <div
+    style={{
+      minHeight: "100vh",
+      display: "flex",
+      background: "#f4f7fb"
+    }}
+  >
 
-      <Form onSubmit={handleSubmit}>
-        <Form.Group className="mb-2">
-          <Form.Label>Email</Form.Label>
-          <Form.Control
-            type="email"
-            placeholder="Registered email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </Form.Group>
+    {/* LEFT PANEL */}
 
-        <Form.Group className="mb-3">
-          <Form.Label>OTP</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="6-digit OTP"
-            value={otp}
-            onChange={(e) => setOtp(e.target.value)}
-            required
-          />
-        </Form.Group>
+    <div
+      style={{
+        flex: 1,
+        background: "linear-gradient(135deg, #1e3c72, #2a5298)",
+        color: "white",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        padding: "60px"
+      }}
+    >
 
-        <Button
-          type="submit"
-          variant="primary"
-          className="w-100"
-          disabled={loading}
-        >
-          {loading ? <Spinner size="sm" /> : "Verify OTP"}
-        </Button>
-      </Form>
-    </Card>
-  );
+      <h2 style={{ fontWeight: "800" }}>
+        OTP Verification
+      </h2>
+
+      <p style={{ opacity: 0.9, marginTop: "10px" }}>
+        Enter the verification code sent to your email to continue password recovery.
+      </p>
+
+      <div style={{ marginTop: "30px", opacity: 0.85 }}>
+        🔐 Secure OTP Verification <br/>
+        ⚡ Fast Account Recovery <br/>
+        🛡️ Protected Authentication
+      </div>
+
+    </div>
+
+    {/* RIGHT PANEL */}
+
+    <div
+      style={{
+        flex: 1,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        padding: "40px"
+      }}
+    >
+
+      <Card
+        className="shadow-lg"
+        style={{
+          width: "420px",
+          borderRadius: "16px",
+          border: "none"
+        }}
+      >
+
+        <Card.Body className="p-4">
+
+          <h4
+            className="text-center mb-3"
+            style={{ fontWeight: "700" }}
+          >
+            Verify OTP
+          </h4>
+
+          <p className="text-center text-muted mb-4">
+            Enter the 6-digit code sent to your email
+          </p>
+
+          {message && <Alert variant="success">{message}</Alert>}
+          {error && <Alert variant="danger">{error}</Alert>}
+
+          <Form onSubmit={handleSubmit}>
+
+            {/* Email */}
+
+            <Form.Group className="mb-3">
+              <Form.Label>Email</Form.Label>
+              <Form.Control
+                type="email"
+                placeholder="Registered email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                style={{ borderRadius: "10px" }}
+              />
+            </Form.Group>
+
+            {/* OTP */}
+
+            <Form.Group className="mb-3">
+              <Form.Label>OTP</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="6-digit OTP"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+                required
+                style={{ 
+                  borderRadius: "10px",
+                  letterSpacing: "4px",
+                  fontSize: "18px",
+                  textAlign: "center"
+                }}
+              />
+            </Form.Group>
+
+            <Button
+              type="submit"
+              className="w-100"
+              disabled={loading}
+              style={{
+                borderRadius: "10px",
+                fontWeight: "600",
+                padding: "10px"
+              }}
+            >
+              {loading ? <Spinner size="sm" /> : "Verify OTP"}
+            </Button>
+
+          </Form>
+
+        </Card.Body>
+
+      </Card>
+
+    </div>
+
+  </div>
+
+);
+
 };
 
 export default VerifyOTP;

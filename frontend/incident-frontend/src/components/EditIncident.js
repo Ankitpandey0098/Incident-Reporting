@@ -1,7 +1,16 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
-import { Form, Button, Alert, Card, Spinner } from "react-bootstrap";
+import {
+  Form,
+  Button,
+  Alert,
+  Card,
+  Spinner,
+  Container,
+  Row,
+  Col
+} from "react-bootstrap";
 
 const EditIncident = () => {
   const { id } = useParams();
@@ -125,140 +134,213 @@ const EditIncident = () => {
   }
 
   return (
-    <div className="container mt-4">
 
-      <Card className="p-4 shadow-sm">
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#f8f9fa",
+        paddingTop: "20px",
+        paddingBottom: "40px"
+      }}
+    >
 
-        <h3 className="mb-3">✏️ Edit Incident</h3>
+      <Container>
 
-        {error && <Alert variant="danger">{error}</Alert>}
+        <Row className="justify-content-center">
 
-        <Form onSubmit={handleUpdate}>
+          <Col md={8} lg={7}>
 
-          {/* Title */}
-          <Form.Group className="mb-3">
-            <Form.Label>Title</Form.Label>
-            <Form.Control
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required
-            />
-          </Form.Group>
+            <Card className="shadow-sm border-0 rounded-3">
 
-          {/* Description */}
-          <Form.Group className="mb-3">
-            <Form.Label>Description</Form.Label>
-            <Form.Control
-              as="textarea"
-              rows={4}
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              required
-            />
-          </Form.Group>
+              <Card.Body className="p-4">
 
-          {/* 📍 Location Section */}
+                <div className="mb-3">
+                  <h3 className="fw-bold mb-1">
+                    ✏️ Edit Incident
+                  </h3>
+                  <small className="text-muted">
+                    Update incident information and location
+                  </small>
+                </div>
 
-          <h5 className="mt-3">📍 Location</h5>
+                {error && (
+                  <Alert variant="danger">
+                    {error}
+                  </Alert>
+                )}
 
-          <Form.Group className="mb-3">
-            <Form.Label>Latitude</Form.Label>
-            <Form.Control
-              type="number"
-              step="any"
-              value={latitude}
-              onChange={(e) => setLatitude(e.target.value)}
-            />
-          </Form.Group>
+                <Form onSubmit={handleUpdate}>
 
-          <Form.Group className="mb-3">
-            <Form.Label>Longitude</Form.Label>
-            <Form.Control
-              type="number"
-              step="any"
-              value={longitude}
-              onChange={(e) => setLongitude(e.target.value)}
-            />
-          </Form.Group>
+                  {/* Title */}
+                  <Form.Group className="mb-3">
+                    <Form.Label>Title</Form.Label>
+                    <Form.Control
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      required
+                    />
+                  </Form.Group>
 
-          <Button
-            variant="outline-primary"
-            size="sm"
-            className="mb-3"
-            onClick={getCurrentLocation}
-          >
-            📡 Use My Current Location
-          </Button>
+                  {/* Description */}
+                  <Form.Group className="mb-3">
+                    <Form.Label>Description</Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      rows={4}
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      required
+                    />
+                  </Form.Group>
 
-          {latitude && longitude && (
-            <div className="mb-3">
-              <Button
-                variant="outline-success"
-                size="sm"
-                onClick={() =>
-                  window.open(
-                    `https://www.google.com/maps?q=${latitude},${longitude}`,
-                    "_blank"
-                  )
-                }
-              >
-                🗺️ View on Map
-              </Button>
-            </div>
-          )}
+                  {/* Location Card */}
+                  <Card className="mb-3 border-0 bg-light">
+                    <Card.Body>
 
-          {/* Existing Image */}
+                      <h5 className="mb-3">
+                        📍 Location
+                      </h5>
 
-          {existingImage && (
-            <div className="mb-3">
-              <Form.Label>Current Attachment</Form.Label>
-              <br />
-              <img
-                src={
-                  existingImage.startsWith("http")
-                    ? existingImage
-                    : `http://127.0.0.1:8000${existingImage}`
-                }
-                alt="Current"
-                style={{
-                  maxWidth: "100%",
-                  maxHeight: "200px",
-                  borderRadius: "8px",
-                }}
-              />
-            </div>
-          )}
+                      <Row>
 
-          {/* Upload new image */}
+                        <Col md={6}>
+                          <Form.Group className="mb-3">
+                            <Form.Label>Latitude</Form.Label>
+                            <Form.Control
+                              type="number"
+                              step="any"
+                              value={latitude}
+                              onChange={(e) =>
+                                setLatitude(e.target.value)
+                              }
+                            />
+                          </Form.Group>
+                        </Col>
 
-          <Form.Group className="mb-3">
-            <Form.Label>Replace Attachment (optional)</Form.Label>
-            <Form.Control
-              type="file"
-              onChange={(e) => setAttachment(e.target.files[0])}
-            />
-          </Form.Group>
+                        <Col md={6}>
+                          <Form.Group className="mb-3">
+                            <Form.Label>Longitude</Form.Label>
+                            <Form.Control
+                              type="number"
+                              step="any"
+                              value={longitude}
+                              onChange={(e) =>
+                                setLongitude(e.target.value)
+                              }
+                            />
+                          </Form.Group>
+                        </Col>
 
-          {/* Buttons */}
+                      </Row>
 
-          <div className="d-flex gap-2">
+                      <div className="d-flex gap-2 flex-wrap">
 
-            <Button type="submit" disabled={saving}>
-              {saving ? "Updating..." : "Save Changes"}
-            </Button>
+                        <Button
+                          variant="outline-primary"
+                          size="sm"
+                          onClick={getCurrentLocation}
+                        >
+                          📡 Use My Location
+                        </Button>
 
-            <Button
-              variant="secondary"
-              onClick={() => navigate("/")}
-            >
-              Cancel
-            </Button>
+                        {latitude && longitude && (
+                          <Button
+                            variant="outline-success"
+                            size="sm"
+                            onClick={() =>
+                              window.open(
+                                `https://www.google.com/maps?q=${latitude},${longitude}`,
+                                "_blank"
+                              )
+                            }
+                          >
+                            🗺️ View Map
+                          </Button>
+                        )}
 
-          </div>
+                      </div>
 
-        </Form>
+                    </Card.Body>
+                  </Card>
 
-      </Card>
+
+                  {/* Existing Image */}
+                  {existingImage && (
+                    <Card className="mb-3 border-0">
+                      <Card.Body>
+
+                        <Form.Label>
+                          Current Attachment
+                        </Form.Label>
+
+                        <div className="mt-2">
+
+                          <img
+                            src={
+                              existingImage.startsWith("http")
+                                ? existingImage
+                                : `http://127.0.0.1:8000${existingImage}`
+                            }
+                            alt="Current"
+                            style={{
+                              maxWidth: "100%",
+                              maxHeight: "220px",
+                              borderRadius: "8px"
+                            }}
+                          />
+
+                        </div>
+
+                      </Card.Body>
+                    </Card>
+                  )}
+
+                  {/* Upload new image */}
+                  <Form.Group className="mb-4">
+                    <Form.Label>
+                      Replace Attachment (optional)
+                    </Form.Label>
+
+                    <Form.Control
+                      type="file"
+                      onChange={(e) =>
+                        setAttachment(e.target.files[0])
+                      }
+                    />
+                  </Form.Group>
+
+                  {/* Buttons */}
+
+                  <div className="d-flex gap-2">
+
+                    <Button
+                      type="submit"
+                      variant="primary"
+                      disabled={saving}
+                    >
+                      {saving ? "Updating..." : "Save Changes"}
+                    </Button>
+
+                    <Button
+                      variant="secondary"
+                      onClick={() => navigate("/")}
+                    >
+                      Cancel
+                    </Button>
+
+                  </div>
+
+                </Form>
+
+              </Card.Body>
+
+            </Card>
+
+          </Col>
+
+        </Row>
+
+      </Container>
 
     </div>
   );

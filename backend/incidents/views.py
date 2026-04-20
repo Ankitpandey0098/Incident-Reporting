@@ -15,7 +15,12 @@ from django.core.mail import EmailMultiAlternatives
 from .ml.predict import predict_category
 from .models import Incident, IncidentLog, ContactMessage, UserProfile, Notification, Department
 from .serializers import IncidentSerializer, ContactMessageSerializer, NotificationSerializer
-from incidents.models import Incident
+
+
+from .serializers import DepartmentSerializer
+from django.utils import timezone
+from rest_framework.permissions import IsAdminUser
+from django.db.models import F
 # ================= CATEGORY → DEPARTMENT MAP =================
 CATEGORY_DEPARTMENT_MAP = {
     "Drainage Issue": "Water Management",
@@ -60,7 +65,7 @@ class IncidentViewSet(viewsets.ModelViewSet):
                 # Department user
                 if profile.role == "department":
                     qs = Incident.objects.filter(
-                        department__iexact=profile.department
+                        department__iexact=profile.department.name
                     )
 
                 # Normal citizen user
@@ -194,8 +199,14 @@ class IncidentViewSet(viewsets.ModelViewSet):
         incident = self.get_object()
         data = request.data.copy()
 
-        if not request.user.is_staff:
+        role = getattr(getattr(request.user, "userprofile", None), "role", None)
+
+        # allow only admin + department to update status
+        if not (request.user.is_staff or role == "department"):
             data.pop("status", None)
+
+        # only admin can change category
+        if not request.user.is_staff:
             data.pop("category", None)
 
         old_status = incident.status
@@ -204,44 +215,49 @@ class IncidentViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(incident, data=data, partial=True)
         serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
+        incident = serializer.save()   # 🔥 IMPORTANT FIX (use save, NOT perform_update)
 
         incident.refresh_from_db()
 
-        # Status change
+        # STATUS CHANGE
         if old_status != incident.status:
             IncidentLog.objects.create(
                 incident=incident,
                 action=f"Status changed to '{incident.status}'",
                 performed_by=request.user
             )
+
             Notification.objects.create(
                 user=incident.user,
                 incident=incident,
                 message=f"Status of your incident '{incident.title}' changed to '{incident.status}'."
             )
-             # ================= EMAIL WHEN STATUS CHANGES =================
-            if incident.user and incident.user.email:
-                html_content = render_to_string(
-                    "emails/incident_status_updated.html",
-                    {
-                        "username": incident.user.username,
-                        "title": incident.title,
-                        "status": incident.status,
-                        "department": incident.department,
-                        "incident_id": incident.id,
-                    }
-                )
 
-                email = EmailMultiAlternatives(
-                    subject=f"Update on your incident '{incident.title}'",
-                    body=f"The status of your incident has been updated to {incident.status}.",
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    to=[incident.user.email],
-                )
+        # EMAIL (unchanged)
+        if old_status != incident.status and incident.user and incident.user.email:
+            html_content = render_to_string(
+                "emails/incident_status_updated.html",
+                {
+                    "username": incident.user.username,
+                    "title": incident.title,
+                    "status": incident.status,
+                    "department": incident.department,
+                    "incident_id": incident.id,
+                }
+            )
 
-                email.attach_alternative(html_content, "text/html")
-                email.send(fail_silently=True)
+            email = EmailMultiAlternatives(
+                subject=f"Update on your incident '{incident.title}'",
+                body=f"The status of your incident has been updated to {incident.status}.",
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                to=[incident.user.email],
+            )
+
+            email.attach_alternative(html_content, "text/html")
+            email.send(fail_silently=True)
+
+   
+
 
         # Category → Department reassign
         if old_category != incident.category:
@@ -269,7 +285,8 @@ class IncidentViewSet(viewsets.ModelViewSet):
                 )
             )
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(IncidentSerializer(incident).data, status=status.HTTP_200_OK)
+
 
     # ---------- DELETE ----------
     def destroy(self, request, *args, **kwargs):
@@ -281,75 +298,21 @@ class IncidentViewSet(viewsets.ModelViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-# ================= ADMIN MANUAL REPORT =================
-@api_view(["POST"])
+@api_view(["GET"])
 @permission_classes([IsAuthenticated])
-def report_incident_to_department(request, id):
 
-    if not request.user.is_staff:
-        return Response({"error": "Only admin can report incidents"}, status=403)
 
-    try:
-        incident = Incident.objects.get(id=id)
-    except Incident.DoesNotExist:
-        return Response({"error": "Incident not found"}, status=404)
+def get_departments(request):
+    departments = Department.objects.all()
+    serializer = DepartmentSerializer(departments, many=True)
+    return Response(serializer.data)
 
-    if incident.reported_to_department:
-        return Response(
-            {"error": "Incident already reported to department"},
-            status=400
-        )
-
-    try:
-        department = Department.objects.get(name=incident.department)
-    except Department.DoesNotExist:
-        return Response({"error": "Department email not found"}, status=404)
-
-    html_content = render_to_string(
-        "emails/incident_reported_to_department.html",
-        {
-            "department_name": department.name,
-            "incident_id": incident.id,
-            "title": incident.title,
-            "category": incident.category,
-            "status": incident.status,
-            "reported_by": incident.user.username if incident.user else "Anonymous",
-            "created_at": incident.created_at.strftime("%d %b %Y, %I:%M %p"),
-            "description": incident.description,
-        }
-    )
-
-    email = EmailMultiAlternatives(
-        subject=f"Incident Report - {incident.title} (ID {incident.id})",
-        body="A new incident has been assigned to your department.",
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        to=[department.email],
-    )
-
-    email.attach_alternative(html_content, "text/html")
-    email.send(fail_silently=False)
-
-    incident.reported_to_department = True
-    incident.save(update_fields=["reported_to_department"])
-
-    IncidentLog.objects.create(
-        incident=incident,
-        action=f"Incident reported to {department.name} department via email",
-        performed_by=request.user
-    )
-
-    return Response(
-        {"message": f"Incident reported to {department.name} department"},
-        status=200
-    )
 
 # ================= REPORT INCIDENT TO DEPARTMENT (NEW) =================
+
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def report_incident_to_department(request, id):
-    """
-    Admin reports an incident to its assigned department via email
-    """
 
     if not request.user.is_staff:
         return Response({"error": "Only admin can report incidents"}, status=403)
@@ -358,19 +321,17 @@ def report_incident_to_department(request, id):
         incident = Incident.objects.get(id=id)
     except Incident.DoesNotExist:
         return Response({"error": "Incident not found"}, status=404)
-    if incident.reported_to_department:
-        return Response(
-            {"error": "Incident already reported to department"},
-            status=400
-        )
+
 
     if not incident.department:
         return Response({"error": "Incident has no department"}, status=400)
 
+
     try:
         department = Department.objects.get(name=incident.department)
     except Department.DoesNotExist:
         return Response({"error": "Department email not found"}, status=404)
+
 
     html_content = render_to_string(
         "emails/incident_reported_to_department.html",
@@ -383,39 +344,78 @@ def report_incident_to_department(request, id):
             "reported_by": incident.user.username if incident.user else "Anonymous",
             "created_at": incident.created_at.strftime("%d %b %Y, %I:%M %p"),
             "description": incident.description,
+            "email_count": incident.email_sent_count + 1
         }
     )
 
+
     email = EmailMultiAlternatives(
-        subject=f"Incident Report - {incident.title} (ID {incident.id})",
-        body="A new incident has been assigned to your department.",
+        subject=f"Reminder #{incident.email_sent_count + 1} - Incident {incident.title}",
+        body="Incident reminder",
         from_email=settings.DEFAULT_FROM_EMAIL,
         to=[department.email],
     )
 
+
     email.attach_alternative(html_content, "text/html")
     email.send(fail_silently=False)
+
+
+    # Update email tracking
+    incident.email_sent_count += 1
     incident.reported_to_department = True
-    incident.save(update_fields=["reported_to_department"])
+    incident.last_email_sent_at = timezone.now()
+    incident.save(update_fields=[
+        "email_sent_count",
+        "reported_to_department",
+        "last_email_sent_at"
+    ])
 
 
     IncidentLog.objects.create(
         incident=incident,
-        action=f"Incident reported to {department.name} department via email",
+        action=f"Email reminder #{incident.email_sent_count} sent to {department.name}",
         performed_by=request.user
     )
-    
 
 
     return Response(
-        {"message": f"Incident reported to {department.name} department"},
+        {
+            "message": f"Email sent to {department.name}",
+            "email_count": incident.email_sent_count
+        },
         status=200
     )
+
+# ================= FILTER INCIDENTS BY USER ROLE =================
+def get_filtered_incidents(request):
+    user = request.user
+
+    # Admin
+    if user.is_staff:
+        return Incident.objects.all()
+
+    try:
+        profile = user.userprofile
+
+        # Department user
+        if profile.role == "department" and profile.department:
+            return Incident.objects.filter(
+                department__iexact=profile.department.name
+            )
+
+        # Citizen user
+        return Incident.objects.filter(user=user)
+
+    except:
+        return Incident.objects.filter(user=user)
+
 # ================= ANALYTICS =================
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def incident_category_stats(request):
-    qs = Incident.objects.all() if request.user.is_staff else Incident.objects.filter(user=request.user)
+    qs = get_filtered_incidents(request)
+
     data = qs.exclude(category__isnull=True).values("category").annotate(count=Count("id"))
     return Response(data)
 
@@ -423,7 +423,7 @@ def incident_category_stats(request):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def incident_status_stats(request):
-    qs = Incident.objects.all() if request.user.is_staff else Incident.objects.filter(user=request.user)
+    qs = get_filtered_incidents(request)
     data = qs.values("status").annotate(count=Count("id"))
     return Response(data)
 
@@ -431,7 +431,7 @@ def incident_status_stats(request):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def department_analytics(request):
-    qs = Incident.objects.all() if request.user.is_staff else Incident.objects.filter(user=request.user)
+    qs = get_filtered_incidents(request)
     data = qs.exclude(department__isnull=True).values("department").annotate(count=Count("id"))
     return Response(data)
 
@@ -439,7 +439,8 @@ def department_analytics(request):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def incident_timeline(request):
-    qs = Incident.objects.all() if request.user.is_staff else Incident.objects.filter(user=request.user)
+
+    qs = get_filtered_incidents(request)
 
     data = (
         qs.annotate(date=TruncDate("created_at"))
@@ -457,12 +458,13 @@ def incident_timeline(request):
     ]
 
     return Response(result)
+
 # ================= AI RISK ALERTS =================
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def risk_alerts(request):
 
-    qs = Incident.objects.all()
+    qs = get_filtered_incidents(request)
 
     data = (
         qs.values("category")
@@ -473,8 +475,7 @@ def risk_alerts(request):
     alerts = []
 
     for item in data:
-        if item["count"] >= 3:   # threshold
-
+        if item["count"] >= 3:
             alerts.append({
                 "category": item["category"],
                 "count": item["count"],
@@ -482,6 +483,7 @@ def risk_alerts(request):
             })
 
     return Response(alerts)
+
 
 # ================= LOCATION HOTSPOT DETECTION =================
 @api_view(["GET"])
@@ -513,7 +515,9 @@ def location_risk_alerts(request):
 @permission_classes([IsAuthenticated])
 def incident_heatmap(request):
 
-    qs = Incident.objects.exclude(latitude__isnull=True).exclude(longitude__isnull=True)
+    qs = get_filtered_incidents(request)
+
+    qs = qs.exclude(latitude__isnull=True).exclude(longitude__isnull=True)
 
     data = qs.values("latitude", "longitude")
 
@@ -526,6 +530,7 @@ def incident_heatmap(request):
         })
 
     return Response(heatmap)
+
 
 # ================= ML TEST =================
 @api_view(["POST"])
@@ -657,3 +662,99 @@ def update_incident_status_from_email(request, incident_id, new_status):
         email.send(fail_silently=True)
 
     return Response({"message": f"Incident status updated to {new_status}"})
+
+# ================= ADD DEPARTMENT =================
+@api_view(["POST"])
+@permission_classes([IsAdminUser])
+def add_department(request):
+
+    if not request.user.is_staff:
+        return Response(
+            {"error": "Only admin can add department"},
+            status=403
+        )
+
+    name = request.data.get("name")
+    email = request.data.get("email")
+    phone = request.data.get("phone")
+    description = request.data.get("description")
+
+    if not name or not email:
+        return Response(
+            {"error": "Name and Email required"},
+            status=400
+        )
+
+    department = Department.objects.create(
+        name=name,
+        email=email,
+        phone=phone,
+        description=description
+    )
+
+    return Response({
+        "message": "Department added successfully",
+        "id": department.id
+    })
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_department_detail(request, id):
+    try:
+        department = Department.objects.get(id=id)
+        serializer = DepartmentSerializer(department)
+        return Response(serializer.data)
+    except Department.DoesNotExist:
+        return Response(
+            {"error": "Department not found"},
+            status=404
+        )
+
+@api_view(["PATCH"])
+@permission_classes([IsAdminUser])
+def update_department(request, id):
+    try:
+        department = Department.objects.get(id=id)
+    except Department.DoesNotExist:
+        return Response(
+            {"error": "Department not found"},
+            status=404
+        )
+
+    serializer = DepartmentSerializer(
+        department,
+        data=request.data,
+        partial=True
+    )
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response({
+            "message": "Department updated successfully",
+            "data": serializer.data
+        })
+
+    return Response(serializer.errors, status=400)
+
+
+@api_view(["DELETE"])
+@permission_classes([IsAdminUser])
+def delete_department(request, id):
+    try:
+        department = Department.objects.get(id=id)
+    except Department.DoesNotExist:
+        return Response(
+            {"error": "Department not found"},
+            status=404
+        )
+
+    # ✅ Update related incidents before deleting department
+    Incident.objects.filter(department=department.name).update(
+        department="Municipality"
+    )
+
+    department.delete()
+
+    return Response({
+        "message": "Department deleted successfully and incidents reassigned to Municipality"
+    })

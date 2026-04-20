@@ -23,6 +23,8 @@ import ResetPassword from "./components/ResetPassword";
 import VerifyOTP from "./components/VerifyOTP";
 import IncidentMap from "./components/IncidentMap";
 import DepartmentDashboard from "./components/DepartmentDashboard";
+import AnalyticsDashboard from "./components/AnalyticsDashboard";
+import DepartmentManagement from "./components/DepartmentManagement";
 
 /* 🔹 BACKGROUND IMAGES */
 const BACKGROUNDS = [
@@ -68,7 +70,15 @@ function App() {
                 <Route path="/about" element={<About />} />
                 <Route path="/contact" element={<Contact />} />
                 
-                <Route path="/admin" element={<AdminDashboard />} />
+                <Route
+                  path="/admin"
+                  element={
+                    <PrivateRoute>
+                      <AdminDashboard />
+                    </PrivateRoute>
+                  }
+                />
+
                 <Route path="/map" element={<IncidentMap />} />
                 {/* Protected */}
                 <Route
@@ -82,6 +92,14 @@ function App() {
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/verify-otp" element={<VerifyOTP />} />
+                <Route
+                    path="/admin/departments"
+                    element={
+                      <PrivateRoute>
+                        <DepartmentManagement />
+                      </PrivateRoute>
+                    }
+                  />
 
                 <Route
                   path="/report"
@@ -91,6 +109,14 @@ function App() {
                     </PrivateRoute>
                   }
                 />
+                <Route
+                    path="/analytics"
+                    element={
+                      <PrivateRoute>
+                        <AnalyticsDashboard />
+                      </PrivateRoute>
+                    }
+                  />
 
                 <Route
                   path="/edit/:id"

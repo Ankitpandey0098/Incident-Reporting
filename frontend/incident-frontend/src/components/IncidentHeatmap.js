@@ -50,18 +50,53 @@ const IncidentHeatmap = () => {
   }, []);
 
   return (
-    <MapContainer
-      center={[20.5937, 78.9629]}
-      zoom={5}
-      style={{ height: "500px", width: "100%" }}
+    <div
+      style={{
+        padding: "20px",
+        background: "#f5f7fb",
+        minHeight: "100vh",
+      }}
     >
-      <TileLayer
-        attribution="© OpenStreetMap"
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
 
-      <HeatmapLayer points={points} />
-    </MapContainer>
+      {/* HEADER */}
+      <div style={{ marginBottom: "15px" }}>
+        <h4 style={{ fontWeight: "700", marginBottom: "5px" }}>
+          Incident Heatmap
+        </h4>
+        <p style={{ margin: 0, color: "#6c757d", fontSize: "0.95rem" }}>
+          Geographic distribution of reported incidents
+        </p>
+      </div>
+
+      {/* MAP CARD */}
+      <div
+        style={{
+          background: "#fff",
+          borderRadius: "14px",
+          boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
+          overflow: "hidden",
+        }}
+      >
+
+        <MapContainer
+          center={[20.5937, 78.9629]}
+          zoom={5}
+          style={{
+            height: "600px",
+            width: "100%",
+          }}
+        >
+          <TileLayer
+            attribution="© OpenStreetMap"
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+
+          <HeatmapLayer points={points} />
+        </MapContainer>
+
+      </div>
+
+    </div>
   );
 };
 

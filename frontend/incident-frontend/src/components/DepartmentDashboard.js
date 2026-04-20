@@ -8,7 +8,9 @@ import {
   Spinner,
   Badge,
   Button,
-  Alert
+  Alert,
+  Row,
+  Col
 } from "react-bootstrap";
 
 const DepartmentDashboard = () => {
@@ -19,6 +21,11 @@ const DepartmentDashboard = () => {
   const [incidents, setIncidents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
+  const statusMap = {
+    "Pending": "pending",
+    "In Progress": "in progress",
+    "Resolved": "resolved"
+  };
 
   useEffect(() => {
     fetchIncidents();
@@ -26,69 +33,88 @@ const DepartmentDashboard = () => {
 
   const fetchIncidents = async () => {
 
-    setLoading(true);
+  setLoading(true);
 
-    try {
+  try {
 
-      const res = await axios.get(
-        "http://127.0.0.1:8000/api/incidents/",
-        { headers: { Authorization: `Bearer ${token}` } }
+    const res = await axios.get(
+      "http://127.0.0.1:8000/api/incidents/",
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    const filtered = res.data.filter(
+      (i) =>
+        i.department &&
+        i.department.toLowerCase().trim() ===
+        department.toLowerCase().trim()
+    );
+
+    // 👇 FIXED HERE
+    const sorted = [...filtered].sort((a, b) => {
+
+      const order = {
+        "pending": 1,
+        "in progress": 2,
+        "resolved": 3
+      };
+
+      return (
+        order[a.status?.toLowerCase()] -
+        order[b.status?.toLowerCase()]
       );
+    });
 
-      console.log("Logged Department:", department);
-      console.log("All Incidents:", res.data);
+    setIncidents(sorted);
 
-      // ✅ FIXED HERE (use res.data instead of incidents)
-      const filtered = res.data.filter(
-        (i) =>
-          i.department &&
-          i.department.toLowerCase().trim() ===
-          department.toLowerCase().trim()
-      );
+  } catch (err) {
+    console.error(err);
+  } finally {
+    setLoading(false);
+  }
+};
 
-      console.log("Filtered Incidents:", filtered);
-
-      // Sort Priority: Pending -> In Progress -> Resolved
-      const sorted = filtered.sort((a, b) => {
-
-        const order = {
-          "pending": 1,
-          "in progress": 2,
-          "resolved": 3
-        };
-
-        return order[a.status?.toLowerCase()] - order[b.status?.toLowerCase()];
-      });
-
-      setIncidents(sorted);
-
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const updateStatus = async (incident, status) => {
 
-    try {
+  console.log("Updating Incident:", incident.id);
+  console.log("New Status:", status);
 
-      await axios.patch(
-        `http://127.0.0.1:8000/api/incidents/${incident.id}/`,
-        { status },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+  try {
 
-      setMessage(`Status updated to ${status}`);
+    const res = await axios.patch(
+      `http://127.0.0.1:8000/api/incidents/${incident.id}/`,
+      { status: statusMap[status] },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      }
+    );
 
-      fetchIncidents();
+    console.log("Response:", res.data);
 
-    } catch (err) {
+    // ✅ Update UI immediately
+    setIncidents(prev =>
+      prev.map(item =>
+        item.id === incident.id
+          ? { ...item, status: status }
+          : item
+      )
+    );
 
-      setMessage("Failed to update status");
+    setMessage(`Status updated to ${status}`);
 
-    }
-  };
+  } catch (err) {
+
+    console.error("Update Error:", err.response?.data || err.message);
+    setMessage("Failed to update status");
+
+  }
+};
+
+
+
 
   const statusBadge = (status) => {
 
@@ -116,129 +142,232 @@ const DepartmentDashboard = () => {
     return <Badge bg="secondary">Low</Badge>;
   };
 
+  // Stats Calculation
+  const total = incidents.length;
+
+  const pending = incidents.filter(
+    (i) => i.status?.toLowerCase() === "pending"
+  ).length;
+
+  const inProgress = incidents.filter(
+    (i) => i.status?.toLowerCase() === "in progress"
+  ).length;
+
+  const resolved = incidents.filter(
+    (i) => i.status?.toLowerCase() === "resolved"
+  ).length;
+
   return (
 
-    <div className="container mt-5 pt-5">
+    <div
+      style={{
+        minHeight: "100vh",
+        paddingTop: "20px",
+        paddingBottom: "40px",
+        background: "#f8f9fa"
+      }}
+    >
 
-      <h2 className="mb-4">
-        {department} Department Dashboard
-      </h2>
+      <div className="container">
 
-      {message && (
-        <Alert
-          variant="info"
-          dismissible
-          onClose={() => setMessage(null)}
-        >
-          {message}
-        </Alert>
-      )}
+        {/* Header Card */}
+        <Card className="mb-4 shadow-sm border-0 rounded-3">
+          <Card.Body>
+            <h3 className="mb-1 fw-bold">
+              🏛️ {department} Department Dashboard
+            </h3>
+            <small className="text-muted">
+              Manage assigned incidents and update their status
+            </small>
+          </Card.Body>
+        </Card>
 
-      <Card>
+        {/* Stats Cards */}
+        <Row className="mb-4">
 
-        <Card.Header>
-          <h5>Assigned Incidents</h5>
-        </Card.Header>
+          <Col md={3}>
+            <Card className="shadow-sm border-0 h-100 rounded-3">
+              <Card.Body>
+                <small className="text-muted">
+                  Total Incidents
+                </small>
+                <h3 className="mt-2 fw-bold">
+                  📋 {total}
+                </h3>
+              </Card.Body>
+            </Card>
+          </Col>
 
-        <Card.Body>
+          <Col md={3}>
+            <Card className="shadow-sm border-0 h-100 rounded-3">
+              <Card.Body>
+                <small className="text-warning">
+                  Pending
+                </small>
+                <h3 className="mt-2 fw-bold">
+                  ⏳ {pending}
+                </h3>
+              </Card.Body>
+            </Card>
+          </Col>
 
-          {loading ? (
-            <Spinner animation="border" />
-          ) : incidents.length === 0 ? (
+          <Col md={3}>
+            <Card className="shadow-sm border-0 h-100 rounded-3">
+              <Card.Body>
+                <small className="text-primary">
+                  In Progress
+                </small>
+                <h3 className="mt-2 fw-bold">
+                  ⚙️ {inProgress}
+                </h3>
+              </Card.Body>
+            </Card>
+          </Col>
 
-            <Alert variant="success">
-              No incidents assigned 🎉
-            </Alert>
+          <Col md={3}>
+            <Card className="shadow-sm border-0 h-100 rounded-3">
+              <Card.Body>
+                <small className="text-success">
+                  Resolved
+                </small>
+                <h3 className="mt-2 fw-bold">
+                  ✅ {resolved}
+                </h3>
+              </Card.Body>
+            </Card>
+          </Col>
 
-          ) : (
+        </Row>
 
-            <Table striped bordered hover responsive>
+        {message && (
+          <Alert
+            variant="info"
+            dismissible
+            onClose={() => setMessage(null)}
+          >
+            {message}
+          </Alert>
+        )}
 
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Title</th>
-                  <th>Description</th>
-                  <th>User</th>
-                  <th>Priority</th>
-                  <th>Status</th>
-                  <th>Created</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
+        {/* Incidents Table */}
+        <Card className="shadow-sm border-0 rounded-3">
 
-              <tbody>
+          <Card.Header className="bg-white border-0 py-3">
+            <h5 className="mb-0 fw-semibold">
+              📌 Assigned Incidents
+            </h5>
+          </Card.Header>
 
-                {incidents.map((inc) => (
+          <Card.Body>
 
-                  <tr key={inc.id}>
+            {loading ? (
+              <div className="text-center py-4">
+                <Spinner animation="border" />
+              </div>
+            ) : incidents.length === 0 ? (
 
-                    <td>{inc.id}</td>
+              <Alert variant="success">
+                No incidents assigned 🎉
+              </Alert>
 
-                    <td>{inc.title}</td>
+            ) : (
 
-                    <td>
-                      {inc.description?.substring(0, 40)}...
-                    </td>
+              <Table hover responsive className="align-middle">
 
-                    <td>{inc.user?.username}</td>
-
-                    <td>
-                      {priorityBadge(inc.priority)}
-                    </td>
-
-                    <td>
-                      {statusBadge(inc.status)}
-                    </td>
-
-                    <td>
-                      {new Date(inc.created_at).toLocaleString()}
-                    </td>
-
-                    <td>
-
-                      {inc.status !== "resolved" && (
-
-                        <>
-                          <Button
-                            size="sm"
-                            variant="warning"
-                            className="me-2"
-                            onClick={() =>
-                              updateStatus(inc, "in progress")
-                            }
-                          >
-                            Start
-                          </Button>
-
-                          <Button
-                            size="sm"
-                            variant="success"
-                            onClick={() =>
-                              updateStatus(inc, "resolved")
-                            }
-                          >
-                            Resolve
-                          </Button>
-                        </>
-
-                      )}
-
-                    </td>
-
+                <thead className="table-light">
+                  <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>User</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                    <th>Actions</th>
                   </tr>
+                </thead>
 
-                ))}
+                <tbody>
 
-              </tbody>
+                  {incidents.map((inc) => (
 
-            </Table>
+                    <tr key={inc.id}>
 
-          )}
+                      <td>{inc.id}</td>
 
-        </Card.Body>
+                      <td className="fw-semibold">
+                        {inc.title}
+                      </td>
 
-      </Card>
+                      <td>
+                        {inc.description?.substring(0, 40)}...
+                      </td>
+
+                      <td>
+                        {inc.user?.username}
+                      </td>
+
+                      <td>
+                        {priorityBadge(inc.priority)}
+                      </td>
+
+                      <td>
+                        {statusBadge(inc.status)}
+                      </td>
+
+                      <td>
+                        {new Date(inc.created_at).toLocaleString()}
+                      </td>
+
+                      <td>
+
+                        {inc.status?.toLowerCase() !== "resolved" && (
+
+                          <div className="d-flex gap-2">
+
+                            <Button
+                              size="sm"
+                              variant="warning"
+                              onClick={() =>
+                                updateStatus(inc, "In Progress")
+
+                              }
+                            >
+                              Start
+                            </Button>
+
+                            <Button
+                              size="sm"
+                              variant="success"
+                              onClick={() =>
+                                updateStatus(inc, "Resolved")
+
+                              }
+                            >
+                              Resolve
+                            </Button>
+
+                          </div>
+
+                        )}
+
+                      </td>
+
+                    </tr>
+
+                  ))}
+
+                </tbody>
+
+              </Table>
+
+            )}
+
+          </Card.Body>
+
+        </Card>
+
+      </div>
 
     </div>
   );

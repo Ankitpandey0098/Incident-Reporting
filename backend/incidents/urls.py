@@ -2,10 +2,11 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import incident_timeline, update_incident_status_from_email
+from .views import add_department, delete_department, get_department_detail, incident_timeline, update_department, update_incident_status_from_email
 from .views import risk_alerts
 from .views import location_risk_alerts
 from .views import incident_heatmap
+from .views import get_departments
 
 from .views import (
     IncidentViewSet,
@@ -65,8 +66,8 @@ urlpatterns = [
     path("analytics/risk-alerts/", risk_alerts),
     path("analytics/location-risk/", location_risk_alerts),
     path("analytics/heatmap/", incident_heatmap),
-
-
+    path("departments/", get_departments, name="departments"),   # GET ALL
+    path("departments/add/", add_department, name="add-department"),  # POST
 
     # Notifications
     path('notifications/', get_notifications, name='get-notifications'),
@@ -76,6 +77,8 @@ urlpatterns = [
     report_incident_to_department,
     name="report-incident-to-department",
     ),
+    path("departments/add/", add_department, name="add-department"),
+
     path(
     "incidents/update-status/<int:incident_id>/<str:new_status>/",
     update_incident_status_from_email,
@@ -87,6 +90,10 @@ urlpatterns = [
     path("auth/forgot-password/", forgot_password),
     path("auth/verify-otp/", verify_otp),
     path("auth/reset-password/", reset_password),
+    path("departments/<int:id>/", get_department_detail),
+    path("departments/update/<int:id>/", update_department),
+    path("departments/delete/<int:id>/", delete_department),
+
 
 ]
 

@@ -61,74 +61,154 @@ const ResetPassword = () => {
   };
 
   return (
-    <Card className="p-4 shadow-lg mx-auto" style={{ maxWidth: "400px" }}>
-      <h4 className="text-center mb-3">Reset Password</h4>
+  <div
+    style={{
+      minHeight: "100vh",
+      display: "flex",
+      background: "#f4f7fb"
+    }}
+  >
 
-      {message && <Alert variant="success">{message}</Alert>}
-      {error && <Alert variant="danger">{error}</Alert>}
+    {/* LEFT PANEL */}
+    <div
+      style={{
+        flex: 1,
+        background: "linear-gradient(135deg, #1e3c72, #2a5298)",
+        color: "white",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        padding: "60px"
+      }}
+    >
+      <h2 style={{ fontWeight: "800" }}>
+        Reset Your Password
+      </h2>
 
-      <Form onSubmit={handleSubmit}>
-        {/* Email */}
-        <Form.Group className="mb-2">
-          <Form.Label>Email</Form.Label>
-          <Form.Control
-            type="email"
-            placeholder="Registered email"
-            value={email}
-            disabled={!!stateEmail}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </Form.Group>
+      <p style={{ opacity: 0.9, marginTop: "10px" }}>
+        Enter your new password to securely access your account again.
+      </p>
 
-        {/* OTP */}
-        <Form.Group className="mb-2">
-          <Form.Label>OTP</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="6-digit OTP"
-            value={otp}
-            disabled={!!stateOtp}
-            onChange={(e) => setOtp(e.target.value)}
-            required
-          />
-        </Form.Group>
+      <div style={{ marginTop: "30px", opacity: 0.8 }}>
+        🔐 Secure Authentication <br/>
+        ⚡ Quick Password Recovery <br/>
+        🛡️ Protected Account Access
+      </div>
 
-        {/* New Password */}
-        <Form.Group className="mb-2">
-          <Form.Label>New Password</Form.Label>
-          <Form.Control
-            type="password"
-            placeholder="New password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </Form.Group>
+    </div>
 
-        {/* Confirm Password */}
-        <Form.Group className="mb-3">
-          <Form.Label>Confirm Password</Form.Label>
-          <Form.Control
-            type="password"
-            placeholder="Confirm password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-          />
-        </Form.Group>
+    {/* RIGHT PANEL */}
+    <div
+      style={{
+        flex: 1,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "40px"
+      }}
+    >
 
-        <Button
-          type="submit"
-          variant="success"
-          className="w-100"
-          disabled={loading}
-        >
-          {loading ? <Spinner size="sm" /> : "Reset Password"}
-        </Button>
-      </Form>
-    </Card>
-  );
+      <Card
+        className="shadow-lg"
+        style={{
+          width: "420px",
+          borderRadius: "16px",
+          border: "none"
+        }}
+      >
+
+        <Card.Body className="p-4">
+
+          <h4
+            className="text-center mb-3"
+            style={{ fontWeight: "700" }}
+          >
+            Reset Password
+          </h4>
+
+          {message && <Alert variant="success">{message}</Alert>}
+          {error && <Alert variant="danger">{error}</Alert>}
+
+          <Form onSubmit={handleSubmit}>
+
+            {/* Email */}
+            <Form.Group className="mb-3">
+              <Form.Label>Email</Form.Label>
+              <Form.Control
+                type="email"
+                placeholder="Registered email"
+                value={email}
+                disabled={!!stateEmail}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                style={{ borderRadius: "10px" }}
+              />
+            </Form.Group>
+
+            {/* OTP */}
+            <Form.Group className="mb-3">
+              <Form.Label>OTP</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="6-digit OTP"
+                value={otp}
+                disabled={!!stateOtp}
+                onChange={(e) => setOtp(e.target.value)}
+                required
+                style={{ borderRadius: "10px" }}
+              />
+            </Form.Group>
+
+            {/* New Password */}
+            <Form.Group className="mb-3">
+              <Form.Label>New Password</Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="New password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                style={{ borderRadius: "10px" }}
+              />
+            </Form.Group>
+
+            {/* Confirm Password */}
+            <Form.Group className="mb-3">
+              <Form.Label>Confirm Password</Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="Confirm password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                style={{ borderRadius: "10px" }}
+              />
+            </Form.Group>
+
+            <Button
+              type="submit"
+              className="w-100"
+              style={{
+                borderRadius: "10px",
+                fontWeight: "600",
+                padding: "10px"
+              }}
+              disabled={loading}
+            >
+              {loading ? <Spinner size="sm" /> : "Reset Password"}
+            </Button>
+
+          </Form>
+
+        </Card.Body>
+
+      </Card>
+
+    </div>
+
+  </div>
+);
+
 };
 
 export default ResetPassword;

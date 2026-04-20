@@ -9,6 +9,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.13.2",
     "bootstrap": "^5.3.8",
+    "bootstrap-icons": "^1.13.1",
     "chart.js": "^4.5.1",
     "dayjs": "^1.11.19",
     "jspdf": "^4.2.0",

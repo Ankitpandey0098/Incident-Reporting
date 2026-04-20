@@ -67,179 +67,213 @@ const NavigationBar = () => {
 
   const isActive = (path) => location.pathname === path;
 
-  return (
-    <Navbar fixed="top" expand="lg" className="main-navbar shadow-sm bg-white">
-      <Container fluid>
-        <Navbar.Brand as={Link} to="/" className="fw-bold">
-          🚨 Incident Platform
-        </Navbar.Brand>
+ return (
+  <Navbar
+    fixed="top"
+    expand="lg"
+    style={{
+      background: "rgba(255,255,255,0.75)",
+      backdropFilter: "blur(12px)",
+      borderBottom: "1px solid rgba(0,0,0,0.05)",
+      boxShadow: "0 2px 20px rgba(0,0,0,0.06)"
+    }}
+  >
+    <Container fluid>
 
-        <Navbar.Toggle aria-controls="navbar-nav" />
-        <Navbar.Collapse id="navbar-nav">
-          <Nav className="me-auto ms-4">
-            {token && (
-              <>
+      {/* BRAND */}
+      <Navbar.Brand
+        as={Link}
+        to="/"
+        style={{
+          fontWeight: "800",
+          letterSpacing: "0.5px",
+          color: "#0d6efd"
+        }}
+      >
+        🚨 Incident Platform
+      </Navbar.Brand>
+
+      <Navbar.Toggle />
+
+      <Navbar.Collapse>
+
+        {/* LEFT NAV */}
+        <Nav className="me-auto ms-3" style={{ gap: "6px" }}>
+          {token && (
+            <>
+              {[
+                { path: "/dashboard", label: "Dashboard" },
+                { path: "/analytics", label: "Analytics" },
+                { path: "/report", label: "Report" },
+                { path: "/map", label: "City Map" }
+              ].map((item) => (
+                <Nav.Link
+                  key={item.path}
+                  as={Link}
+                  to={item.path}
+                  style={{
+                    borderRadius: "10px",
+                    padding: "6px 12px",
+                    fontWeight: isActive(item.path) ? "600" : "400",
+                    background: isActive(item.path)
+                      ? "rgba(13,110,253,0.1)"
+                      : "transparent",
+                    color: isActive(item.path) ? "#0d6efd" : "#333"
+                  }}
+                >
+                  {item.label}
+                </Nav.Link>
+              ))}
+
+              {user?.role === "admin" && (
                 <Nav.Link
                   as={Link}
-                  to="/dashboard"
-                  className={isActive("/dashboard") ? "fw-semibold text-primary" : ""}
+                  to="/admin"
+                  style={{
+                    borderRadius: "10px",
+                    padding: "6px 12px",
+                    fontWeight: isActive("/admin") ? "600" : "400",
+                    background: isActive("/admin")
+                      ? "rgba(13,110,253,0.1)"
+                      : "transparent",
+                    color: isActive("/admin") ? "#0d6efd" : "#333"
+                  }}
                 >
-                  Dashboard
+                  Admin Panel
                 </Nav.Link>
-                <Nav.Link
-                  as={Link}
-                  to="/report"
-                  className={isActive("/report") ? "fw-semibold text-primary" : ""}
+              )}
+            </>
+          )}
+        </Nav>
+
+        {/* RIGHT SIDE */}
+        <Nav className="ms-auto align-items-center" style={{ gap: "12px" }}>
+
+          {token ? (
+            <>
+              {/* DARK MODE */}
+              <Button
+                variant="light"
+                onClick={() => setDarkMode(!darkMode)}
+                style={{
+                  width: "38px",
+                  height: "38px",
+                  borderRadius: "50%",
+                  border: "1px solid #eee"
+                }}
+              >
+                {darkMode ? "☀️" : "🌙"}
+              </Button>
+
+              {/* NOTIFICATIONS */}
+              <Dropdown align="end">
+                <Dropdown.Toggle
+                  variant="light"
+                  style={{
+                    width: "38px",
+                    height: "38px",
+                    borderRadius: "50%",
+                    border: "1px solid #eee",
+                    position: "relative"
+                  }}
                 >
-                  Report Incident
-                </Nav.Link>
-
-                {/* Admin panel */}
-                {user?.role === "admin" && (
-                  <Nav.Link
-                    as={Link}
-                    to="/admin"
-                    className={isActive("/admin") ? "fw-semibold text-primary" : ""}
-                  >
-                    Admin Panel
-                  </Nav.Link>
-                )}
-
-                {/* City Map */}
-                <Nav.Link
-                  as={Link}
-                  to="/map"
-                  className={isActive("/map") ? "fw-semibold text-primary" : ""}
-                >
-                  City Map
-                </Nav.Link>
-              </>
-            )}
-          </Nav>
-
-          <Nav className="ms-auto align-items-center">
-            {token ? (
-              <>
-                <div className="d-flex align-items-center gap-3 me-3">
-                  {/* Dark Mode Toggle */}
-                  <Button
-                    variant={darkMode ? "secondary" : "light"}
-                    size="sm"
-                    className="rounded-circle"
-                    onClick={() => setDarkMode(!darkMode)}
-                    style={{ width: 36, height: 36 }}
-                  >
-                    {darkMode ? "☀️" : "🌙"}
-                  </Button>
-
-                  {/* Notifications */}
-                  <Dropdown align="end">
-                    <Dropdown.Toggle
-                      variant="light"
-                      id="dropdown-notifications"
-                      className="position-relative rounded-circle d-flex align-items-center justify-content-center"
-                      style={{ width: 40, height: 40, fontSize: 20, lineHeight: 1, paddingLeft: 30 }}
+                  🔔
+                  {unreadCount > 0 && (
+                    <Badge
+                      bg="danger"
+                      pill
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        right: 0,
+                        fontSize: "0.6rem"
+                      }}
                     >
-                      🔔
-                      {unreadCount > 0 && (
-                        <Badge
-                          bg="danger"
-                          pill
-                          style={{
-                            position: "absolute",
-                            top: 0,
-                            right: 0,
-                            fontSize: "0.6rem",
-                          }}
-                        >
-                          {unreadCount}
-                        </Badge>
-                      )}
-                    </Dropdown.Toggle>
+                      {unreadCount}
+                    </Badge>
+                  )}
+                </Dropdown.Toggle>
 
-                    <Dropdown.Menu
-                      style={{ minWidth: "320px", maxHeight: "400px", overflowY: "auto" }}
-                    >
-                      <Dropdown.Header className="fw-bold">Notifications</Dropdown.Header>
+                <Dropdown.Menu
+                  style={{
+                    width: "340px",
+                    maxHeight: "420px",
+                    overflowY: "auto",
+                    borderRadius: "12px",
+                    boxShadow: "0 10px 30px rgba(0,0,0,0.1)"
+                  }}
+                >
+                  <Dropdown.Header style={{ fontWeight: "700" }}>
+                    Notifications
+                  </Dropdown.Header>
 
-                      {loadingNotifications && (
-                        <div className="d-flex justify-content-center p-2">
-                          <Spinner animation="border" size="sm" />
-                        </div>
-                      )}
+                  {loadingNotifications && (
+                    <div className="text-center p-2">
+                      <Spinner size="sm" />
+                    </div>
+                  )}
 
-                      {!loadingNotifications && notifications.length === 0 && (
-                        <div className="px-3 py-2 text-muted">No notifications</div>
-                      )}
+                  {!loadingNotifications && notifications.length === 0 && (
+                    <div className="px-3 py-2 text-muted">
+                      No notifications
+                    </div>
+                  )}
 
-                      {!loadingNotifications &&
-                        notifications.map((n) => (
-                          <Dropdown.Item
-                            key={n.id}
-                            onMouseEnter={() => setHoveredNotification(n.id)}
-                            onMouseLeave={() => setHoveredNotification(null)}
-                            className="d-flex justify-content-between align-items-center"
+                  {!loadingNotifications &&
+                    notifications.map((n) => (
+                      <Dropdown.Item
+                        key={n.id}
+                        style={{
+                          fontWeight: n.is_read ? "400" : "600",
+                          whiteSpace: "normal",
+                          padding: "10px",
+                          borderBottom: "1px solid #f1f1f1"
+                        }}
+                      >
+                        {n.message}
+
+                        {!n.is_read && (
+                          <span
+                            onClick={() => markAsRead(n.id)}
                             style={{
-                              fontWeight: n.is_read ? "normal" : "bold",
-                              color: n.is_read ? "#6c757d" : "#000",
-                              whiteSpace: "normal",
-                              wordWrap: "break-word",
+                              float: "right",
+                              cursor: "pointer"
                             }}
                           >
-                            <span>{n.message}</span>
-                            {!n.is_read && hoveredNotification === n.id && (
-                              <span
-                                onClick={() => markAsRead(n.id)}
-                                style={{ cursor: "pointer", marginLeft: "10px" }}
-                                title="Mark as Read"
-                              >
-                                👁️
-                              </span>
-                            )}
-                          </Dropdown.Item>
-                        ))}
-                    </Dropdown.Menu>
-                  </Dropdown>
-                </div>
+                            👁️
+                          </span>
+                        )}
+                      </Dropdown.Item>
+                    ))}
+                </Dropdown.Menu>
+              </Dropdown>
 
-                <div className="mx-3" style={{ width: 1, height: 30, background: "#ddd" }} />
+              <ProfileBar />
 
-                <ProfileBar />
+              <Button
+                variant="outline-danger"
+                size="sm"
+                onClick={handleLogout}
+                style={{ borderRadius: "10px" }}
+              >
+                Logout
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button as={Link} to="/login" variant="outline-primary">
+                Login
+              </Button>
+              <Button as={Link} to="/signup" variant="primary">
+                Sign Up
+              </Button>
+            </>
+          )}
+        </Nav>
 
-                <Button
-                  variant="outline-danger"
-                  size="sm"
-                  className="ms-3"
-                  onClick={handleLogout}
-                >
-                  Logout
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button
-                  as={Link}
-                  to="/login"
-                  variant="outline-secondary"
-                  size="sm"
-                  className="me-2"
-                >
-                  Login
-                </Button>
-                <Button
-                  as={Link}
-                  to="/signup"
-                  variant="success"
-                  size="sm"
-                >
-                  Sign Up
-                </Button>
-              </>
-            )}
-          </Nav>
-        </Navbar.Collapse>
-      </Container>
-    </Navbar>
+      </Navbar.Collapse>
+    </Container>
+  </Navbar>
   );
 };
 

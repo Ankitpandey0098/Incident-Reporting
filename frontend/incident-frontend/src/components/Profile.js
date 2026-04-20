@@ -103,48 +103,57 @@ const Profile = () => {
 
   /* ================= RENDER ================= */
   return (
-    <div className="d-flex justify-content-center mt-5 px-3">
+  <div
+    style={{
+      minHeight: "100vh",
+      background: "#f4f7fb",
+      padding: "40px 20px"
+    }}
+  >
+    <div className="container" style={{ maxWidth: "900px" }}>
+
+      {/* HEADER */}
+      <div className="mb-4">
+        <h3 style={{ fontWeight: "800" }}>My Profile</h3>
+        <p className="text-muted">
+          Manage your account information and preferences
+        </p>
+      </div>
+
       <Card
         className="shadow-sm"
         style={{
-          maxWidth: 760,
-          width: "100%",
-          borderRadius: 12,
-          border: "1px solid #e5e7eb",
+          borderRadius: "16px",
+          border: "none",
+          overflow: "hidden"
         }}
       >
+
         <Card.Body className="p-4">
 
-          {/* HEADER */}
-          <div className="d-flex justify-content-between align-items-center mb-4">
-            <h4 className="fw-semibold mb-0">My Profile</h4>
-            <Badge bg="info" pill className="px-3 py-2 text-uppercase">
-              {profile.role}
-            </Badge>
-          </div>
+          <Row>
 
-          {/* AVATAR ROW */}
-          <Row className="align-items-center mb-4">
-            <Col xs="auto">
+            {/* LEFT PANEL */}
+            <Col md={4} className="text-center border-end">
+
               <div
                 style={{
-                  width: 72,
-                  height: 72,
+                  width: 110,
+                  height: 110,
                   borderRadius: "50%",
                   overflow: "hidden",
-                  border: "1px solid #ddd",
+                  margin: "0 auto",
+                  border: "3px solid #e9ecef",
                   position: "relative",
-                  backgroundColor: "#f3f4f6",
+                  background: "#f8f9fa"
                 }}
               >
                 <Image
                   src={preview || "/default-avatar.png"}
-                  alt="Profile"
                   style={{
                     width: "100%",
                     height: "100%",
-                    objectFit: "cover",
-                    display: "block",
+                    objectFit: "cover"
                   }}
                 />
 
@@ -157,68 +166,104 @@ const Profile = () => {
                       position: "absolute",
                       inset: 0,
                       opacity: 0,
-                      cursor: "pointer",
+                      cursor: "pointer"
                     }}
                   />
                 )}
               </div>
-            </Col>
 
-            <Col>
-              <div className="fw-semibold">{profile.username}</div>
-              <div className="text-muted" style={{ fontSize: 13 }}>
-                {editMode ? "Click avatar to change photo" : "Profile picture"}
-              </div>
-            </Col>
-          </Row>
+              <h5 className="mt-3 mb-1 fw-bold">
+                {profile.username}
+              </h5>
 
-          {/* ACCOUNT INFO */}
-          {["email", "first_name", "last_name", "phone", "city"].map((field) => (
-            <Row className="mb-3 align-items-center" key={field}>
-              <Col md={4} className="text-muted text-capitalize">
-                {field.replace("_", " ")}
-              </Col>
-              <Col md={8}>
-                <Form.Control
-                  name={field}
-                  value={editMode ? formData[field] : profile[field] || ""}
-                  onChange={handleChange}
-                  disabled={!editMode}
-                  style={{
-                    backgroundColor: editMode ? "#fff" : "#f3f4f6",
-                    borderRadius: 8,
-                  }}
-                />
-              </Col>
-            </Row>
-          ))}
+              <Badge bg="primary" pill className="mb-3">
+                {profile.role}
+              </Badge>
 
-          {/* ACTION BUTTONS */}
-          <div className="text-end mt-4">
-            {editMode ? (
-              <>
-                <Button size="sm" onClick={handleSave} className="me-2">
-                  Save Changes
-                </Button>
+              <p className="text-muted small">
+                {editMode
+                  ? "Click image to update profile photo"
+                  : "Account profile"}
+              </p>
+
+              {/* ACTION BUTTONS */}
+              {editMode ? (
+                <>
+                  <Button
+                    size="sm"
+                    className="w-100 mb-2"
+                    onClick={handleSave}
+                  >
+                    Save Changes
+                  </Button>
+
+                  <Button
+                    size="sm"
+                    variant="outline-secondary"
+                    className="w-100"
+                    onClick={() => setEditMode(false)}
+                  >
+                    Cancel
+                  </Button>
+                </>
+              ) : (
                 <Button
                   size="sm"
-                  variant="outline-secondary"
-                  onClick={() => setEditMode(false)}
+                  className="w-100"
+                  onClick={() => setEditMode(true)}
                 >
-                  Cancel
+                  Edit Profile
                 </Button>
-              </>
-            ) : (
-              <Button size="sm" onClick={() => setEditMode(true)}>
-                Edit Profile
-              </Button>
-            )}
-          </div>
+              )}
+
+            </Col>
+
+            {/* RIGHT PANEL */}
+            <Col md={8}>
+
+              <h6 className="mb-3 fw-bold">Account Information</h6>
+
+              {["email", "first_name", "last_name", "phone", "city"].map(
+                (field) => (
+                  <Row className="mb-3 align-items-center" key={field}>
+                    <Col md={4} className="text-muted text-capitalize">
+                      {field.replace("_", " ")}
+                    </Col>
+
+                    <Col md={8}>
+                      <Form.Control
+                        name={field}
+                        value={
+                          editMode
+                            ? formData[field]
+                            : profile[field] || ""
+                        }
+                        onChange={handleChange}
+                        disabled={!editMode}
+                        style={{
+                          padding: "10px",
+                          borderRadius: "10px",
+                          background: editMode ? "#fff" : "#f1f3f5",
+                          border: "1px solid #e9ecef"
+                        }}
+                      />
+                    </Col>
+                  </Row>
+                )
+              )}
+
+            </Col>
+
+          </Row>
 
         </Card.Body>
+
       </Card>
+
     </div>
-  );
+  </div>
+);
+
 };
 
 export default Profile;
