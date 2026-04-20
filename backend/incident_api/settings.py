@@ -25,12 +25,11 @@ SECRET_KEY = 'django-insecure-*7pc4w4@e9q-ycbr+st24-!vne9t&$u9#)40tme*)32673-7o&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = [
-    "incident-reporting-rjwi.onrender.com",
-    "localhost",
-    "127.0.0.1"
-]
 
+
+
+ALLOWED_HOSTS = ["*"]
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
