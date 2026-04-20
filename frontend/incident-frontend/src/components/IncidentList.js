@@ -306,6 +306,39 @@ useEffect(() => {
     }
   };
 
+  const updateDepartment = async (id, department) => {
+
+  try {
+
+    await axios.patch(
+      `${API}/incidents/${id}/`,
+      { department },
+      axiosConfig
+    );
+
+    setIncidents(prev =>
+      prev.map(i =>
+        i.id === id ? { ...i, department } : i
+      )
+    );
+
+    setToast({
+      show: true,
+      message: "Department updated",
+      variant: "success"
+    });
+
+  } catch {
+
+    setToast({
+      show: true,
+      message: "Department update failed",
+      variant: "danger"
+    });
+
+  }
+};
+
   const handleStatusChange = async (id, status) => {
 
   try {
@@ -491,6 +524,21 @@ useEffect(() => {
                             <option value="in progress">In Progress</option>
                             <option value="resolved">Resolved</option>
                           </Form.Select>
+                            <Form.Select
+  className="mt-2"
+  value={incident.department}
+  onChange={(e) =>
+    updateDepartment(incident.id, e.target.value)
+  }
+>
+
+  {departments.map(dep => (
+    <option key={dep.id} value={dep.name}>
+      {dep.name}
+    </option>
+  ))}
+
+</Form.Select>
 
                           <Form.Select
                             className="mt-2"
@@ -499,12 +547,25 @@ useEffect(() => {
                               updateCategory(incident.id, e.target.value)
                             }
                           >
-                            <option value="Infrastructure">Infrastructure</option>
-                            <option value="Pollution">Pollution</option>
-                            <option value="Deforestation">Deforestation</option>
+                            <option value="Fire">Fire</option>
+                            <option value="Medical Emergency">Medical Emergency</option>
+                            <option value="Crime">Crime</option>
+                            <option value="Accident">Accident</option>
+
+                            <option value="Road Damage">Road Damage</option>
+                            <option value="Streetlight Issue">Streetlight Issue</option>
+                            <option value="Electricity Issue">Electricity Issue</option>
                             <option value="Water Issue">Water Issue</option>
+                            <option value="Drainage Issue">Drainage Issue</option>
+
+                            <option value="Pollution">Pollution</option>
                             <option value="Illegal Dumping">Illegal Dumping</option>
+                            <option value="Deforestation">Deforestation</option>
+
+                            <option value="Public Safety">Public Safety</option>
+                            <option value="Infrastructure">Infrastructure</option>
                             <option value="General Issue">General Issue</option>
+
                           </Form.Select>
 
                         </div>
