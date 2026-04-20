@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-*7pc4w4@e9q-ycbr+st24-!vne9t&$u9#)40tme*)32673-7o&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -57,6 +57,7 @@ REST_FRAMEWORK = {
 }
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -168,3 +169,5 @@ EMAIL_HOST_PASSWORD = 'bgmhuvunpbilfyos'      # 🔴 replace
 DEFAULT_FROM_EMAIL = 'Incident Platform <pandeyji7112@gmail.com>'
 
 BASE_URL = "http://127.0.0.1:8000"
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
