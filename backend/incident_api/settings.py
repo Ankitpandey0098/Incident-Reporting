@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 import os
 from pathlib import Path
-
+import cloudinary
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'incidents.apps.IncidentsConfig',
     'notifications',
+    'cloudinary',
+    'cloudinary_storage',
 ]
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -87,6 +89,16 @@ TEMPLATES = [
         },
     },
 ]
+
+
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'dwdm5u7se',
+    'API_KEY': '847931839268579',
+    'API_SECRET': 'MHGIxwnh3S9RQfoMvUfVxKlhEpY',
+}
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 WSGI_APPLICATION = 'incident_api.wsgi.application'
 
