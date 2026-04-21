@@ -77,6 +77,7 @@ const Profile = () => {
     Object.keys(formData).forEach((key) => {
       if (formData[key]) data.append(key, formData[key]);
     });
+    console.log("Sending Data:", formData);
 
     api.patch("/profile/", data, {
   headers: {
@@ -86,11 +87,15 @@ const Profile = () => {
 
       .then((res) => {
         setProfile({ ...profile, ...res.data });
+        console.log("Success:", res.data);
         setEditMode(false);
         setFormData({ ...formData, profile_image: null });
         setSuccess("Profile updated successfully"); 
       })
-      .catch(() => setError("Failed to update profile"));
+      .catch((err) => {
+      console.log("Error:", err.response);   // ADD THIS
+      setError("Failed to update profile");
+    });
   };
 
   /* ================= UI STATES ================= */
