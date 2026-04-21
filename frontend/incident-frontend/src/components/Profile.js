@@ -35,28 +35,31 @@ const Profile = () => {
 
   /* ================= LOAD PROFILE ================= */
   useEffect(() => {
-    
-
-    api.get("/profile/")
-
-      .then((res) => {
-        setProfile(res.data);
-        setFormData({
-          email: res.data.email || "",
-          first_name: res.data.first_name || "",
-          last_name: res.data.last_name || "",
-          phone: res.data.phone || "",
-          city: res.data.city || "",
-          profile_image: null,
-        });
-        setPreview(res.data.profile_image || null);
-        setLoading(false);
-      })
-      .catch(() => {
-        setError("Failed to load profile");
-        setLoading(false);
+  api.get("/profile/")
+    .then((res) => {
+      setProfile(res.data);
+      setFormData({
+        email: res.data.email || "",
+        first_name: res.data.first_name || "",
+        last_name: res.data.last_name || "",
+        phone: res.data.phone || "",
+        city: res.data.city || "",
+        profile_image: null,
       });
-  }, [navigate]);
+
+      setPreview(
+        res.data.profile_image
+          ? `${api.defaults.baseURL}${res.data.profile_image}`
+          : null
+      );
+
+      setLoading(false);
+    })
+    .catch(() => {
+      setError("Failed to load profile");
+      setLoading(false);
+    });
+}, []);
 
   /* ================= INPUT HANDLERS ================= */
   const handleChange = (e) => {
@@ -86,12 +89,19 @@ const Profile = () => {
 })
 
       .then((res) => {
-        setProfile({ ...profile, ...res.data });
-        console.log("Success:", res.data);
-        setEditMode(false);
-        setFormData({ ...formData, profile_image: null });
-        setSuccess("Profile updated successfully"); 
-      })
+  console.log("Success:", res.data);
+
+  // Reload profile after update
+  api.get("/profile/").then((res) => {
+    setProfile(res.data);
+    setPreview(res.data.profile_image || null);
+  });
+
+  setEditMode(false);
+  setFormData({ ...formData, profile_image: null });
+  setSuccess("Profile updated successfully");
+})
+
       .catch((err) => {
       console.log("Error:", err.response);   // ADD THIS
       setError("Failed to update profile");
