@@ -55,6 +55,8 @@ const Profile = () => {
 
 
 
+
+
       setLoading(false);
     })
     .catch(() => {
@@ -72,10 +74,20 @@ const Profile = () => {
     const file = e.target.files[0];
     if (file) {
       setFormData({ ...formData, profile_image: file });
-      setPreview(getImageUrl(res.data.profile_image));
+    setPreview(URL.createObjectURL(file));
+
 
     }
   };
+  useEffect(() => {
+  return () => {
+    if (preview && preview.startsWith("blob:")) {
+      URL.revokeObjectURL(preview);
+    }
+  };
+}, []);
+
+
 
   /* ================= SAVE PROFILE ================= */
   const handleSave = () => {
@@ -217,11 +229,12 @@ const Profile = () => {
               </div>
 
               <h5 className="mt-3 mb-1 fw-bold">
-                {profile.username}
+                {profile?.username}
+
               </h5>
 
               <Badge bg="primary" pill className="mb-3">
-                {profile.role}
+                {profile?.role}
               </Badge>
 
               <p className="text-muted small">
@@ -247,6 +260,7 @@ const Profile = () => {
                     className="w-100"
   onClick={() => {
   setEditMode(false);
+
   setFormData({
     email: profile.email || "",
     first_name: profile.first_name || "",
@@ -255,9 +269,11 @@ const Profile = () => {
     city: profile.city || "",
     profile_image: null,
   });
-  setPreview(getImageUrl(res.data.profile_image));
+
+  setPreview(getImageUrl(profile?.profile_image));
 
 }}
+
 
 
 
