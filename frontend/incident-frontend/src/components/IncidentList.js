@@ -135,8 +135,9 @@ useEffect(() => {
   };
 
   useEffect(() => {
-    fetchIncidents();
-  }, []);
+  fetchIncidents();
+}, [fetchIncidents]);
+
 
   useEffect(() => {
     const interval = setInterval(fetchIncidents, 10000);

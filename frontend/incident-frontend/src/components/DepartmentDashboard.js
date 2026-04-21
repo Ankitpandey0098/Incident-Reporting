@@ -28,9 +28,10 @@ const DepartmentDashboard = () => {
     "Resolved": "resolved"
   };
 
-  useEffect(() => {
-    fetchIncidents();
-  }, []);
+ useEffect(() => {
+  fetchIncidents();
+}, [fetchIncidents]);
+
 
   const fetchIncidents = async () => {
 

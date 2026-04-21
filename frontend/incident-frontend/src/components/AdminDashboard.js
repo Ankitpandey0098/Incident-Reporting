@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
+
+
 import {
   Table,
   Card,
@@ -44,6 +46,7 @@ const AdminDashboard = () => {
 }, [fetchIncidents]);
 
 
+
   useEffect(() => {
 
     let filtered = incidents;
@@ -79,7 +82,6 @@ const AdminDashboard = () => {
   setLoading(true);
 
   try {
-
     const res = await api.get("/incidents/", {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -100,6 +102,7 @@ const AdminDashboard = () => {
   }
 
 }, [token]);
+
 
 
   const sortIncidents = (data) => {
