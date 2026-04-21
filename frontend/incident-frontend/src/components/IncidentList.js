@@ -24,6 +24,7 @@ import api from "../api/axios";
 import IncidentCharts from "./IncidentCharts";
 import IncidentHeatmap from "../components/IncidentHeatmap";
 import LiveIncidentFeed from "../components/LiveIncidentFeed";
+import { getImageUrl } from "../utils/image";
 
 dayjs.extend(relativeTime);
 dayjs.extend(utc);
@@ -115,6 +116,7 @@ useEffect(() => {
 
       const formatted = res.data.map(i => ({
         ...i,
+        attachment: getImageUrl(i.attachment), 
         department: i.department || "Municipality",
         category: i.category || "General Issue",
         logs: i.logs || []
@@ -172,11 +174,7 @@ useEffect(() => {
 
   }, [search, statusFilter, departmentFilter, incidents]);
 
-  const getImageUrl = (url) => {
-  if (!url) return null;
-  return url;
-};
-
+  
 
 
   const getConfidencePercent = (c) => c ? Math.round(c * 100) : 0;
@@ -614,6 +612,7 @@ useEffect(() => {
 
                         <img
                           src={getImageUrl(incident.attachment)}
+
                           alt="incident"
                           style={{
                             width: "100%",

@@ -13,6 +13,8 @@ import {
 
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
+import { getImageUrl } from "../utils/image";
+
 const Profile = () => {
   const [profile, setProfile] = useState(null);
   const [success, setSuccess] = useState("");
@@ -47,7 +49,9 @@ const Profile = () => {
         profile_image: null,
       });
 
-      setPreview(res.data.profile_image || null);
+      setPreview(getImageUrl(res.data.profile_image));
+
+
 
 
 
@@ -68,7 +72,8 @@ const Profile = () => {
     const file = e.target.files[0];
     if (file) {
       setFormData({ ...formData, profile_image: file });
-      setPreview(URL.createObjectURL(file));
+      setPreview(getImageUrl(res.data.profile_image));
+
     }
   };
 
@@ -100,7 +105,8 @@ const Profile = () => {
   api.get("/profile/").then((res) => {
   setProfile(res.data);
 
-  setPreview(res.data.profile_image || null);
+  setPreview(getImageUrl(res.data.profile_image));
+
 
 
   setFormData({
@@ -249,7 +255,8 @@ const Profile = () => {
     city: profile.city || "",
     profile_image: null,
   });
-  setPreview(profile.profile_image || null);
+  setPreview(getImageUrl(res.data.profile_image));
+
 }}
 
 

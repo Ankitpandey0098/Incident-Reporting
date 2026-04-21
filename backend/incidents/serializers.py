@@ -295,6 +295,18 @@ class SignupSerializer(serializers.ModelSerializer):
 
 # ---------------- User Profile Serializer ----------------
 class UserProfileSerializer(serializers.ModelSerializer):
+    profile_image = serializers.SerializerMethodField()
+
     class Meta:
         model = UserProfile
-        fields = ["phone", "city", "role"]
+        fields = ["phone", "city", "role", "profile_image"]
+
+    def get_profile_image(self, obj):
+        request = self.context.get("request")
+
+        if obj.profile_image:
+            if request:
+                return request.build_absolute_uri(obj.profile_image.url)
+            return obj.profile_image.url
+
+        return None

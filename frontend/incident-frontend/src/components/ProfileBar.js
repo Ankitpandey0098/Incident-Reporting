@@ -3,17 +3,15 @@ import { Dropdown, Image, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../UserContext";
 import api from "../api/axios";
+import { getImageUrl } from "../utils/image";
+
 const ProfileBar = () => {
   const { user, setUser } = useContext(UserContext);
   const token = localStorage.getItem("access");
 
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const getImageUrl = (url) => {
-  if (!url) return null;
-  if (url.startsWith("http")) return url; // Cloudinary
-  return url;
-};
+  
 
 
   useEffect(() => {
@@ -64,6 +62,7 @@ const ProfileBar = () => {
         <Image
       
           src={getImageUrl(user?.profile_image)}
+
 
           roundedCircle
           style={{
