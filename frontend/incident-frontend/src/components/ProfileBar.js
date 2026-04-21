@@ -9,7 +9,12 @@ const ProfileBar = () => {
 
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  
+  const getImageUrl = (url) => {
+  if (!url) return null;
+  if (url.startsWith("http")) return url; // Cloudinary
+  return url;
+};
+
 
   useEffect(() => {
     if (!token) {
@@ -55,9 +60,11 @@ const ProfileBar = () => {
         boxShadow: "0 2px 10px rgba(0,0,0,0.05)"
       }}
     >
-      {user?.profile_image ? (
+      {getImageUrl(user?.profile_image) ? (
         <Image
-          src={user.profile_image}
+      
+          src={getImageUrl(user?.profile_image)}
+
           roundedCircle
           style={{
             width: 36,

@@ -47,11 +47,9 @@ const Profile = () => {
         profile_image: null,
       });
 
-      setPreview(
-        res.data.profile_image
-          ? `${api.defaults.baseURL}${res.data.profile_image}`
-          : null
-      );
+      setPreview(res.data.profile_image || null);
+
+
 
       setLoading(false);
     })
@@ -78,8 +76,15 @@ const Profile = () => {
   const handleSave = () => {
     const data = new FormData();
     Object.keys(formData).forEach((key) => {
-      if (formData[key]) data.append(key, formData[key]);
-    });
+  if (key === "profile_image") {
+    if (formData.profile_image instanceof File) {
+      data.append("profile_image", formData.profile_image);
+    }
+  } else {
+    data.append(key, formData[key]);
+  }
+});
+
     console.log("Sending Data:", formData);
 
     api.patch("/profile/", data, {
@@ -95,11 +100,8 @@ const Profile = () => {
   api.get("/profile/").then((res) => {
   setProfile(res.data);
 
-  setPreview(
-    res.data.profile_image
-      ? `${api.defaults.baseURL}${res.data.profile_image}`
-      : null
-  );
+  setPreview(res.data.profile_image || null);
+
 
   setFormData({
     email: res.data.email || "",
@@ -247,11 +249,8 @@ const Profile = () => {
     city: profile.city || "",
     profile_image: null,
   });
-  setPreview(
-  profile.profile_image
-    ? `${api.defaults.baseURL}${profile.profile_image}`
-    : null
-);
+  setPreview(res.data.profile_image || null);
+
 
 }}
 

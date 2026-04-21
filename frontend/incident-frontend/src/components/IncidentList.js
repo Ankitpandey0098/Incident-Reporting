@@ -174,10 +174,9 @@ useEffect(() => {
 
   const getImageUrl = (url) => {
   if (!url) return null;
-  return url.startsWith("http")
-    ? url
-    : `https://incident-reporting-rjwi.onrender.com${url}`;
+  return url;
 };
+
 
 
   const getConfidencePercent = (c) => c ? Math.round(c * 100) : 0;
@@ -607,7 +606,7 @@ useEffect(() => {
                       )}
 
                       <div className="text-muted small mt-2">
-                        Reported by <strong>{incident.user.username}</strong> •{" "}
+                        Reported by <strong>{incident.user?.username}</strong> •{" "}
                         {dayjs.utc(incident.created_at).local().fromNow()}
                       </div>
 
