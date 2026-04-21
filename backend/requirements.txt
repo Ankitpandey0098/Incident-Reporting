@@ -52,5 +52,5 @@ websocket-client==1.8.0
 whitenoise==6.12.0
 wsproto==1.2.0
 
-cloudinary>=1.36.0
-django-cloudinary-storage>=0.3.0
+cloudinary==1.36.0
+django-cloudinary-storage==0.3.0
