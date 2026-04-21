@@ -93,9 +93,24 @@ const Profile = () => {
 
   // Reload profile after update
   api.get("/profile/").then((res) => {
-    setProfile(res.data);
-    setPreview(res.data.profile_image || null);
+  setProfile(res.data);
+
+  setPreview(
+    res.data.profile_image
+      ? `${api.defaults.baseURL}${res.data.profile_image}`
+      : null
+  );
+
+  setFormData({
+    email: res.data.email || "",
+    first_name: res.data.first_name || "",
+    last_name: res.data.last_name || "",
+    phone: res.data.phone || "",
+    city: res.data.city || "",
+    profile_image: null,
   });
+});
+
 
   setEditMode(false);
   setFormData({ ...formData, profile_image: null });
@@ -232,7 +247,12 @@ const Profile = () => {
     city: profile.city || "",
     profile_image: null,
   });
-  setPreview(profile.profile_image || null);
+  setPreview(
+  profile.profile_image
+    ? `${api.defaults.baseURL}${profile.profile_image}`
+    : null
+);
+
 }}
 
                   >
