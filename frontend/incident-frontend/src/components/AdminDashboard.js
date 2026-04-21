@@ -41,9 +41,6 @@ const AdminDashboard = () => {
 
   const [categoryStats, setCategoryStats] = useState([]);
 
-  useEffect(() => {
-  fetchIncidents();
-}, [fetchIncidents]);
 
 
 
@@ -104,6 +101,9 @@ const AdminDashboard = () => {
 }, [token]);
 
 
+ useEffect(() => {
+  fetchIncidents();
+}, [fetchIncidents]);
 
   const sortIncidents = (data) => {
 
