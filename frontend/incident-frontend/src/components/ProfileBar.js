@@ -5,6 +5,8 @@ import { UserContext } from "../UserContext";
 import api from "../api/axios";
 const ProfileBar = () => {
   const { user, setUser } = useContext(UserContext);
+  const token = localStorage.getItem("access");
+
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   
