@@ -34,6 +34,8 @@ function ReportIncident() {
 
   const [attachment, setAttachment] = useState(null);
   const [attachmentName, setAttachmentName] = useState("");
+  
+
 
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
@@ -43,6 +45,8 @@ function ReportIncident() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [severity, setSeverity] = useState("medium");
+  const [preview, setPreview] = useState(null);
+
 
   // 📡 Get GPS location
   const getCurrentLocation = () => {
@@ -131,6 +135,7 @@ function ReportIncident() {
       setAttachmentName("");
       setLatitude(null);
       setLongitude(null);
+      setPreview(null);
 
     } catch (err) {
 
@@ -216,11 +221,30 @@ function ReportIncident() {
                     type="file"
                     onChange={(e) => {
                       if (e.target.files.length > 0) {
-                        setAttachment(e.target.files[0]);
-                        setAttachmentName(e.target.files[0].name);
+                        const file = e.target.files[0];
+
+                        setAttachment(file);
+                        setAttachmentName(file.name);
+
+                        // preview image
+                        setPreview(URL.createObjectURL(file));
+
                       }
                     }}
                   />
+          {preview && (
+  <img
+    src={preview}
+    alt="preview"
+    style={{
+      width: "100%",
+      maxHeight: "200px",
+      objectFit: "cover",
+      marginTop: "10px",
+      borderRadius: "10px"
+    }}
+  />
+)}
 
                   {attachmentName && (
                     <div className="mt-2 text-muted small">
