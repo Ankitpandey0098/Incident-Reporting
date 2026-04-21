@@ -239,7 +239,7 @@ const Profile = () => {
                     size="sm"
                     variant="outline-secondary"
                     className="w-100"
-                    onClick={() => {
+  onClick={() => {
   setEditMode(false);
   setFormData({
     email: profile.email || "",
@@ -249,10 +249,10 @@ const Profile = () => {
     city: profile.city || "",
     profile_image: null,
   });
-  setPreview(res.data.profile_image || null);
-
-
+  setPreview(profile.profile_image || null);
 }}
+
+
 
                   >
                     Cancel
