@@ -4,6 +4,7 @@ from django.utils import timezone
 from datetime import timedelta
 import hashlib
 import random
+from cloudinary.models import CloudinaryField
 
 # ================= Department Model =================
 class Department(models.Model):
@@ -81,11 +82,8 @@ class Incident(models.Model):
         blank=True
     )
 
-    attachment = models.ImageField(
-        upload_to="incidents/",
-        null=True,
-        blank=True
-    )
+    attachment = CloudinaryField("attachment", null=True, blank=True)
+
 
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -173,11 +171,12 @@ class UserProfile(models.Model):
         blank=True
     )
 
-    profile_image = models.ImageField(
-        upload_to="profiles/",
-        null=True,
-        blank=True
-    )
+    profile_image = CloudinaryField(
+    "profile_image",
+    null=True,
+    blank=True
+)
+
 
     def __str__(self):
         return f"{self.user.username} ({self.role})"
