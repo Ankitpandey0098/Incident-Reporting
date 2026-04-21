@@ -10,11 +10,13 @@ import {
   Badge,
   Image,
 } from "react-bootstrap";
-import axios from "axios";
+
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 const Profile = () => {
   const [profile, setProfile] = useState(null);
+  const [success, setSuccess] = useState("");
+
   const [formData, setFormData] = useState({
     email: "",
     first_name: "",
@@ -29,18 +31,14 @@ const Profile = () => {
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
-  const token = localStorage.getItem("access");
+
 
   /* ================= LOAD PROFILE ================= */
   useEffect(() => {
-    if (!token) {
-      navigate("/login");
-      return;
-    }
+    
 
-    axios.get("https://incident-reporting-rjwi.onrender.com/api/profile/", {
-  headers: { Authorization: `Bearer ${token}` },
-})
+    api.get("/profile/")
+
       .then((res) => {
         setProfile(res.data);
         setFormData({
@@ -58,7 +56,7 @@ const Profile = () => {
         setError("Failed to load profile");
         setLoading(false);
       });
-  }, [navigate, token]);
+  }, [navigate]);
 
   /* ================= INPUT HANDLERS ================= */
   const handleChange = (e) => {
@@ -80,20 +78,17 @@ const Profile = () => {
       if (formData[key]) data.append(key, formData[key]);
     });
 
-    axios.patch(
-  "https://incident-reporting-rjwi.onrender.com/api/profile/",
-  data,
-  {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "multipart/form-data",
-    },
-  }
-)
+    api.patch("/profile/", data, {
+  headers: {
+    "Content-Type": "multipart/form-data",
+  },
+})
+
       .then((res) => {
         setProfile({ ...profile, ...res.data });
         setEditMode(false);
         setFormData({ ...formData, profile_image: null });
+        setSuccess("Profile updated successfully"); 
       })
       .catch(() => setError("Failed to update profile"));
   };
@@ -121,6 +116,15 @@ const Profile = () => {
           Manage your account information and preferences
         </p>
       </div>
+      {success && (
+  <Alert
+    variant="success"
+    dismissible
+    onClose={() => setSuccess("")}
+  >
+    {success}
+  </Alert>
+)}
 
       <Card
         className="shadow-sm"
@@ -203,7 +207,19 @@ const Profile = () => {
                     size="sm"
                     variant="outline-secondary"
                     className="w-100"
-                    onClick={() => setEditMode(false)}
+                    onClick={() => {
+  setEditMode(false);
+  setFormData({
+    email: profile.email || "",
+    first_name: profile.first_name || "",
+    last_name: profile.last_name || "",
+    phone: profile.phone || "",
+    city: profile.city || "",
+    profile_image: null,
+  });
+  setPreview(profile.profile_image || null);
+}}
+
                   >
                     Cancel
                   </Button>

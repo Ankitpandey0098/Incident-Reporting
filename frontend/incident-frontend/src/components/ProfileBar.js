@@ -7,7 +7,7 @@ const ProfileBar = () => {
   const { user, setUser } = useContext(UserContext);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const token = localStorage.getItem("access");
+  
 
   useEffect(() => {
     if (!token) {
@@ -19,21 +19,15 @@ const ProfileBar = () => {
   }, []);
 
   const fetchUser = async () => {
-    try {
-      const res = await fetch("https://incident-reporting-rjwi.onrender.com/api/profile/", {
-  headers: {
-    Authorization: `Bearer ${token}`,
-  },
+  try {
+    const res = await api.get("/profile/");
+    setUser(res.data);
+    setLoading(false);
+  } catch (err) {
+    handleLogout();
+  }
+};
 
-      });
-      if (!res.ok) throw new Error("Failed");
-      const data = await res.json();
-      setUser(data);
-      setLoading(false);
-    } catch (err) {
-      handleLogout();
-    }
-  };
 
   const handleLogout = () => {
     localStorage.clear();

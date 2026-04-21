@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+
 import { Form, Button, Alert, InputGroup } from "react-bootstrap";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../api/axios";
@@ -23,44 +23,33 @@ function Login() {
   };
 
   const handleLogin = async (e) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
+  e.preventDefault();
+  setError("");
+  setLoading(true);
 
-    try {
-      const res = await axios.post(
-  "https://incident-reporting-rjwi.onrender.com/api/login/",
-  form
-);
+  try {
+    const res = await api.post("/login/", form);
 
+    localStorage.setItem("access", res.data.access);
+    localStorage.setItem("refresh", res.data.refresh);
 
-      localStorage.setItem("access", res.data.access);
-      localStorage.setItem("refresh", res.data.refresh);
+    const user = await api.get("/user/");
 
-      const user = await axios.get(
-  "https://incident-reporting-rjwi.onrender.com/api/user/",
-  {
-    headers: {
-      Authorization: `Bearer ${res.data.access}`
-    }
+    localStorage.setItem("role", user.data.role);
+    localStorage.setItem("department", user.data.department || "");
+
+    const role = user.data.role?.toLowerCase();
+
+    if (role === "admin") navigate("/admin");
+    else if (role === "department") navigate("/department");
+    else navigate("/dashboard");
+
+  } catch (err) {
+    setError(err.response?.data?.detail || "Invalid username or password");
+  } finally {
+    setLoading(false);
   }
-);
-
-
-      localStorage.setItem("role", user.data.role);
-      localStorage.setItem("department", user.data.department || "");
-
-      const role = user.data.role?.toLowerCase();
-
-      if (role === "admin") navigate("/admin");
-      else if (role === "department") navigate("/department");
-      else navigate("/dashboard");
-    } catch (err) {
-      setError(err.response?.data?.detail || "Invalid username or password");
-    } finally {
-      setLoading(false);
-    }
-  };
+};
 
   return (
     <div

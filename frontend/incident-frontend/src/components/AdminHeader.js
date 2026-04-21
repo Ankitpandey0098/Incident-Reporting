@@ -12,7 +12,8 @@ const AdminHeader = () => {
   const location = useLocation();
 
   // Check active route
-  const isActive = (path) => location.pathname === path;
+  const isActive = (path) => location.pathname.startsWith(path);
+
 
   return (
     <Card className="mb-4 shadow-sm border-0">
@@ -39,8 +40,11 @@ const AdminHeader = () => {
             </Badge>
 
             <Badge bg="primary">
-              Dashboard
-            </Badge>
+            {location.pathname.includes("departments")
+              ? "Departments"
+              : "Dashboard"}
+          </Badge>
+
           </div>
 
         </div>

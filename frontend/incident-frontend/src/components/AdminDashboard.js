@@ -1,7 +1,6 @@
 // src/components/AdminDashboard.js
 
 import React, { useEffect, useState, useCallback } from "react";
-import axios from "axios";
 
 
 import {
@@ -22,7 +21,7 @@ import AdminHeader from "./AdminHeader";
 import api from "../api/axios";
 const AdminDashboard = () => {
 
-  const token = localStorage.getItem("access");
+ 
  
   const [incidents, setIncidents] = useState([]);
   const [visibleIncidents, setVisibleIncidents] = useState([]);
@@ -74,43 +73,15 @@ const AdminDashboard = () => {
 
   // ... keeping your logic unchanged ...
 
-  const fetchIncidents = useCallback(async () => {
-
-  setLoading(true);
-
-  try {
-    const res = await api.get("/incidents/", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    const sorted = sortIncidents(res.data);
-
-    setIncidents(sorted);
-
-    calculateStats(sorted);
-    calculateCategoryStats(sorted);
-
-  } catch (err) {
-    console.error(err);
-  } finally {
-    setLoading(false);
-  }
-
-}, [token]);
-
-
- useEffect(() => {
-  fetchIncidents();
-}, [fetchIncidents]);
+ 
 
   const sortIncidents = (data) => {
 
     const order = {
-      "in progress": 1,
-      "pending": 2,
+      "pending": 1,
+      "in progress": 2,
       "resolved": 3
+
     };
 
     return [...data].sort((a, b) => {
@@ -165,16 +136,39 @@ const AdminDashboard = () => {
 
     setCategoryStats(result);
   };
+   const fetchIncidents = useCallback(async () => {
+
+  setLoading(true);
+
+  try {
+    const res = await api.get("/incidents/");
+
+
+    const sorted = sortIncidents(res.data);
+
+    setIncidents(sorted);
+
+    calculateStats(sorted);
+    calculateCategoryStats(sorted);
+
+  } catch (err) {
+    console.error(err);
+  } finally {
+    setLoading(false);
+  }
+
+}, []);
+ useEffect(() => {
+  fetchIncidents();
+}, [fetchIncidents]);
 
   const reportIncident = async (incident) => {
 
     try {
 
-      const res = await axios.post(
-  `https://incident-reporting-rjwi.onrender.com/api/incidents/${incident.id}/report/`,
-  {},
-  { headers: { Authorization: `Bearer ${token}` } }
-);
+      const res = await api.post(`/incidents/${incident.id}/report/`)
+
+
 
 
       setMessage(
@@ -191,7 +185,12 @@ const AdminDashboard = () => {
           : i
       );
 
-      setIncidents(updated);
+      const sorted = sortIncidents(updated);
+
+      setIncidents(sorted);
+      calculateStats(sorted);
+      calculateCategoryStats(sorted);
+
 
     } catch (err) {
 
@@ -205,11 +204,12 @@ const AdminDashboard = () => {
 
     try {
 
-      await axios.patch(
-        `https://incident-reporting-rjwi.onrender.com/api/incidents/${incident.id}/`,
-        { status: newStatus },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await api.patch(
+  `/incidents/${incident.id}/`,
+  { status: newStatus }
+);
+
+
 
 
       setMessage(`Status updated to ${newStatus}`);

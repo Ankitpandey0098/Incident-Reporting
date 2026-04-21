@@ -71,13 +71,14 @@ function App() {
                 <Route path="/contact" element={<Contact />} />
                 
                 <Route
-                  path="/admin"
-                  element={
-                    <PrivateRoute>
-                      <AdminDashboard />
-                    </PrivateRoute>
-                  }
-                />
+                path="/admin"
+                element={
+                  <PrivateRoute role="admin">
+                    <AdminDashboard />
+                  </PrivateRoute>
+                }
+              />
+
 
                 <Route path="/map" element={<IncidentMap />} />
                 {/* Protected */}
@@ -95,11 +96,12 @@ function App() {
                 <Route
                     path="/admin/departments"
                     element={
-                      <PrivateRoute>
+                      <PrivateRoute role="admin">
                         <DepartmentManagement />
                       </PrivateRoute>
                     }
                   />
+
 
                 <Route
                   path="/report"
@@ -157,11 +159,12 @@ function App() {
                 <Route
                   path="/department"
                   element={
-                    <PrivateRoute>
+                    <PrivateRoute role="department">
                       <DepartmentDashboard />
                     </PrivateRoute>
                   }
                 />
+
 
 
                 <Route path="*" element={<div>Page not found</div>} />
