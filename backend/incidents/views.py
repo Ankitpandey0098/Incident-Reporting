@@ -570,11 +570,12 @@ def profile_view(request):
 
     if request.method == "GET":
         return Response({
-            "full_name": profile.full_name or "",
-            "phone": profile.phone,
-            "city": profile.city,
+            "full_name": profile.user.get_full_name() or "",
+            "phone": profile.phone or "",
+            "city": profile.city or "",
             "role": profile.role,
         })
+
 
     profile.full_name = request.data.get("full_name", profile.full_name)
     profile.phone = request.data.get("phone", profile.phone)
