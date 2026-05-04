@@ -33,7 +33,8 @@ function Login() {
     localStorage.setItem("access", res.data.access);
     localStorage.setItem("refresh", res.data.refresh);
 
-    const user = await api.get("/user/");
+    const user = await api.get("/profile/");
+
 
     localStorage.setItem("role", user.data.role);
     localStorage.setItem("department", user.data.department || "");
@@ -61,6 +62,7 @@ function Login() {
       }}
     >
       {/* LEFT SIDE - BRAND PANEL */}
+
       <div
         style={{
           flex: 1,
