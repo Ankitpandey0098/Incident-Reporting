@@ -29,6 +29,7 @@ function Login() {
 
   try {
     const res = await api.post("/login/", form);
+    console.log("LOGIN RESPONSE:", res.data);
 
     localStorage.setItem("access", res.data.access);
     localStorage.setItem("refresh", res.data.refresh);

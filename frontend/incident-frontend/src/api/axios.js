@@ -2,9 +2,8 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL:
-    process.env.REACT_APP_API_URL ||
-    "https://incident-reporting-rjwi.onrender.com/api",
+  baseURL: "https://incident-reporting-rjwi.onrender.com/api",
+
   headers: {
     "Content-Type": "application/json",
   },
@@ -12,7 +11,7 @@ const api = axios.create({
 });
 
 /* ================= REQUEST INTERCEPTOR ================= */
-  
+
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("access");
