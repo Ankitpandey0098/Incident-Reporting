@@ -569,15 +569,27 @@ def profile_view(request):
     profile, _ = UserProfile.objects.get_or_create(user=request.user)
 
     if request.method == "GET":
+        # GET
         return Response({
+            "username": profile.user.username,
+            "email": profile.user.email,
             "full_name": profile.user.get_full_name() or "",
             "phone": profile.phone or "",
             "city": profile.city or "",
             "role": profile.role,
+            "profile_image": str(profile.profile_image) if profile.profile_image else None
         })
 
 
-    profile.full_name = request.data.get("full_name", profile.full_name)
+
+    full_name = request.data.get("full_name")
+    if full_name:
+        names = full_name.split(" ", 1)
+        profile.user.first_name = names[0]
+        if len(names) > 1:
+            profile.user.last_name = names[1]
+        profile.user.save()
+
     profile.phone = request.data.get("phone", profile.phone)
     profile.city = request.data.get("city", profile.city)
     profile.role = request.data.get("role", profile.role)
