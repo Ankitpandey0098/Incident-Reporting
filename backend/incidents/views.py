@@ -566,17 +566,19 @@ def contact_list(request):
 @api_view(["GET", "PATCH"])
 @permission_classes([IsAuthenticated])
 def profile_view(request):
-    profile, _ = UserProfile.objects.get_or_create(user=request.user)
+    try:
+        profile, _ = UserProfile.objects.get_or_create(user=request.user)
+    except Exception as e:
+        return Response({"error": str(e)}, status=500)
 
     if request.method == "GET":
-        # GET
         return Response({
-            "username": profile.user.username,
-            "email": profile.user.email,
-            "full_name": profile.user.get_full_name() or "",
-            "phone": profile.phone or "",
-            "city": profile.city or "",
-            "role": profile.role,
+            "username": request.user.username,
+            "email": request.user.email,
+            "full_name": request.user.get_full_name() or "",
+            "phone": getattr(profile, "phone", ""),
+            "city": getattr(profile, "city", ""),
+            "role": getattr(profile, "role", "user"),
             "profile_image": str(profile.profile_image) if profile.profile_image else None
         })
 
