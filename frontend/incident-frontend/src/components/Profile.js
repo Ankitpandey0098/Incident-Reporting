@@ -92,15 +92,23 @@ const Profile = () => {
   /* ================= SAVE PROFILE ================= */
   const handleSave = () => {
     const data = new FormData();
-    Object.keys(formData).forEach((key) => {
-  if (key === "profile_image") {
-    if (formData.profile_image instanceof File) {
-      data.append("profile_image", formData.profile_image);
-    }
-  } else {
-    data.append(key, formData[key]);
-  }
-});
+    
+
+// ✅ Combine first + last name
+data.append(
+  "full_name",
+  `${formData.first_name} ${formData.last_name}`.trim()
+);
+
+// ✅ Other fields
+data.append("email", formData.email);
+data.append("phone", formData.phone);
+data.append("city", formData.city);
+
+// ✅ Image
+if (formData.profile_image instanceof File) {
+  data.append("profile_image", formData.profile_image);
+}
 
     console.log("Sending Data:", formData);
 
@@ -205,7 +213,7 @@ const Profile = () => {
                 }}
               >
                 <Image
-                  src={preview || "/default-avatar.png"}
+                  src={preview || "https://via.placeholder.com/150"}
                   style={{
                     width: "100%",
                     height: "100%",

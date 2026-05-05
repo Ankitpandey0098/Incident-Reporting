@@ -611,7 +611,7 @@ useEffect(() => {
                       {incident.attachment && (
 
                         <img
-                          src={getImageUrl(incident.attachment)}
+                          src={incident.attachment} 
 
                           alt="incident"
                           style={{
@@ -623,7 +623,7 @@ useEffect(() => {
                             cursor: "pointer"
                           }}
                           onClick={() => {
-                            setActiveImage(getImageUrl(incident.attachment));
+                            setActiveImage(incident.attachment);
                             setShowImage(true);
                           }}
                         />

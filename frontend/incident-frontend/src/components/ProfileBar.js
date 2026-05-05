@@ -28,9 +28,15 @@ const ProfileBar = () => {
     const res = await api.get("/profile/");
     setUser(res.data);
     setLoading(false);
-  } catch (err) {
-    handleLogout();
+  }catch (err) {
+  console.error("Profile fetch error:", err);
+
+  if (err.response?.status === 401) {
+    handleLogout(); // only logout if token invalid
+  } else {
+    setLoading(false); // don't logout for other errors
   }
+}
 };
 
 
@@ -58,22 +64,22 @@ const ProfileBar = () => {
         boxShadow: "0 2px 10px rgba(0,0,0,0.05)"
       }}
     >
-      {getImageUrl(user?.profile_image) ? (
-        <Image
-      
-          src={getImageUrl(user?.profile_image)}
-
-
-          roundedCircle
-          style={{
-            width: 36,
-            height: 36,
-            objectFit: "cover",
-            border: "2px solid #f1f1f1"
-          }}
-          className="me-2"
-        />
-      ) : (
+      {user?.profile_image ? (
+  <Image
+    src={getImageUrl(user.profile_image)}
+    onError={(e) => {
+      e.target.style.display = "none";
+    }}
+    roundedCircle
+    style={{
+      width: 36,
+      height: 36,
+      objectFit: "cover",
+      border: "2px solid #f1f1f1"
+    }}
+    className="me-2"
+  />
+) : (
         <div
           className="me-2"
           style={{

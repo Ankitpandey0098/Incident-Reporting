@@ -588,7 +588,7 @@ def profile_view(request):
             "phone": getattr(profile, "phone", ""),
             "city": getattr(profile, "city", ""),
             "role": getattr(profile, "role", "user"),
-            "profile_image": profile_image_url
+            "profile_image": profile.profile_image.url if profile.profile_image else None
         })
 
 
@@ -604,6 +604,8 @@ def profile_view(request):
     profile.phone = request.data.get("phone", profile.phone)
     profile.city = request.data.get("city", profile.city)
     profile.role = request.data.get("role", profile.role)
+    if "profile_image" in request.FILES:
+        profile.profile_image = request.FILES["profile_image"]
     profile.save()
 
     return Response({"message": "Profile updated"})

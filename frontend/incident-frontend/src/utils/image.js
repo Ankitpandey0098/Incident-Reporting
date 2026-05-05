@@ -4,6 +4,10 @@ export const getImageUrl = (url) => {
   // already full URL (Cloudinary or external)
   if (url.startsWith("http")) return url;
 
-  // Django media fallback
+  // ensure leading slash
+  if (!url.startsWith("/")) {
+    url = "/" + url;
+  }
+
   return `https://incident-reporting-rjwi.onrender.com${url}`;
 };
