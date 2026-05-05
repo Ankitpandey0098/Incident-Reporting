@@ -572,6 +572,15 @@ def profile_view(request):
         return Response({"error": str(e)}, status=500)
 
     if request.method == "GET":
+
+        profile_image_url = None
+
+        try:
+            if profile.profile_image and hasattr(profile.profile_image, "url"):
+                profile_image_url = profile.profile_image.url
+        except Exception as e:
+            print("Cloudinary Error:", e)
+
         return Response({
             "username": request.user.username,
             "email": request.user.email,
@@ -579,7 +588,7 @@ def profile_view(request):
             "phone": getattr(profile, "phone", ""),
             "city": getattr(profile, "city", ""),
             "role": getattr(profile, "role", "user"),
-            "profile_image": str(profile.profile_image) if profile.profile_image else None
+            "profile_image": profile_image_url
         })
 
 
