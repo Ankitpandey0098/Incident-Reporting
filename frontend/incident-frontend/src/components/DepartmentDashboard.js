@@ -165,21 +165,23 @@ const DepartmentDashboard = () => {
     <div
       style={{
         minHeight: "100vh",
-        paddingTop: "20px",
-        paddingBottom: "40px",
+        paddingTop: "15px",
+        paddingBottom: "30px",
+        paddingLeft: "8px",
+        paddingRight: "8px",
         background: "#f8f9fa"
       }}
     >
 
-      <div className="container">
+      <div className="container px-2 px-md-3">
 
         {/* Header Card */}
         <Card className="mb-4 shadow-sm border-0 rounded-3">
-          <Card.Body>
-            <h3 className="mb-1 fw-bold">
+          <Card.Body className="p-2 p-md-3" style={{ overflowX: "auto", overflowY: "auto", maxHeight: "600px" }}>
+            <h3 className="mb-1 fw-bold fs-5 fs-md-4 text-break">
               🏛️ {department} Department Dashboard
             </h3>
-            <small className="text-muted">
+            <small className="text-muted d-block">
               Manage assigned incidents and update their status
             </small>
           </Card.Body>
@@ -188,52 +190,52 @@ const DepartmentDashboard = () => {
         {/* Stats Cards */}
         <Row className="mb-4">
 
-          <Col md={3}>
+          <Col xs={6} md={3} className="mb-3">
             <Card className="shadow-sm border-0 h-100 rounded-3">
-              <Card.Body>
-                <small className="text-muted">
+              <Card.Body className="p-2 p-md-3" style={{ overflowX: "auto", overflowY: "auto", maxHeight: "600px" }}>
+                <small className="text-muted d-block">
                   Total Incidents
                 </small>
-                <h3 className="mt-2 fw-bold">
+                <h3 className="mt-2 fw-bold fs-5 fs-md-4">
                   📋 {total}
                 </h3>
               </Card.Body>
             </Card>
           </Col>
 
-          <Col md={3}>
+          <Col xs={6} md={3} className="mb-3">
             <Card className="shadow-sm border-0 h-100 rounded-3">
-              <Card.Body>
+              <Card.Body className="p-2 p-md-3" style={{ overflowX: "auto", overflowY: "auto", maxHeight: "600px" }}>
                 <small className="text-warning">
                   Pending
                 </small>
-                <h3 className="mt-2 fw-bold">
+                <h3 className="mt-2 fw-bold fs-5 fs-md-4">
                   ⏳ {pending}
                 </h3>
               </Card.Body>
             </Card>
           </Col>
 
-          <Col md={3}>
+          <Col xs={6} md={3} className="mb-3">
             <Card className="shadow-sm border-0 h-100 rounded-3">
-              <Card.Body>
+              <Card.Body className="p-2 p-md-3" style={{ overflowX: "auto", overflowY: "auto", maxHeight: "600px" }}>
                 <small className="text-primary">
                   In Progress
                 </small>
-                <h3 className="mt-2 fw-bold">
+                <h3 className="mt-2 fw-bold fs-5 fs-md-4">
                   ⚙️ {inProgress}
                 </h3>
               </Card.Body>
             </Card>
           </Col>
 
-          <Col md={3}>
+          <Col xs={6} md={3} className="mb-3">
             <Card className="shadow-sm border-0 h-100 rounded-3">
-              <Card.Body>
+              <Card.Body className="p-2 p-md-3" style={{ overflowX: "auto", overflowY: "auto", maxHeight: "600px" }}>
                 <small className="text-success">
                   Resolved
                 </small>
-                <h3 className="mt-2 fw-bold">
+                <h3 className="mt-2 fw-bold fs-5 fs-md-4">
                   ✅ {resolved}
                 </h3>
               </Card.Body>
@@ -261,7 +263,7 @@ const DepartmentDashboard = () => {
             </h5>
           </Card.Header>
 
-          <Card.Body>
+          <Card.Body className="p-2 p-md-3" style={{ overflowX: "auto", overflowY: "auto", maxHeight: "600px" }}>
 
             {loading ? (
               <div className="text-center py-4">
@@ -275,9 +277,9 @@ const DepartmentDashboard = () => {
 
             ) : (
 
-              <Table hover responsive className="align-middle">
+              <Table hover responsive className="align-middle small" style={{ minWidth: "900px" }}>
 
-                <thead className="table-light">
+                <thead className="table-light text-nowrap">
                   <tr>
                     <th>ID</th>
                     <th>Title</th>
@@ -298,11 +300,11 @@ const DepartmentDashboard = () => {
 
                       <td>{inc.id}</td>
 
-                      <td className="fw-semibold">
+                      <td className="fw-semibold text-break">
                         {inc.title}
                       </td>
 
-                      <td>
+                      <td className="text-break">
                         {inc.description?.substring(0, 40)}...
                       </td>
 
@@ -326,7 +328,7 @@ const DepartmentDashboard = () => {
 
                         {inc.status?.toLowerCase() !== "resolved" && (
 
-                          <div className="d-flex gap-2">
+                          <div className="d-flex gap-2 flex-wrap">
 
                             <Button
                               size="sm"

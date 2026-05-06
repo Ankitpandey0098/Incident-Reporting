@@ -16,25 +16,25 @@ const AdminHeader = () => {
 
 
   return (
-    <Card className="mb-4 shadow-sm border-0">
+    <Card className="mb-3 mb-md-4 shadow-sm border-0">
 
-      <Card.Body>
+      <Card.Body className="p-3 p-md-4">
 
         {/* Header Section */}
-        <div className="d-flex justify-content-between align-items-center flex-wrap mb-3">
+        <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-2 mb-md-3">
 
-          <div>
-            <h2 className="mb-1">
+          <div className="w-100">
+            <h2 className="mb-1 fs-5 fs-md-3 text-break">
               <ShieldLockFill className="me-2 text-primary" />
               Admin Control Panel
             </h2>
 
-            <small className="text-muted">
+            <small className="text-muted d-block">
               Manage incidents, departments and system operations
             </small>
           </div>
 
-          <div className="mt-2 mt-md-0">
+          <div className="mt-2 mt-md-0 d-flex flex-wrap gap-2">
             <Badge bg="dark" className="me-2">
               Admin
             </Badge>
@@ -51,9 +51,10 @@ const AdminHeader = () => {
 
         {/* Navigation Section */}
 
-        <div className="d-flex gap-2 flex-wrap">
+        <div className="d-flex flex-column flex-sm-row gap-2">
 
           <Button
+            className="w-100 w-sm-auto py-2"
             variant={isActive("/admin") ? "dark" : "outline-dark"}
             onClick={() => navigate("/admin")}
           >
@@ -62,6 +63,7 @@ const AdminHeader = () => {
           </Button>
 
           <Button
+            className="w-100 w-sm-auto py-2"
             variant={
               isActive("/admin/departments")
                 ? "dark"

@@ -100,10 +100,10 @@ const NavigationBar = () => {
 
       <Navbar.Toggle />
 
-      <Navbar.Collapse>
+      <Navbar.Collapse className="pt-3 pt-lg-0">
 
         {/* LEFT NAV */}
-        <Nav className="me-auto ms-3" style={{ gap: "6px" }}>
+        <Nav className="me-auto ms-lg-3 mt-2 mt-lg-0 flex-column flex-lg-row" style={{ gap: "6px" }}>
           {token && (
             <>
               {[
@@ -152,7 +152,7 @@ const NavigationBar = () => {
         </Nav>
 
         {/* RIGHT SIDE */}
-        <Nav className="ms-auto align-items-center" style={{ gap: "12px" }}>
+        <Nav className="ms-auto mt-3 mt-lg-0 d-flex flex-row flex-lg-row align-items-center flex-wrap" style={{ gap: "10px" }}>
 
           {token ? (
             <>
@@ -201,7 +201,7 @@ const NavigationBar = () => {
 
                 <Dropdown.Menu
                   style={{
-                    width: "340px",
+                    width: "min(340px, 95vw)",
                     maxHeight: "420px",
                     overflowY: "auto",
                     borderRadius: "12px",
@@ -258,6 +258,7 @@ const NavigationBar = () => {
               <Button
                 variant="outline-danger"
                 size="sm"
+                className="flex-fill flex-lg-grow-0"
                 onClick={handleLogout}
                 style={{ borderRadius: "10px" }}
               >

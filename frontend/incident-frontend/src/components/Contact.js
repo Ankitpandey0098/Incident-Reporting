@@ -62,23 +62,25 @@ const Contact = () => {
       style={{
         minHeight: "100vh",
         background: "#f8f9fa",
-        paddingTop: "30px",
-        paddingBottom: "40px"
+        paddingTop: "20px",
+        paddingBottom: "30px",
+        paddingLeft: "8px",
+        paddingRight: "8px"
       }}
     >
-      <Container>
+      <Container className="px-2 px-md-3">
         <Row className="justify-content-center">
-          <Col md={8} lg={6}>
+          <Col xs={12} sm={10} md={8} lg={6}>
 
-            <Card className="shadow-sm border-0 rounded-3">
-              <Card.Body className="p-4">
+            <Card className="shadow-sm border-0 rounded-3 p-2 p-md-3">
+              <Card.Body className="p-3 p-md-4">
 
                 {/* Header */}
                 <div className="mb-4 text-center">
-                  <h2 className="fw-bold text-dark mb-1">
+                  <h2 className="fw-bold text-dark mb-1 fs-5 fs-md-3">
                     📩 Contact Us
                   </h2>
-                  <small className="text-muted">
+                  <small className="text-muted d-block">
                     Have questions? We'd love to hear from you
                   </small>
                 </div>
@@ -95,6 +97,7 @@ const Contact = () => {
                   <Form.Group className="mb-3">
                     <Form.Label>Name</Form.Label>
                     <Form.Control
+                      size="sm"
                       type="text"
                       name="name"
                       placeholder="Enter your name"
@@ -133,7 +136,7 @@ const Contact = () => {
                     <Form.Control
                       as="textarea"
                       name="message"
-                      rows={5}
+                      rows={4}
                       placeholder="Write your message..."
                       value={formData.message}
                       onChange={handleChange}
@@ -145,7 +148,7 @@ const Contact = () => {
                     <Button
                       type="submit"
                       variant="primary"
-                      size="lg"
+                      size="md"
                       disabled={loading}
                     >
                       {loading ? (

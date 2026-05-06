@@ -10,11 +10,11 @@ const Footer = () => {
         background: "linear-gradient(135deg,#020617,#020617,#0f172a)",
         color: "#e5e7eb",
       }}
-      className="pt-5 pb-4 mt-5"
+      className="pt-4 pt-md-5 pb-4 mt-4 mt-md-5"
     >
       <Container>
 
-        <Row className="gy-4">
+        <Row className="gy-4 text-center text-md-start">
 
           {/* ===== BRAND ===== */}
 
@@ -41,9 +41,9 @@ const Footer = () => {
 
             {/* Social Icons */}
 
-            <div className="d-flex gap-3 mt-3">
+            <div className="d-flex gap-3 mt-3 justify-content-center justify-content-md-start">
 
-              <a href="#" className="social-icon">
+              <a href="#" onClick={(e) => e.preventDefault()} className="social-icon">
                 <i className="bi bi-facebook"></i>
               </a>
 
@@ -51,11 +51,11 @@ const Footer = () => {
                 <i className="bi bi-twitter"></i>
               </a>
 
-              <a href="https://www.linkedin.com/in/ankit-pandey-0b38b1328/" className="social-icon">
+              <a href="https://www.linkedin.com/in/ankit-pandey-0b38b1328/" target="_blank" rel="noopener noreferrer" className="social-icon">
                 <i className="bi bi-linkedin"></i>
               </a>
 
-              <a href="https://github.com/Ankitpandey0098" className="social-icon">
+              <a href="https://github.com/Ankitpandey0098" target="_blank" rel="noopener noreferrer" className="social-icon">
                 <i className="bi bi-github"></i>
               </a>
 
@@ -66,7 +66,7 @@ const Footer = () => {
 
           {/* ===== QUICK LINKS ===== */}
 
-          <Col md={4}>
+          <Col xs={12} md={4}>
 
             <h6 className="fw-semibold text-white mb-3">
               Quick Links
@@ -100,7 +100,7 @@ const Footer = () => {
               Contact
             </h6>
 
-            <div className="footer-contact">
+            <div className="footer-contact text-center text-md-start">
 
               <p>
                 📧 support@incidentplatform.com
@@ -178,7 +178,7 @@ const Footer = () => {
           color: #cbd5f5;
           text-decoration: none;
           font-size: 0.9rem;
-          transition: all 0.25s ease;
+          transition: all 0.3s ease;
         }
 
         .footer-links a:hover {

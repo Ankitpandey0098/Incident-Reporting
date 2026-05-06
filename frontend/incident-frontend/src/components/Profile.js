@@ -143,6 +143,7 @@ if (formData.profile_image instanceof File) {
   setEditMode(false);
   setFormData({ ...formData, profile_image: null });
   setSuccess("Profile updated successfully");
+  setTimeout(() => setSuccess(""), 3000);
 })
 
       .catch((err) => {
@@ -162,10 +163,10 @@ if (formData.profile_image instanceof File) {
     style={{
       minHeight: "100vh",
       background: "#f4f7fb",
-      padding: "40px 20px"
+      padding: "20px 10px"
     }}
   >
-    <div className="container" style={{ maxWidth: "900px" }}>
+    <div className="container-fluid px-2 px-md-3" style={{ maxWidth: "900px" }}>
 
       {/* HEADER */}
       <div className="mb-4">
@@ -198,12 +199,12 @@ if (formData.profile_image instanceof File) {
           <Row>
 
             {/* LEFT PANEL */}
-            <Col md={4} className="text-center border-end">
+            <Col md={4} className="text-center border-md-end mb-4 mb-md-0">
 
               <div
                 style={{
-                  width: 110,
-                  height: 110,
+                  width: "clamp(80px, 20vw, 110px)",
+                  height: "clamp(80px, 20vw, 110px)",
                   borderRadius: "50%",
                   overflow: "hidden",
                   margin: "0 auto",
@@ -213,7 +214,10 @@ if (formData.profile_image instanceof File) {
                 }}
               >
                 <Image
-                  src={preview || "https://via.placeholder.com/150"}
+                    src={preview || "https://via.placeholder.com/150"}
+                    onError={(e) => {
+                      e.target.src = "https://via.placeholder.com/150";
+                    }}
                   style={{
                     width: "100%",
                     height: "100%",
@@ -302,7 +306,7 @@ if (formData.profile_image instanceof File) {
             </Col>
 
             {/* RIGHT PANEL */}
-            <Col md={8}>
+            <Col xs={12} md={8}>
 
               <h6 className="mb-3 fw-bold">Account Information</h6>
 
@@ -313,7 +317,7 @@ if (formData.profile_image instanceof File) {
                       {field.replace("_", " ")}
                     </Col>
 
-                    <Col md={8}>
+                    <Col xs={12} md={8}>
                       <Form.Control
                         name={field}
                         value={

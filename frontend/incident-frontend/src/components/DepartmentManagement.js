@@ -158,20 +158,22 @@ const res = await axios.get(
       style={{
         minHeight: "100vh",
         background: "#f8f9fa",
-        paddingTop: "20px",
-        paddingBottom: "40px"
+        paddingTop: "15px",
+        paddingBottom: "30px",
+        paddingLeft: "6px",
+        paddingRight: "6px"
       }}
-      className="container"
+      className="container px-2 px-md-3"
     >
 
       <AdminHeader />
 
       {/* Page Title */}
       <div className="mb-3">
-        <h3 className="fw-bold mb-1">
+        <h3 className="fw-bold mb-1 fs-5 fs-md-4 text-break">
           🏛️ Department Management
         </h3>
-        <small className="text-muted">
+        <small className="text-muted d-block">
           Create, update and manage departments
         </small>
       </div>
@@ -190,7 +192,7 @@ const res = await axios.get(
 
         <Card.Header className="bg-white border-0 py-3">
 
-          <Row className="align-items-center">
+          <Row className="align-items-center g-2">
 
             <Col>
               <h5 className="mb-0 fw-semibold">
@@ -198,9 +200,10 @@ const res = await axios.get(
               </h5>
             </Col>
 
-            <Col className="text-end">
+            <Col xs={12} md="auto" className="text-md-end">
               <Button
                 variant="primary"
+                className="w-100 w-md-auto"
                 onClick={() => setShowAdd(true)}
               >
                 + Add Department
@@ -211,7 +214,7 @@ const res = await axios.get(
 
         </Card.Header>
 
-        <Card.Body style={{ overflowX: "auto" }}>
+        <Card.Body className="p-2 p-md-3" style={{ overflowX: "auto", overflowY: "auto", maxHeight: "600px" }}>
 
           {loading ? (
             <div className="text-center py-4">
@@ -222,10 +225,11 @@ const res = await axios.get(
             <Table
               hover
               responsive
-              className="align-middle"
+              className="align-middle small"
+              style={{ minWidth: "800px" }}
             >
 
-              <thead className="table-light">
+              <thead className="table-light text-nowrap">
                 <tr>
                   <th>ID</th>
                   <th>Name</th>
@@ -244,21 +248,19 @@ const res = await axios.get(
 
                     <td>{dept.id}</td>
 
-                    <td className="fw-semibold">
+                    <td className="fw-semibold text-break">
                       {dept.name}
                     </td>
 
-                    <td>{dept.email}</td>
-
-                    <td>{dept.phone || "N/A"}</td>
-
-                    <td>
+                    <td className="text-break">{dept.email}</td>
+                    <td className="text-break">{dept.phone || "N/A"}</td>
+                    <td className="text-break">
                       {dept.description || "N/A"}
                     </td>
 
                     <td>
 
-                      <div className="d-flex gap-2">
+                      <div className="d-flex gap-2 flex-wrap">
 
                         <Button
                           size="sm"
@@ -298,7 +300,7 @@ const res = await axios.get(
 
       {/* ================= EDIT MODAL ================= */}
 
-      <Modal show={showEdit} onHide={() => setShowEdit(false)} centered>
+      <Modal show={showEdit} onHide={() => setShowEdit(false)} centered size="md">
 
         <Modal.Header closeButton>
           <Modal.Title>
@@ -378,6 +380,7 @@ const res = await axios.get(
 
           <Button
             variant="primary"
+            className="w-100 w-md-auto"
             onClick={updateDepartment}
           >
             Update
@@ -389,7 +392,7 @@ const res = await axios.get(
 
       {/* ================= ADD MODAL ================= */}
 
-      <Modal show={showAdd} onHide={() => setShowAdd(false)} centered>
+      <Modal show={showAdd} onHide={() => setShowAdd(false)} centered size="md">
 
         <Modal.Header closeButton>
           <Modal.Title>

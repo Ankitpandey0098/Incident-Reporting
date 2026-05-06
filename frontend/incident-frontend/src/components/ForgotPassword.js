@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Card, Form, Button, Alert, Spinner, Container, ProgressBar, Badge } from "react-bootstrap";
-import axios from "axios";
+
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 const OTP_EXPIRY_SECONDS = 300;
@@ -23,7 +23,7 @@ const ForgotPassword = () => {
     if (timer <= 0) return;
 
     const interval = setInterval(() => {
-      setTimer((t) => t - 1);
+      setTimer((t) => (t > 0 ? t - 1 : 0));
     }, 1000);
 
     return () => clearInterval(interval);
@@ -42,10 +42,7 @@ const ForgotPassword = () => {
     setMessage("");
 
     try {
-      const res = await axios.post(
-  "https://incident-reporting-rjwi.onrender.com/api/auth/forgot-password/",
-  { email }
-);
+      const res = await api.post("/auth/forgot-password/", { email });
 
 
       setMessage(res.data.message);
@@ -64,10 +61,8 @@ const ForgotPassword = () => {
     setMessage("");
 
     try {
-      const res = await axios.post(
-  "https://incident-reporting-rjwi.onrender.com/api/auth/forgot-password/",
-  { email }
-);
+      const res = await api.post("/auth/forgot-password/", { email });
+
 
       setMessage("OTP resent successfully");
       setTimer(OTP_EXPIRY_SECONDS);
@@ -85,10 +80,7 @@ const ForgotPassword = () => {
     setMessage("");
 
     try {
-      const res = await axios.post(
-  "https://incident-reporting-rjwi.onrender.com/api/auth/verify-otp/",
-  { email, otp }
-);
+      const res = await api.post("/auth/verify-otp/", { email, otp });
 
       setMessage(res.data.message);
       setStep(3);
@@ -106,10 +98,7 @@ const ForgotPassword = () => {
     setMessage("");
 
     try {
-      const res = await axios.post(
-  "https://incident-reporting-rjwi.onrender.com/api/auth/reset-password/",
-  { email, otp, password }
-);
+      const res = await api.post("/auth/reset-password/", { email, otp, password });
 
 
       setMessage(res.data.message);
@@ -143,6 +132,7 @@ const ForgotPassword = () => {
           style={{
             maxWidth: "450px",
             margin: "auto",
+            width: "100%",
             borderRadius: "15px",
             overflow: "hidden",
           }}
@@ -179,7 +169,7 @@ const ForgotPassword = () => {
                   />
                 </Form.Group>
 
-                <Button className="w-100 rounded-pill" type="submit" disabled={loading}>
+                <Button className="w-100 rounded-pill mt-2" type="submit" disabled={loading}>
                   {loading ? <Spinner size="sm" /> : "Send OTP"}
                 </Button>
               </Form>
@@ -194,7 +184,8 @@ const ForgotPassword = () => {
                     type="text"
                     placeholder="6-digit OTP"
                     value={otp}
-                    onChange={(e) => setOtp(e.target.value)}
+                    maxLength={6}
+                    onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
                     required
                   />
                 </Form.Group>
@@ -214,7 +205,7 @@ const ForgotPassword = () => {
                   </Button>
                 </div>
 
-                <Button className="w-100 rounded-pill" type="submit" disabled={loading}>
+                <Button className="w-100 rounded-pill mt-2" type="submit" disabled={loading}>
                   {loading ? <Spinner size="sm" /> : "Verify OTP"}
                 </Button>
               </Form>
@@ -227,6 +218,7 @@ const ForgotPassword = () => {
                   <Form.Label>New Password</Form.Label>
                   <Form.Control
                     type="password"
+                   
                     placeholder="Enter new password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -234,7 +226,7 @@ const ForgotPassword = () => {
                   />
                 </Form.Group>
 
-                <Button className="w-100 rounded-pill" type="submit" disabled={loading}>
+                <Button className="w-100 rounded-pill mt-2 " type="submit" disabled={loading}>
                   {loading ? <Spinner size="sm" /> : "Reset Password"}
                 </Button>
               </Form>

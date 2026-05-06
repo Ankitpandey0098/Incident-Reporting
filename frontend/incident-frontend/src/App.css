@@ -43,6 +43,7 @@ body {
 /* Page background feel */
 body {
   background-color: #f7f9fc;
+  overflow-x: hidden;
 }
 
 /* Profile Card */

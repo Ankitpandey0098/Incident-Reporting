@@ -246,13 +246,13 @@ const AdminDashboard = () => {
 
   return (
 
-    <div className="container-fluid mt-4">
+    <div className="container-fluid mt-3 mt-md-4 px-2 px-md-3">
 
       <AdminHeader />
 
       {/* Search Bar */}
 
-      <Card className="shadow-sm border-0 mb-3">
+      <Card className="shadow-sm border-0 mb-3 p-2 p-md-3">
         <Card.Body>
 
           <InputGroup>
@@ -274,7 +274,7 @@ const AdminDashboard = () => {
       {/* Filter Buttons */}
 
       <Card className="shadow-sm border-0 mb-4">
-        <Card.Body className="d-flex gap-2 flex-wrap">
+        <Card.Body className="d-flex gap-2 flex-wrap justify-content-start">
 
           <Button
             size="sm"
@@ -325,38 +325,38 @@ const AdminDashboard = () => {
 
       <Row className="mb-4">
 
-        <Col md={3}>
+        <Col xs={6} md={3} className="mb-3">
           <Card className="shadow-sm border-0 text-center">
             <Card.Body>
-              <small>Total Incidents</small>
-              <h3>📋 {stats.total}</h3>
+              <small className="text-muted d-block">Total Incidents</small>
+              <h3 className="fs-5 fs-md-4">📋 {stats.total}</h3>
             </Card.Body>
           </Card>
         </Col>
 
-        <Col md={3}>
+        <Col xs={6} md={3} className="mb-3">
           <Card className="shadow-sm border-0 text-center">
             <Card.Body>
               <small className="text-warning">Pending</small>
-              <h3>⏳ {stats.pending}</h3>
+              <h3 className="fs-5 fs-md-4">⏳ {stats.pending}</h3>
             </Card.Body>
           </Card>
         </Col>
 
-        <Col md={3}>
+        <Col xs={6} md={3} className="mb-3">
           <Card className="shadow-sm border-0 text-center">
             <Card.Body>
               <small className="text-primary">In Progress</small>
-              <h3>⚙️ {stats.progress}</h3>
+              <h3 className="fs-5 fs-md-4">⚙️ {stats.progress}</h3>
             </Card.Body>
           </Card>
         </Col>
 
-        <Col md={3}>
+        <Col xs={6} md={3} className="mb-3">
           <Card className="shadow-sm border-0 text-center">
             <Card.Body>
               <small className="text-success">Resolved</small>
-              <h3>✅ {stats.resolved}</h3>
+              <h3 className="fs-5 fs-md-4">✅ {stats.resolved}</h3>
             </Card.Body>
           </Card>
         </Col>
@@ -368,7 +368,7 @@ const AdminDashboard = () => {
       <Card className="shadow-sm border-0 mb-4">
 
         <Card.Header className="bg-white">
-          <h5 className="mb-0">📊 Incident Categories</h5>
+          <h5 className="mb-0 fs-6 fs-md-5">📊 Incident Categories</h5>
         </Card.Header>
 
         <Card.Body>
@@ -378,7 +378,7 @@ const AdminDashboard = () => {
             : categoryStats.map((cat) => (
                 <div
                   key={cat.category}
-                  className="d-flex justify-content-between mb-2"
+                  className="d-flex justify-content-between mb-2 flex-wrap"
                 >
                   <span>{cat.category}</span>
                   <Badge bg="secondary">{cat.count}</Badge>
@@ -394,10 +394,10 @@ const AdminDashboard = () => {
       <Card className="shadow-sm border-0">
 
         <Card.Header className="bg-white">
-          <h5 className="mb-0">📌 All Incidents</h5>
+          <h5 className="mb-0 fs-6 fs-md-5">📌 All Incidents</h5>
         </Card.Header>
 
-        <Card.Body style={{ maxHeight: "600px", overflow: "auto" }}>
+        <Card.Body className="p-2 p-md-3" style={{ maxHeight: "600px", overflowY: "auto", overflowX: "auto" }}>
 
           {loading ? (
             <div className="text-center py-5">
@@ -406,9 +406,9 @@ const AdminDashboard = () => {
           ) : (
 
             <>
-              <Table hover responsive className="align-middle">
+              <Table hover responsive className="align-middle small" style={{ minWidth: "900px" }}>
 
-                <thead className="table-light">
+                <thead className="table-light text-nowrap">
                   <tr>
                     <th>ID</th>
                     <th>Title</th>
@@ -429,10 +429,10 @@ const AdminDashboard = () => {
                     <tr key={inc.id}>
 
                       <td>{inc.id}</td>
-                      <td className="fw-semibold">{inc.title}</td>
+                      <td className="fw-semibold text-break">{inc.title}</td>
                       <td>{inc.user?.username || "N/A"}</td>
-                      <td>{inc.category}</td>
-                      <td>{inc.department}</td>
+                      <td className="text-break">{inc.category}</td>
+                      <td className="text-break">{inc.department}</td>
 
                       <td>
                         <Badge bg="secondary">
@@ -459,7 +459,7 @@ const AdminDashboard = () => {
 
                       <td>
 
-                        <div className="d-flex gap-1 flex-wrap">
+                        <div className="d-flex gap-1 flex-wrap justify-content-start">
 
                           <Button
                             size="sm"

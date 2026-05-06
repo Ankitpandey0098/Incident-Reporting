@@ -47,7 +47,11 @@ const ProfileBar = () => {
   };
 
   if (loading)
-    return <Spinner animation="border" size="sm" className="me-2" />;
+    return (
+  <div style={{ width: 36, height: 36 }} className="d-flex align-items-center justify-content-center">
+    <Spinner animation="border" size="sm" />
+  </div>
+);
 
   return (
   <Dropdown align="end">
@@ -57,13 +61,14 @@ const ProfileBar = () => {
       variant="light"
       className="d-flex align-items-center"
       style={{
-        border: "1px solid #e9ecef",
-        borderRadius: "50px",
-        padding: "6px 12px",
-        background: "#fff",
-        boxShadow: "0 2px 10px rgba(0,0,0,0.05)"
-      }}
+  border: "1px solid #e9ecef",
+  borderRadius: "50px",
+  padding: "6px 10px",   // reduced
+  background: "#fff",
+  boxShadow: "0 2px 10px rgba(0,0,0,0.05)"
+}}
     >
+      
       {user?.profile_image ? (
   <Image
     src={getImageUrl(user.profile_image)}
@@ -94,14 +99,27 @@ const ProfileBar = () => {
             fontWeight: "600"
           }}
         >
-          {user?.username?.charAt(0).toUpperCase()}
+          {user?.username?.[0]?.toUpperCase() || "U"}
         </div>
       )}
 
-      <div style={{ lineHeight: "1.1" }}>
-        <div style={{ fontWeight: "600", fontSize: "13px" }}>
-          {user?.username}
-        </div>
+      <div
+  style={{
+    lineHeight: "1.1",
+    maxWidth: "90px"
+  }}
+>
+        <div
+  style={{
+    fontWeight: "600",
+    fontSize: "13px",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis"
+  }}
+>
+  {user?.username}
+</div>
         <div style={{ fontSize: "11px", color: "#6c757d" }}>
           {user?.role || "Member"}
         </div>
@@ -111,7 +129,7 @@ const ProfileBar = () => {
     {/* DROPDOWN */}
     <Dropdown.Menu
       style={{
-        width: "260px",
+        width: "min(260px, 90vw)",
         borderRadius: "12px",
         border: "none",
         boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
