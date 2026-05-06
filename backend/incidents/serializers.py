@@ -19,6 +19,9 @@ CATEGORY_DEPARTMENT_MAP = {
     "Road Damage": "Traffic / Roads",
     "Public Health Hazard": "Public Health",
     "Animal Injury": "Wildlife / Animal Control",
+    "crowd_report": "Public Safety / Crowd Control",
+    "public_safety_violence": "Police Department",
+    "water_supply_sanitation": "Water Management",
 }
 
 
@@ -119,6 +122,8 @@ class IncidentSerializer(serializers.ModelSerializer):
         # Send email to department when incident is created
         if incident.department:
             try:
+                category_key = str(incident.category).strip().lower().replace(" ", "_")
+                department_name = CATEGORY_DEPARTMENT_MAP.get(category_key, "Municipality")
                 dept = Department.objects.get(name=incident.department)
 
                 send_mail(
@@ -179,8 +184,11 @@ class IncidentSerializer(serializers.ModelSerializer):
 
         # -------- CATEGORY CHANGE --------
         if old_category != updated_instance.category:
+            category_key = str(updated_instance.category).strip().lower().replace(" ", "_")
+
             updated_instance.department = CATEGORY_DEPARTMENT_MAP.get(
-                updated_instance.category, "Municipality"
+                category_key,
+                "Municipality"
             )
             updated_instance.save(update_fields=["department"])
 

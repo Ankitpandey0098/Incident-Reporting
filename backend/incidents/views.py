@@ -43,6 +43,7 @@ CATEGORY_DEPARTMENT_MAP = {
 
     "Crime": "Police Department",
     "Cyber Crime": "Cyber Crime Cell",
+    "Crowd_Report": "Public Safety / Crowd Control",
 }
 
 # ================= INCIDENT VIEWSET =================
@@ -100,7 +101,7 @@ class IncidentViewSet(viewsets.ModelViewSet):
         if not category or confidence < 0.4:
             category = "General Issue"
 
-        category_clean = str(category).strip().title()
+        category_clean = str(category).strip().replace(" ", "_")
 
         print("RAW CATEGORY:", category)
         print("CLEAN CATEGORY:", category_clean)
