@@ -36,7 +36,7 @@ const EditIncident = () => {
     try {
       const token = localStorage.getItem("access");
 
-      const res = await api.get(
+      const res = await axios.get(
         `https://incident-reporting-rjwi.onrender.com/api/incidents/${id}/`,
         {
           headers: {
@@ -105,7 +105,7 @@ const EditIncident = () => {
         formData.append("attachment", attachment);
       }
 
-      await api.patch(
+      await axios.patch(
   `https://incident-reporting-rjwi.onrender.com/api/incidents/${id}/`,
   formData,
   {
@@ -280,10 +280,10 @@ const EditIncident = () => {
 
                           <img
                             src={
-                              existingImage?.startsWith("http")
-                                ? existingImage
-                                : `${process.env.REACT_APP_API_URL}${existingImage}`
-                            }
+                                existingImage.startsWith("http")
+                                  ? existingImage
+                                  : `https://incident-reporting-rjwi.onrender.com${existingImage}`
+                              }
 
                             alt="Current"
                             style={{
