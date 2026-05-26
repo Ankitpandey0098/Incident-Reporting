@@ -2,7 +2,19 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import add_department, delete_department, get_department_detail, incident_timeline, update_department, update_incident_status_from_email
+from .views import (
+    add_department,
+    delete_department,
+    get_department_detail,
+    incident_timeline,
+    update_department,
+    update_incident_status_from_email,
+
+    admin_users_list,
+    update_user,
+    delete_user,
+    toggle_user_status,
+)
 from .views import risk_alerts
 from .views import location_risk_alerts
 from .views import incident_heatmap
@@ -12,6 +24,9 @@ from .views import (
     IncidentViewSet,
     contact_view,
     contact_list,
+    mark_contact_read,
+    mark_contact_resolved,
+    delete_contact_message,
     ml_test,
     department_analytics,
     incident_category_stats,
@@ -55,6 +70,41 @@ urlpatterns = [
     # Contact
     path("contact/", contact_view),
     path("contact-list/", contact_list),
+    path(
+    "contact/<int:id>/read/",
+    mark_contact_read
+    ),
+
+    path(
+        "contact/<int:id>/resolve/",
+        mark_contact_resolved
+    ),
+
+    path(
+        "contact/<int:id>/delete/",
+        delete_contact_message
+    ),
+    # ================= ADMIN USERS =================
+
+    path(
+        "admin/users/",
+        admin_users_list,
+    ),
+
+    path(
+        "admin/users/<int:id>/update/",
+        update_user,
+    ),
+
+    path(
+        "admin/users/<int:id>/delete/",
+        delete_user,
+    ),
+
+    path(
+        "admin/users/<int:id>/toggle-status/",
+        toggle_user_status,
+    ),
     path("forgot-password/", forgot_password),
     path("verify-otp/", verify_otp),
     path("reset-password/", reset_password),

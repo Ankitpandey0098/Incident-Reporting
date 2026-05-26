@@ -4,7 +4,9 @@ import { useNavigate, useLocation } from "react-router-dom";
 import {
   GridFill,
   Building,
-  ShieldLockFill
+ ShieldLockFill,
+  PeopleFill,
+  EnvelopeFill
 } from "react-bootstrap-icons";
 
 const AdminHeader = () => {
@@ -74,7 +76,30 @@ const AdminHeader = () => {
             <Building className="me-2" />
             Departments
           </Button>
-
+            <Button
+  className="w-100 w-sm-auto py-2"
+  variant={
+    isActive("/admin/users")
+      ? "dark"
+      : "outline-dark"
+  }
+  onClick={() => navigate("/admin/users")}
+>
+  <PeopleFill className="me-2" />
+  Users
+</Button>
+<Button
+  className="w-100 w-sm-auto py-2"
+  variant={
+    isActive("/admin/messages")
+      ? "dark"
+      : "outline-dark"
+  }
+  onClick={() => navigate("/admin/messages")}
+>
+  <EnvelopeFill className="me-2" />
+  Messages
+</Button>
         </div>
 
       </Card.Body>

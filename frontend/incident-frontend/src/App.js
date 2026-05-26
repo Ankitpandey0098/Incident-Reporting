@@ -10,6 +10,7 @@ import ReportIncident from "./components/ReportIncident";
 import EditIncident from "./components/EditIncident";
 import About from "./components/About";
 import Contact from "./components/Contact";
+import AdminMessages from "./components/AdminMessages";
 import Profile from "./components/Profile";
 import PrivateRoute from "./components/PrivateRoute";
 import Footer from "./components/Footer";
@@ -18,6 +19,7 @@ import NavigationBar from "./components/NavigationBar";
 import { UserProvider } from "./UserContext";
 import "./App.css";
 import AdminDashboard from "./components/AdminDashboard";
+import AdminUsers from "./components/AdminUsers";
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
 import VerifyOTP from "./components/VerifyOTP";
@@ -102,7 +104,22 @@ function App() {
                     }
                   />
 
-
+                  <Route
+                  path="/admin/users"
+                  element={
+                    <PrivateRoute role="admin">
+                      <AdminUsers />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/admin/messages"
+                  element={
+                    <PrivateRoute role="admin">
+                      <AdminMessages />
+                    </PrivateRoute>
+                  }
+                />
                 <Route
                   path="/report"
                   element={

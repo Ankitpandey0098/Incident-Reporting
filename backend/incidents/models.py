@@ -133,6 +133,8 @@ class ContactMessage(models.Model):
     email = models.EmailField()
     subject = models.CharField(max_length=150)
     message = models.TextField()
+    is_read = models.BooleanField(default=False)
+    is_resolved = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

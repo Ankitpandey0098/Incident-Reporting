@@ -37,6 +37,64 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ["id", "username", "role", "department"]
 
+# ---------------- Admin User Serializer ----------------
+class AdminUserSerializer(serializers.ModelSerializer):
+
+    role = serializers.SerializerMethodField()
+    department = serializers.SerializerMethodField()
+    status = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+
+        fields = [
+            "id",
+            "username",
+            "email",
+            "first_name",
+            "last_name",
+            "is_staff",
+            "is_active",
+            "date_joined",
+            "role",
+            "department",
+            "status",
+        ]
+
+    def get_role(self, obj):
+
+        try:
+            return obj.userprofile.role
+        except:
+            return "user"
+
+    def get_department(self, obj):
+
+        try:
+            if obj.userprofile.department:
+                return obj.userprofile.department.name
+            return None
+        except:
+            return None
+
+    def get_status(self, obj):
+
+        if not obj.is_active:
+            return "Suspended"
+
+        if obj.is_staff:
+            return "Admin"
+
+        try:
+            profile = obj.userprofile
+
+            if profile.role == "department":
+                return "Department"
+
+            return "Active"
+
+        except:
+            return "Active"
 # ---------------- Department Serializer ----------------
 class DepartmentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -245,13 +303,24 @@ class IncidentSerializer(serializers.ModelSerializer):
 
 # ---------------- Contact Message Serializer ----------------
 class ContactMessageSerializer(serializers.ModelSerializer):
-    
 
     class Meta:
         model = ContactMessage
-        fields = "__all__"
-        read_only_fields = ["id", "created_at"]
+        fields = [
+            "id",
+            "name",
+            "email",
+            "subject",
+            "message",
+            "is_read",
+            "is_resolved",
+            "created_at",
+        ]
 
+        read_only_fields = [
+            "id",
+            "created_at",
+        ]
 
 # ---------------- Signup Serializer ----------------
 class SignupSerializer(serializers.ModelSerializer):

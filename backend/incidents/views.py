@@ -14,8 +14,12 @@ from django.core.mail import EmailMultiAlternatives
 
 from .ml.predict import predict_category
 from .models import Incident, IncidentLog, ContactMessage, UserProfile, Notification, Department
-from .serializers import IncidentSerializer, ContactMessageSerializer, NotificationSerializer
-
+from .serializers import (
+    IncidentSerializer,
+    ContactMessageSerializer,
+    NotificationSerializer,
+    AdminUserSerializer
+)
 
 from .serializers import DepartmentSerializer
 from django.utils import timezone
@@ -554,6 +558,66 @@ def contact_view(request):
     serializer.save()
     return Response({"message": "Message received"})
 
+@api_view(["PATCH"])
+@permission_classes([IsAdminUser])
+def mark_contact_read(request, id):
+
+    try:
+        message = ContactMessage.objects.get(id=id)
+
+    except ContactMessage.DoesNotExist:
+        return Response(
+            {"error": "Message not found"},
+            status=404
+        )
+
+    message.is_read = True
+    message.save(update_fields=["is_read"])
+
+    return Response({
+        "message": "Contact message marked as read"
+    })
+
+
+@api_view(["PATCH"])
+@permission_classes([IsAdminUser])
+def mark_contact_resolved(request, id):
+
+    try:
+        message = ContactMessage.objects.get(id=id)
+
+    except ContactMessage.DoesNotExist:
+        return Response(
+            {"error": "Message not found"},
+            status=404
+        )
+
+    message.is_resolved = True
+    message.save(update_fields=["is_resolved"])
+
+    return Response({
+        "message": "Contact message marked as resolved"
+    })
+
+
+@api_view(["DELETE"])
+@permission_classes([IsAdminUser])
+def delete_contact_message(request, id):
+
+    try:
+        message = ContactMessage.objects.get(id=id)
+
+    except ContactMessage.DoesNotExist:
+        return Response(
+            {"error": "Message not found"},
+            status=404
+        )
+
+    message.delete()
+
+    return Response({
+        "message": "Contact message deleted successfully"
+    })
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
@@ -784,4 +848,173 @@ def delete_department(request, id):
 
     return Response({
         "message": "Department deleted successfully and incidents reassigned to Municipality"
+    })
+
+# ================= ADMIN USERS MANAGEMENT =================
+
+@api_view(["GET"])
+@permission_classes([IsAdminUser])
+def admin_users_list(request):
+
+    users = User.objects.all().order_by("-date_joined")
+
+    search = request.GET.get("search")
+    role = request.GET.get("role")
+    status_filter = request.GET.get("status")
+
+    # SEARCH
+    if search:
+        users = users.filter(username__icontains=search)
+
+    # ROLE FILTER
+    if role:
+
+        if role == "admin":
+            users = users.filter(is_staff=True)
+
+        elif role == "department":
+            users = users.filter(
+                userprofile__role="department"
+            )
+
+        elif role == "user":
+            users = users.filter(
+                userprofile__role="user"
+            )
+
+    # STATUS FILTER
+    if status_filter == "active":
+        users = users.filter(is_active=True)
+
+    elif status_filter == "suspended":
+        users = users.filter(is_active=False)
+
+    serializer = AdminUserSerializer(users, many=True)
+
+    return Response(serializer.data)
+
+
+# ================= UPDATE USER =================
+
+@api_view(["PATCH"])
+@permission_classes([IsAdminUser])
+def update_user(request, id):
+
+    try:
+        user = User.objects.get(id=id)
+
+    except User.DoesNotExist:
+        return Response(
+            {"error": "User not found"},
+            status=404
+        )
+
+    data = request.data
+
+    # USER FIELDS
+    user.username = data.get("username", user.username)
+    user.email = data.get("email", user.email)
+    user.first_name = data.get("first_name", user.first_name)
+    user.last_name = data.get("last_name", user.last_name)
+
+    # ACTIVE STATUS
+    if "is_active" in data:
+        user.is_active = data.get("is_active")
+
+    user.save()
+
+    # PROFILE UPDATE
+    try:
+        profile = user.userprofile
+
+        if "role" in data:
+            profile.role = data.get("role")
+
+        if "department_id" in data:
+
+            if data.get("department_id"):
+
+                try:
+                    department = Department.objects.get(
+                        id=data.get("department_id")
+                    )
+
+                    profile.department = department
+
+                except Department.DoesNotExist:
+                    return Response(
+                        {"error": "Department not found"},
+                        status=404
+                    )
+
+            else:
+                profile.department = None
+
+        profile.save()
+
+    except:
+        pass
+
+    serializer = AdminUserSerializer(user)
+
+    return Response(serializer.data)
+
+
+# ================= DELETE USER =================
+
+@api_view(["DELETE"])
+@permission_classes([IsAdminUser])
+def delete_user(request, id):
+
+    try:
+        user = User.objects.get(id=id)
+
+    except User.DoesNotExist:
+        return Response(
+            {"error": "User not found"},
+            status=404
+        )
+
+    # Prevent deleting self
+    if user == request.user:
+        return Response(
+            {"error": "You cannot delete yourself"},
+            status=400
+        )
+
+    user.delete()
+
+    return Response({
+        "message": "User deleted successfully"
+    })
+
+
+# ================= SUSPEND / ACTIVATE USER =================
+
+@api_view(["PATCH"])
+@permission_classes([IsAdminUser])
+def toggle_user_status(request, id):
+
+    try:
+        user = User.objects.get(id=id)
+
+    except User.DoesNotExist:
+        return Response(
+            {"error": "User not found"},
+            status=404
+        )
+
+    # Prevent self suspension
+    if user == request.user:
+        return Response(
+            {"error": "You cannot suspend yourself"},
+            status=400
+        )
+
+    user.is_active = not user.is_active
+    user.save(update_fields=["is_active"])
+
+    return Response({
+        "message": "User status updated",
+        "is_active": user.is_active
     })
