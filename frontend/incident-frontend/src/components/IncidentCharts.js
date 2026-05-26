@@ -180,8 +180,14 @@ const riskRes = await requestWithToken(
   plugins: {
     legend: { position: "bottom" }
   },
-  scales: {
-    y: {
+ scales: {
+  x: {
+    ticks: {
+      maxRotation: 45,
+      minRotation: 0,
+    }
+  },
+  y: {
       beginAtZero: true,
       ticks: {
         stepSize: 1,
@@ -256,13 +262,13 @@ const pieOptions = {
       {/* ================= CHARTS ================= */}
       <Row className="g-4">
 
-        <Col md={4}>
+        <Col xs={12} md={6} lg={4}>
   <Card className="shadow-sm border-0">
     <Card.Header className="bg-white fw-semibold">
       Department
     </Card.Header>
 
-    <Card.Body style={{ height: 300 }}>
+    <Card.Body style={{ height: "320px", overflowX: "auto" }}>
       {departmentData ? (
         <Doughnut
           data={departmentData}
@@ -275,25 +281,30 @@ const pieOptions = {
   </Card>
 </Col>
 
-        <Col md={4}>
+        <Col xs={12} md={6} lg={4}>
           <Card className="shadow-sm border-0">
             <Card.Header className="bg-white fw-semibold">Status</Card.Header>
-            <Card.Body style={{ height: 300 }}>
+            <Card.Body style={{ height: "320px", overflowX: "auto" }}>
               {statusData ? <Pie data={statusData} options={pieOptions} /> : <p>No data</p>}
             </Card.Body>
           </Card>
         </Col>
 
-        {role === "admin" && (
-<Col md={4}>
+        <Col xs={12} md={6} lg={4}>
   <Card className="shadow-sm border-0">
-    <Card.Header className="bg-white fw-semibold">Department</Card.Header>
-    <Card.Body style={{ height: 300 }}>
-      {departmentData ? <Doughnut data={departmentData} options={pieOptions} /> : <p>No data</p>}
+    <Card.Header className="bg-white fw-semibold">
+      Categories
+    </Card.Header>
+
+    <Card.Body style={{ height: "320px", overflowX: "auto" }}>
+      {categoryData ? (
+        <Bar data={categoryData} options={barOptions} />
+      ) : (
+        <p>No data</p>
+      )}
     </Card.Body>
   </Card>
 </Col>
-)}
 
 
       </Row>
