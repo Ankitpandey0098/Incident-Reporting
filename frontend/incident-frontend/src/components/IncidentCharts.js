@@ -256,14 +256,24 @@ const pieOptions = {
       {/* ================= CHARTS ================= */}
       <Row className="g-4">
 
-        <Col md={role === "admin" ? 4 : 6}>
-          <Card className="shadow-sm border-0">
-            <Card.Header className="bg-white fw-semibold">Category</Card.Header>
-            <Card.Body style={{ height: 300 }}>
-              {categoryData ? <Bar data={categoryData} options={barOptions} /> : <p>No data</p>}
-            </Card.Body>
-          </Card>
-        </Col>
+        <Col md={4}>
+  <Card className="shadow-sm border-0">
+    <Card.Header className="bg-white fw-semibold">
+      Department
+    </Card.Header>
+
+    <Card.Body style={{ height: 300 }}>
+      {departmentData ? (
+        <Doughnut
+          data={departmentData}
+          options={pieOptions}
+        />
+      ) : (
+        <p>No data</p>
+      )}
+    </Card.Body>
+  </Card>
+</Col>
 
         <Col md={4}>
           <Card className="shadow-sm border-0">

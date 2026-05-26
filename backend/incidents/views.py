@@ -851,7 +851,6 @@ def delete_department(request, id):
     })
 
 # ================= ADMIN USERS MANAGEMENT =================
-
 @api_view(["GET"])
 @permission_classes([IsAdminUser])
 def admin_users_list(request):
@@ -878,8 +877,8 @@ def admin_users_list(request):
             )
 
         elif role == "user":
-            users = users.filter(
-                userprofile__role="user"
+            users = users.exclude(is_staff=True).exclude(
+                userprofile__role="department"
             )
 
     # STATUS FILTER
@@ -889,10 +888,13 @@ def admin_users_list(request):
     elif status_filter == "suspended":
         users = users.filter(is_active=False)
 
-    serializer = AdminUserSerializer(users, many=True)
+    serializer = AdminUserSerializer(
+        users,
+        many=True,
+        context={"request": request}
+    )
 
     return Response(serializer.data)
-
 
 # ================= UPDATE USER =================
 
