@@ -7,7 +7,11 @@ from django.conf import settings
 from django.template.loader import render_to_string
 from django.core.mail import EmailMultiAlternatives
 from .models import Department
-
+import hashlib
+from datetime import timedelta
+from django.utils import timezone
+from .models import SignupOTP
+import random
 # ---------------- CATEGORY → DEPARTMENT MAP ----------------
 CATEGORY_DEPARTMENT_MAP = {
     "Deforestation": "Forest",
@@ -341,34 +345,38 @@ class SignupSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
-        phone = validated_data.pop("phone", None)
+        phone = validated_data.pop("phone", "")
 
+        # create inactive user
         user = User.objects.create_user(**validated_data)
+        user.is_active = False
+        user.save()
 
-        if phone:
-            UserProfile.objects.create(user=user, phone=phone)
+        # create profile
+        UserProfile.objects.create(
+            user=user,
+            phone=phone,
+            is_verified=False
+        )
 
-        # Send welcome email
+        # generate OTP
+        otp = str(random.randint(100000, 999999))
+
+        otp_obj = SignupOTP(user=user)
+        otp_obj.set_otp(otp)
+        otp_obj.save()
+
+        # send OTP email
         if user.email:
-            html_content = render_to_string(
-                "emails/welcome_user.html",
-                {
-                    "username": user.username,
-                }
-            )
-
-            email = EmailMultiAlternatives(
-                subject="Welcome to Incident Platform",
-                body="Welcome to Incident Platform!",
+            send_mail(
+                subject="Verify Your Account",
+                message=f"Your OTP is {otp}. It expires in 10 minutes.",
                 from_email=settings.DEFAULT_FROM_EMAIL,
-                to=[user.email],
+                recipient_list=[user.email],
+                fail_silently=False,
             )
-
-            email.attach_alternative(html_content, "text/html")
-            email.send(fail_silently=True)
 
         return user
-
 
 # ---------------- User Profile Serializer ----------------
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -391,3 +399,31 @@ class UserProfileSerializer(serializers.ModelSerializer):
             print("Cloudinary Image Error:", e)  # optional log
 
         return None
+
+class SignupOTPVerifySerializer(serializers.Serializer):
+    username = serializers.CharField()
+    otp = serializers.CharField()
+
+    def validate(self, data):
+        username = data.get("username")
+        otp = data.get("otp")
+
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            raise serializers.ValidationError("User not found")
+
+        otp_obj = SignupOTP.objects.filter(user=user, is_used=False).last()
+
+        if not otp_obj:
+            raise serializers.ValidationError("OTP not found")
+
+        if otp_obj.expires_at < timezone.now():
+            raise serializers.ValidationError("OTP expired")
+
+        if not otp_obj.check_otp(otp):
+            raise serializers.ValidationError("Invalid OTP")
+
+        data["user"] = user
+        data["otp_obj"] = otp_obj
+        return data

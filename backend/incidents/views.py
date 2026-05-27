@@ -25,6 +25,8 @@ from .serializers import DepartmentSerializer
 from django.utils import timezone
 from rest_framework.permissions import IsAdminUser
 from django.db.models import F
+from rest_framework.views import APIView
+from .serializers import SignupOTPVerifySerializer
 # ================= CATEGORY → DEPARTMENT MAP =================
 CATEGORY_DEPARTMENT_MAP = {
     "Drainage Issue": "Water Management",
@@ -1020,3 +1022,32 @@ def toggle_user_status(request, id):
         "message": "User status updated",
         "is_active": user.is_active
     })
+
+class SignupOTPVerifyView(APIView):
+
+    def post(self, request):
+        serializer = SignupOTPVerifySerializer(data=request.data)
+
+        if serializer.is_valid():
+            user = serializer.validated_data["user"]
+            otp_obj = serializer.validated_data["otp_obj"]
+
+            # activate user
+            user.is_active = True
+            user.save()
+
+            # mark profile verified
+            profile = user.userprofile
+            profile.is_verified = True
+            profile.save()
+
+            # mark OTP used
+            otp_obj.is_used = True
+            otp_obj.save()
+
+            return Response(
+                {"message": "Account verified successfully"},
+                status=status.HTTP_200_OK
+            )
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -164,6 +164,7 @@ class UserProfile(models.Model):
         choices=ROLE_CHOICES,
         default="user"
     )
+    is_verified = models.BooleanField(default=False)
 
     # 🔥 Link department user
     department = models.ForeignKey(
@@ -211,6 +212,27 @@ class Notification(models.Model):
 
     def __str__(self):
         return f"Notification for {self.user.username}"
+    
+class SignupOTP(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    otp_hash = models.CharField(max_length=64)
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+    is_used = models.BooleanField(default=False)
+
+    def set_otp(self, otp):
+        self.otp_hash = hashlib.sha256(otp.encode()).hexdigest()
+
+    def check_otp(self, otp):
+        return self.otp_hash == hashlib.sha256(otp.encode()).hexdigest()
+
+    def save(self, *args, **kwargs):
+        if not self.expires_at:
+            self.expires_at = timezone.now() + timedelta(minutes=10)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Signup OTP for {self.user.username}"
 
 class PasswordResetOTP(models.Model):
     email = models.EmailField()
