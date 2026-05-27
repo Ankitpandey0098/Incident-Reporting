@@ -12,6 +12,8 @@ from datetime import timedelta
 from django.utils import timezone
 from .models import SignupOTP
 import random
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 # ---------------- CATEGORY → DEPARTMENT MAP ----------------
 CATEGORY_DEPARTMENT_MAP = {
     "Deforestation": "Forest",
@@ -348,10 +350,19 @@ class SignupSerializer(serializers.ModelSerializer):
         phone = validated_data.pop("phone", "")
 
         # create inactive user
+        password = validated_data.get("password")
+
+        try:
+            validate_password(password)
+        except ValidationError as e:
+            raise serializers.ValidationError({"password": e.messages})
+
         user = User.objects.create_user(**validated_data)
+        
         user.is_active = False
         user.save()
-
+        user.refresh_from_db()
+        otp = str(random.randint(100000, 999999))
         # create profile
         UserProfile.objects.create(
             user=user,
@@ -360,9 +371,11 @@ class SignupSerializer(serializers.ModelSerializer):
         )
 
         # generate OTP
-        otp = str(random.randint(100000, 999999))
 
-        otp_obj = SignupOTP(user=user)
+        otp_obj = SignupOTP.objects.create(
+            user=user
+        )
+
         otp_obj.set_otp(otp)
         otp_obj.save()
 
