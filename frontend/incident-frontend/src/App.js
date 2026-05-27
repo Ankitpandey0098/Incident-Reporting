@@ -27,7 +27,7 @@ import IncidentMap from "./components/IncidentMap";
 import DepartmentDashboard from "./components/DepartmentDashboard";
 import AnalyticsDashboard from "./components/AnalyticsDashboard";
 import DepartmentManagement from "./components/DepartmentManagement";
-
+import SignupVerifyOtp from "./components/SignupVerifyOtp";
 /* 🔹 BACKGROUND IMAGES */
 const BACKGROUNDS = [
   "/bg/bg1.webp",
@@ -80,7 +80,7 @@ function App() {
                   </PrivateRoute>
                 }
               />
-
+              <Route path="/signup-verify-otp" element={<SignupVerifyOtp />} />
 
                 <Route path="/map" element={<IncidentMap />} />
                 {/* Protected */}
