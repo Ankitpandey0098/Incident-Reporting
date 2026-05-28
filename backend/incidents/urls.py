@@ -143,7 +143,7 @@ urlpatterns = [
     path("departments/<int:id>/", get_department_detail),
     path("departments/update/<int:id>/", update_department),
     path("departments/delete/<int:id>/", delete_department),
-    path("verify-otp/", SignupOTPVerifyView.as_view()),
+    path("signup-verify-otp/", SignupOTPVerifyView.as_view()),
 
 
 ]

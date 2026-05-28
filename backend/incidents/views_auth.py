@@ -27,61 +27,27 @@ from rest_framework_simplejwt.tokens import RefreshToken
 @ensure_csrf_cookie
 def get_csrf(request):
     return JsonResponse({"message": "CSRF cookie set"})
-
 # ================= REGISTER =================
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def register_user(request):
-    username = request.data.get("username")
-    password = request.data.get("password")
-    email = request.data.get("email", "")
-    first_name = request.data.get("first_name", "")
-    last_name = request.data.get("last_name", "")
-    role = request.data.get("role", "user")
-    department_name = request.data.get("department")
 
-    if not username or not password:
+    serializer = SignupSerializer(data=request.data)
+
+    if serializer.is_valid():
+        serializer.save()
+
         return Response(
-            {"error": "Username and password required"},
-            status=status.HTTP_400_BAD_REQUEST
+            {
+                "message": "OTP sent to your email. Please verify your account."
+            },
+            status=status.HTTP_201_CREATED
         )
-
-    if User.objects.filter(username=username).exists():
-        return Response(
-            {"error": "Username already exists"},
-            status=status.HTTP_400_BAD_REQUEST
-        )
-
-    # ✅ Create User
-    user = User.objects.create_user(
-        username=username,
-        password=password,
-        email=email,
-        first_name=first_name,
-        last_name=last_name,
-    )
-
-    # ✅ Find Department
-    department = None
-    if role == "department" and department_name:
-        from .models import Department
-        try:
-            department = Department.objects.get(name=department_name)
-        except Department.DoesNotExist:
-            department = None
-
-    # ✅ Create UserProfile
-    UserProfile.objects.create(
-        user=user,
-        role=role,
-        department=department
-    )
 
     return Response(
-        {"message": "Registration successful ! Redirecting to login..."},
-        status=status.HTTP_201_CREATED
+        serializer.errors,
+        status=status.HTTP_400_BAD_REQUEST
     )
-
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def login_user(request):
@@ -92,6 +58,11 @@ def login_user(request):
 
     if not user:
         return Response({"error": "Invalid credentials"}, status=400)
+        if not user.is_active:
+            return Response(
+                {"error": "Please verify your email first"},
+                status=400
+            )
 
     refresh = RefreshToken.for_user(user)
 

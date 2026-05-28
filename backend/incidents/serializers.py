@@ -331,7 +331,8 @@ class ContactMessageSerializer(serializers.ModelSerializer):
 # ---------------- Signup Serializer ----------------
 class SignupSerializer(serializers.ModelSerializer):
     phone = serializers.CharField(write_only=True, required=False)
-
+    role = serializers.CharField(write_only=True, required=False, default="user")
+    department = serializers.CharField(write_only=True, required=False)
     class Meta:
         model = User
         fields = [
@@ -341,6 +342,8 @@ class SignupSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "phone",
+            "role",
+            "department",
         ]
         extra_kwargs = {
             "password": {"write_only": True}
@@ -348,6 +351,8 @@ class SignupSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         phone = validated_data.pop("phone", "")
+        role = validated_data.pop("role", "user")
+        department_name = validated_data.pop("department", None)
 
         # create inactive user
         password = validated_data.get("password")
@@ -364,9 +369,21 @@ class SignupSerializer(serializers.ModelSerializer):
         user.refresh_from_db()
         otp = str(random.randint(100000, 999999))
         # create profile
+        department_obj = None
+
+        if role == "department" and department_name:
+            try:
+                department_obj = Department.objects.get(
+                    name=department_name
+                )
+            except Department.DoesNotExist:
+                department_obj = None
+
         UserProfile.objects.create(
             user=user,
             phone=phone,
+            role=role,
+            department=department_obj,
             is_verified=False
         )
 
