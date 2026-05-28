@@ -187,7 +187,7 @@ class IncidentViewSet(viewsets.ModelViewSet):
                 )
 
                 email.attach_alternative(html_content, "text/html")
-                email.send(fail_silently=False)
+                email.send(fail_silently=True)
 
                 incident.reported_to_department = True
                 incident.save(update_fields=["reported_to_department"])
@@ -365,7 +365,7 @@ def report_incident_to_department(request, id):
 
 
     email.attach_alternative(html_content, "text/html")
-    email.send(fail_silently=False)
+    email.send(fail_silently=True)
 
 
     # Update email tracking

@@ -127,7 +127,7 @@ def forgot_password(request):
     )
 
     email_msg.attach_alternative(html_content, "text/html")
-    email_msg.send(fail_silently=False)
+    email_msg.send(fail_silently=True)
 
     return Response({"message": "OTP sent to email"}, status=200)
 
