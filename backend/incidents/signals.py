@@ -3,6 +3,9 @@ from django.dispatch import receiver
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.conf import settings
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 @receiver(post_save, sender=User)
@@ -21,5 +24,6 @@ def send_welcome_email(sender, instance, created, **kwargs):
                 recipient_list=[instance.email],
                 fail_silently=True,
             )
-        except Exception:
-            pass
+        except Exception as e:
+            # IMPORTANT: never break registration
+            logger.error(f"Welcome email failed for {instance.username}: {e}")
