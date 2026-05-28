@@ -4,17 +4,17 @@ import { Form, Button, Alert, Container, Card } from "react-bootstrap";
 import { useNavigate, useLocation } from "react-router-dom";
 
 function SignupVerifyOtp() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [form, setForm] = useState({
-  username: location.state?.username || "",
-  otp: ""
-});
+    username: location.state?.username || localStorage.getItem("otp_username") || "",
+    otp: ""
+  });
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const navigate = useNavigate();
-  const location = useLocation();
 
   const handleChange = (e) => {
     setForm({
@@ -74,10 +74,11 @@ function SignupVerifyOtp() {
           <Form.Group className="mb-3">
             <Form.Label>OTP</Form.Label>
             <Form.Control
-              name="otp"
-              required
-              onChange={handleChange}
-            />
+            name="otp"
+            value={form.otp}
+            required
+            onChange={handleChange}
+          />
           </Form.Group>
 
           <Button

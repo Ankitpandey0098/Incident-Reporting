@@ -79,12 +79,10 @@ function Signup() {
 
       if (res.status === 200 || res.status === 201) {
         setSuccess(res.data.message || "Registration successful!");
-        setTimeout(() => {
-  navigate("/signup-verify-otp", {
-    state: {
-      username: form.username
-    }
-  });
+        localStorage.setItem("otp_username", form.username);
+
+setTimeout(() => {
+  navigate("/signup-verify-otp");
 }, 1500);
       }
 
