@@ -79,14 +79,36 @@ function Signup() {
 
       if (res.status === 200 || res.status === 201) {
         setSuccess(res.data.message || "Registration successful!");
-        setTimeout(() => navigate("/signup-verify-otp"), 1500);
+        setTimeout(() => {
+  navigate("/signup-verify-otp", {
+    state: {
+      username: form.username
+    }
+  });
+}, 1500);
       }
 
     } catch (err) {
-      setError(
-        err.response?.data?.error ||
-        "Registration failed"
-      );
+
+  if (err.response?.data) {
+
+    const errors = err.response.data;
+
+    const firstKey = Object.keys(errors)[0];
+
+    const firstError = errors[firstKey];
+
+    if (Array.isArray(firstError)) {
+      setError(firstError[0]);
+    } else {
+      setError(firstError);
+    }
+
+  } else {
+    setError("Registration failed");
+  }
+
+
     } finally {
       setLoading(false);
     }

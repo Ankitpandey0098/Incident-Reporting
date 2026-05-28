@@ -1,19 +1,20 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Form, Button, Alert, Container, Card } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function SignupVerifyOtp() {
   const [form, setForm] = useState({
-    username: "",
-    otp: ""
-  });
+  username: location.state?.username || "",
+  otp: ""
+});
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleChange = (e) => {
     setForm({
@@ -30,7 +31,7 @@ function SignupVerifyOtp() {
 
     try {
       const res = await axios.post(
-        "https://incident-reporting-rjwi.onrender.com/api/verify-otp/",
+        "https://incident-reporting-rjwi.onrender.com/api/signup-verify-otp/",
         form
       );
 
@@ -64,10 +65,10 @@ function SignupVerifyOtp() {
           <Form.Group className="mb-3">
             <Form.Label>Username</Form.Label>
             <Form.Control
-              name="username"
-              required
-              onChange={handleChange}
-            />
+            name="username"
+            value={form.username}
+            readOnly
+          />
           </Form.Group>
 
           <Form.Group className="mb-3">

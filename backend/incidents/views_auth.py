@@ -12,9 +12,14 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 
 from .models import UserProfile
-from .serializers import SignupSerializer, UserProfileSerializer
+from .serializers import (
+    SignupSerializer,
+    UserProfileSerializer,
+    SignupOTPVerifySerializer
+)
 from rest_framework.decorators import api_view, permission_classes, parser_classes
 
+from .models import SignupOTP
 from django.utils import timezone
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
@@ -57,12 +62,16 @@ def login_user(request):
     )
 
     if not user:
-        return Response({"error": "Invalid credentials"}, status=400)
-        if not user.is_active:
-            return Response(
-                {"error": "Please verify your email first"},
-                status=400
-            )
+        return Response(
+            {"error": "Invalid credentials"},
+            status=400
+        )
+
+    if not user.is_active:
+        return Response(
+            {"error": "Please verify your email first"},
+            status=400
+        )
 
     refresh = RefreshToken.for_user(user)
 
@@ -146,6 +155,34 @@ def verify_otp(request):
 
     return Response({"message": "OTP verified"}, status=200)
 
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def verify_signup_otp(request):
+
+    serializer = SignupOTPVerifySerializer(data=request.data)
+
+    if serializer.is_valid():
+
+        user = serializer.validated_data["user"]
+        otp_obj = serializer.validated_data["otp_obj"]
+
+        user.is_active = True
+        user.save()
+
+        profile = user.userprofile
+        profile.is_verified = True
+        profile.save()
+
+        otp_obj.is_used = True
+        otp_obj.save()
+
+        return Response(
+            {"message": "Account verified successfully"},
+            status=200
+        )
+
+    return Response(serializer.errors, status=400)
 
 
 @api_view(["POST"])
