@@ -332,7 +332,7 @@ class ContactMessageSerializer(serializers.ModelSerializer):
 class SignupSerializer(serializers.ModelSerializer):
     phone = serializers.CharField(write_only=True, required=False)
     role = serializers.CharField(write_only=True, required=False, default="user")
-    department = serializers.CharField(write_only=True, required=False)
+    department = serializers.CharField(write_only=True, required=False,  allow_blank=True)
     class Meta:
         model = User
         fields = [
@@ -351,6 +351,7 @@ class SignupSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         phone = validated_data.pop("phone", "")
+        
         role = validated_data.pop("role", "user")
         department_name = validated_data.pop("department", None)
 
@@ -366,7 +367,7 @@ class SignupSerializer(serializers.ModelSerializer):
         
         user.is_active = False
         user.save()
-        user.refresh_from_db()
+        
         otp = str(random.randint(100000, 999999))
         # create profile
         department_obj = None
