@@ -187,6 +187,7 @@ EMAIL_USE_TLS = True
 
 EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
+EMAIL_TIMEOUT = 30
 DEFAULT_FROM_EMAIL = 'Incident Platform <pandeyji7112@gmail.com>'
 
 BASE_URL = "https://incident-reporting-rjwi.onrender.com"
