@@ -18,6 +18,7 @@ djangorestframework==3.14.0
 djangorestframework_simplejwt==5.5.1
 djongo==1.2.31
 dnspython==2.8.0
+gunicorn==26.0.0
 idna==3.16
 joblib==1.5.2
 kombu==5.6.2
