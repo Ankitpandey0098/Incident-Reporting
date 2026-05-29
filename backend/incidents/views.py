@@ -1024,7 +1024,7 @@ def toggle_user_status(request, id):
     })
 
 class SignupOTPVerifyView(APIView):
-
+    permission_classes = [AllowAny]
     def post(self, request):
         serializer = SignupOTPVerifySerializer(data=request.data)
 
