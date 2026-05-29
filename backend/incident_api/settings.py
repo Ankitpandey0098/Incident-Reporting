@@ -26,7 +26,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-
+RESEND_API_KEY = os.getenv("RESEND_API_KEY")
 
 
 ALLOWED_HOSTS = ["*"]
@@ -177,23 +177,7 @@ TIME_ZONE = "Asia/Kolkata"  # or your server timezone
 
 
 
-# ================= EMAIL CONFIG =================
-# ================= EMAIL CONFIG =================
 
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-
-EMAIL_HOST = "smtp.gmail.com"
-
-EMAIL_PORT = 465
-EMAIL_USE_TLS = False
-EMAIL_USE_SSL = True
-
-EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
-
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-
-EMAIL_TIMEOUT = 10
 
 BASE_URL = "https://incident-reporting-rjwi.onrender.com"
 

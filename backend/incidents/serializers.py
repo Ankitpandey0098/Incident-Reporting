@@ -2,10 +2,11 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 
 from .models import Incident, IncidentLog, ContactMessage, UserProfile, Notification
-from django.core.mail import send_mail
+
 from django.conf import settings
-from django.template.loader import render_to_string
-from django.core.mail import EmailMultiAlternatives
+
+import resend
+
 from .models import Department
 import hashlib
 from datetime import timedelta
@@ -14,6 +15,8 @@ from .models import SignupOTP
 import random
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
+
+resend.api_key = settings.RESEND_API_KEY
 # ---------------- CATEGORY → DEPARTMENT MAP ----------------
 CATEGORY_DEPARTMENT_MAP = {
     "Deforestation": "Forest",
@@ -190,17 +193,20 @@ class IncidentSerializer(serializers.ModelSerializer):
                 department_name = CATEGORY_DEPARTMENT_MAP.get(category_key, "Municipality")
                 dept = Department.objects.get(name=incident.department)
 
-                send_mail(
-                    subject=f"New Incident Reported: {incident.title}",
-                    message=f"A new incident has been reported in the {incident.department} department.\n\n"
-                            f"Title: {incident.title}\n"
-                            f"Category: {incident.category}\n"
-                            f"Description: {incident.description}\n"
-                            f"Status: {incident.status}",
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=[dept.email],
-                    fail_silently=True,
-                )
+                resend.Emails.send({
+                    "from": "onboarding@resend.dev",
+                    "to": [dept.email],
+                    "subject": f"New Incident Reported: {incident.title}",
+                    "html": f"""
+                        <h2>New Incident Reported</h2>
+
+                        <p><strong>Department:</strong> {incident.department}</p>
+                        <p><strong>Title:</strong> {incident.title}</p>
+                        <p><strong>Category:</strong> {incident.category}</p>
+                        <p><strong>Description:</strong> {incident.description}</p>
+                        <p><strong>Status:</strong> {incident.status}</p>
+                    """
+                })
 
             except Department.DoesNotExist:
                 pass
@@ -282,27 +288,24 @@ class IncidentSerializer(serializers.ModelSerializer):
         if (old_status != updated_instance.status or old_category != updated_instance.category) \
                 and updated_instance.user.email:
 
-            html_content = render_to_string(
-                "emails/incident_updated.html",
-                {
-                    "username": updated_instance.user.username,
-                    "incident_id": updated_instance.id,
-                    "title": updated_instance.title,
-                    "status": updated_instance.status,
-                    "category": updated_instance.category,
-                    "department": updated_instance.department,
-                }
-            )
+            resend.Emails.send({
+                "from": "onboarding@resend.dev",
+                "to": updated_instance.user.email,
+                "subject": "Update on Your Reported Incident",
+                "html": f"""
+                    <h2>Incident Updated</h2>
 
-            email = EmailMultiAlternatives(
-                subject="Update on Your Reported Incident",
-                body="Your incident has been updated.",
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                to=[updated_instance.user.email],
-            )
+                    <p>Hello {updated_instance.user.username},</p>
 
-            email.attach_alternative(html_content, "text/html")
-            email.send(fail_silently=True)
+                    <p>Your incident has been updated.</p>
+
+                    <p><strong>Incident ID:</strong> {updated_instance.id}</p>
+                    <p><strong>Title:</strong> {updated_instance.title}</p>
+                    <p><strong>Status:</strong> {updated_instance.status}</p>
+                    <p><strong>Category:</strong> {updated_instance.category}</p>
+                    <p><strong>Department:</strong> {updated_instance.department}</p>
+                """
+            })
 
         return updated_instance
 
@@ -398,21 +401,25 @@ class SignupSerializer(serializers.ModelSerializer):
         otp_obj.save()
 
         # send OTP email
+        # send OTP email using Resend
         if user.email:
             try:
-                print("EMAIL_HOST_USER:", settings.EMAIL_HOST_USER)
-                print("DEFAULT_FROM_EMAIL:", settings.DEFAULT_FROM_EMAIL)
-                print("Sending OTP email to:", user.email)
+                resend.Emails.send({
+                    "from": "onboarding@resend.dev",
+                    "to": [user.email],
+                    "subject": "Verify Your Account",
+                    "html": f"""
+                        <h2>Incident Platform OTP Verification</h2>
 
-                send_mail(
-                    subject="Verify Your Account",
-                    message=f"Your OTP is {otp}. It expires in 10 minutes.",
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=[user.email],
-                    fail_silently=False,
-                )
+                        <p>Your OTP is:</p>
 
-                print("OTP email sent successfully")
+                        <h1>{otp}</h1>
+
+                        <p>This OTP expires in 10 minutes.</p>
+                    """
+                })
+
+                print("OTP EMAIL SENT SUCCESSFULLY")
 
             except Exception as e:
                 print("OTP EMAIL ERROR:", e)
