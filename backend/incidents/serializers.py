@@ -399,13 +399,17 @@ class SignupSerializer(serializers.ModelSerializer):
 
         # send OTP email
         if user.email:
-            send_mail(
-                subject="Verify Your Account",
-                message=f"Your OTP is {otp}. It expires in 10 minutes.",
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[user.email],
-                fail_silently=False,
-            )
+            try:
+                send_mail(
+                    subject="Verify Your Account",
+                    message=f"Your OTP is {otp}. It expires in 10 minutes.",
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[user.email],
+                    fail_silently=True,
+                )
+
+            except Exception as e:
+                print("OTP EMAIL ERROR:", e)
 
         return user
 

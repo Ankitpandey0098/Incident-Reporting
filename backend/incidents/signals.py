@@ -1,29 +1,22 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import User
-from django.core.mail import send_mail
-from django.conf import settings
 import logging
 
 logger = logging.getLogger(__name__)
 
 
+# ❌ IMPORTANT: No email sending here anymore
+# This prevents SMTP blocking registration
+
 @receiver(post_save, sender=User)
-def send_welcome_email(sender, instance, created, **kwargs):
-    if created and instance.email:
+def user_created_handler(sender, instance, created, **kwargs):
+    if created:
         try:
-            send_mail(
-                subject="Welcome to Incident Platform",
-                message=(
-                    f"Hello {instance.username},\n\n"
-                    "Your account has been created successfully.\n"
-                    "You can now report incidents and track their status.\n\n"
-                    "Thank you for joining us."
-                ),
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[instance.email],
-                fail_silently=True,
-            )
+            logger.info(f"User created successfully: {instance.username}")
+
+            # You can trigger OTP email from view later (NOT signal)
+            # Example: create OTP record / flag / queue task
+
         except Exception as e:
-            # IMPORTANT: never break registration
-            logger.error(f"Welcome email failed for {instance.username}: {e}")
+            logger.error(f"User signal error: {e}")
