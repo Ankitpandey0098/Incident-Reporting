@@ -31,9 +31,11 @@ function Login() {
     const res = await api.post("/login/", form);
     console.log("LOGIN RESPONSE:", res.data);
 
-    localStorage.setItem("access", res.data.access);
-    localStorage.setItem("refresh", res.data.refresh);
-    localStorage.setItem("role", response.data.user.role);
+    
+
+localStorage.setItem("access", res.data.access);
+localStorage.setItem("refresh", res.data.refresh);
+localStorage.setItem("role", res.data.user.role);
 
     const user = await api.get("/profile/");
 
@@ -41,10 +43,10 @@ console.log(
   "PROFILE DATA:",
   JSON.stringify(user.data, null, 2)
 );
-    localStorage.setItem("role", user.data.role);
+    
     localStorage.setItem("department", user.data.department || "");
 
-    const role = user.data.role?.toLowerCase();
+    const role = res.data.user.role?.toLowerCase();
 
     if (role === "admin") navigate("/admin");
     else if (role === "department") navigate("/department");
