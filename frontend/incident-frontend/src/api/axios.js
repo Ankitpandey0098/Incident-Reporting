@@ -31,9 +31,16 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.clear();
-      window.location.href = "/login";
-    }
+      
+  localStorage.removeItem("access");
+  localStorage.removeItem("refresh");
+  localStorage.removeItem("role");
+  localStorage.removeItem("department");
+
+  // DO NOT redirect instantly
+  // let React handle it
+}
+    
     return Promise.reject(error);
   }
 );

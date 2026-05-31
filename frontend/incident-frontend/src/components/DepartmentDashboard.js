@@ -1,7 +1,7 @@
 // src/components/DepartmentDashboard.js
 
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../api/axios";
 
 import {
   Table,
@@ -15,8 +15,6 @@ import {
 } from "react-bootstrap";
 
 const DepartmentDashboard = () => {
-
-  const token = localStorage.getItem("access");
   
   const [incidents, setIncidents] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -37,10 +35,7 @@ useEffect(() => {
 
   try {
 
-    const res = await axios.get(
-  "https://incident-reporting-rjwi.onrender.com/api/incidents/",
-  { headers: { Authorization: `Bearer ${token}` } }
-);
+    api.get("/incidents/")
 
 
 console.log("All incidents:", res.data);
@@ -84,8 +79,8 @@ const filtered = res.data.filter(
 
   try {
 
-    const res = await axios.patch(
-      `https://incident-reporting-rjwi.onrender.com/api/incidents/${incident.id}/`,
+    const res = await api.patch(
+      `/incidents/${incident.id}/`,
       { status: statusMap[status] },
       {
         headers: {

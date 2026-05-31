@@ -33,20 +33,12 @@ function Login() {
 
     
 
-localStorage.setItem("access", res.data.access);
-localStorage.setItem("refresh", res.data.refresh);
-localStorage.setItem("role", res.data.user.role);
-
-    const user = await api.get("/profile/");
-
-console.log(
-  "PROFILE DATA:",
-  JSON.stringify(user.data, null, 2)
-);
-    
-    localStorage.setItem("department", user.data.department || "");
+    localStorage.setItem("access", res.data.access);
+    localStorage.setItem("refresh", res.data.refresh);    
+    localStorage.setItem("department", res.data.user.department || "");
 
     const role = res.data.user.role?.toLowerCase();
+    localStorage.setItem("role", role);
 
     if (role === "admin") navigate("/admin");
     else if (role === "department") navigate("/department");

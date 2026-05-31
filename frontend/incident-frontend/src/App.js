@@ -38,8 +38,7 @@ const BACKGROUNDS = [
 ];
 
 function App() {
-  const isLoggedIn = !!localStorage.getItem("access");
-  const role = localStorage.getItem("role");
+
 
   const [bgIndex, setBgIndex] = useState(0);
 

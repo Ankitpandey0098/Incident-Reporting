@@ -160,13 +160,14 @@ CORS_ALLOWED_ORIGIN_REGEXES = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
+    "https://incident-reporting-rjwi.vercel.app",  # ADD THIS (IMPORTANT)
     "https://incident-reporting-rjwi.onrender.com",
     "http://localhost:3000",
     "http://127.0.0.1:3000",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://*.vercel.app",
+    "https://incident-reporting-rjwi.vercel.app",
     "https://incident-reporting-rjwi.onrender.com",
     "http://localhost:3000",
     "http://127.0.0.1:3000",
