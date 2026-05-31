@@ -103,7 +103,7 @@ const Footer = () => {
             <div className="footer-contact text-center text-md-start">
 
               <p>
-                📧 support@incidentplatform.com
+                📧 pandeyji7112@gmail.com
               </p>
 
               <p>

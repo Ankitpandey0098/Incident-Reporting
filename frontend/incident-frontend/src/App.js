@@ -64,7 +64,6 @@ function App() {
 
           {/* 🔹 CONTENT LAYER */}
           <div className="content-layer">
-            <Container>
               <Routes>
                 {/* Public */}
                 <Route path="/login" element={<Login />} />
@@ -171,7 +170,7 @@ function App() {
 
                 <Route path="*" element={<div>Page not found</div>} />
               </Routes>
-            </Container>
+            
           </div>
 
           <Footer />
