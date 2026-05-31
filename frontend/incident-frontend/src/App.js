@@ -15,7 +15,7 @@ import Profile from "./components/Profile";
 import PrivateRoute from "./components/PrivateRoute";
 import Footer from "./components/Footer";
 import NavigationBar from "./components/NavigationBar";
-
+import LandingPage from "./components/LandingPage";
 import { UserProvider } from "./UserContext";
 import "./App.css";
 import AdminDashboard from "./components/AdminDashboard";
@@ -156,22 +156,7 @@ function App() {
                 />
 
                 {/* Default */}
-                <Route
-                  path="/"
-                  element={
-                    isLoggedIn ? (
-                      role === "admin" ? (
-                        <Navigate to="/admin" replace />
-                      ) : role === "department" ? (
-                        <Navigate to="/department" replace />
-                      ) : (
-                        <Navigate to="/dashboard" replace />
-                      )
-                    ) : (
-                      <Navigate to="/login" replace />
-                    )
-                  }
-                />
+                <Route path="/" element={<LandingPage />} />
 
                 <Route
                   path="/department"

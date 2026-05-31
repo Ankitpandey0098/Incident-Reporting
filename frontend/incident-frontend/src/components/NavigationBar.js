@@ -66,9 +66,9 @@ const NavigationBar = () => {
   const unreadCount = notifications.filter((n) => !n.is_read).length;
 
   const handleLogout = () => {
-    localStorage.clear();
-    navigate("/login");
-  };
+  localStorage.clear();
+  navigate("/");
+};
 
   const isActive = (path) => location.pathname === path;
 
@@ -147,8 +147,40 @@ const NavigationBar = () => {
                   Admin Panel
                 </Nav.Link>
               )}
+                {user?.role === "department" && (
+      <Nav.Link
+        as={Link}
+        to="/department"
+        style={{
+          borderRadius: "10px",
+          padding: "6px 12px",
+          fontWeight: isActive("/department") ? "600" : "400",
+          background: isActive("/department")
+            ? "rgba(13,110,253,0.1)"
+            : "transparent",
+          color: isActive("/department") ? "#0d6efd" : "#333"
+        }}
+      >
+        Department Dashboard
+      </Nav.Link>
+    )}
             </>
           )}
+          {!token && (
+  <>
+    <Nav.Link as={Link} to="/">
+      Home
+    </Nav.Link>
+
+    <Nav.Link as={Link} to="/about">
+      About
+    </Nav.Link>
+
+    <Nav.Link as={Link} to="/contact">
+      Contact
+    </Nav.Link>
+  </>
+)}
         </Nav>
 
         {/* RIGHT SIDE */}
