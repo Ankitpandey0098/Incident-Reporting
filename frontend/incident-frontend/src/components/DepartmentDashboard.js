@@ -18,7 +18,7 @@ const DepartmentDashboard = () => {
 
   const token = localStorage.getItem("access");
   const department = localStorage.getItem("department");
-
+  console.log("Department from localStorage:", department);
   const [incidents, setIncidents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
@@ -43,7 +43,7 @@ useEffect(() => {
   { headers: { Authorization: `Bearer ${token}` } }
 );
 
-
+console.log("All incidents:", res.data);
 
     const filtered = res.data.filter(
   (i) =>
