@@ -655,7 +655,18 @@ def profile_view(request):
             "phone": getattr(profile, "phone", ""),
             "city": getattr(profile, "city", ""),
             "role": getattr(profile, "role", "user"),
-            "profile_image": profile.profile_image.url if profile.profile_image else None
+
+            "department": (
+                profile.department.name
+                if profile.department
+                else None
+            ),
+
+            "profile_image": (
+                profile.profile_image.url
+                if profile.profile_image
+                else None
+            )
         })
 
 

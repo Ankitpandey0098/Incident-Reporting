@@ -430,9 +430,22 @@ class SignupSerializer(serializers.ModelSerializer):
 class UserProfileSerializer(serializers.ModelSerializer):
     profile_image = serializers.SerializerMethodField()
 
+    department = serializers.SerializerMethodField()
+
     class Meta:
         model = UserProfile
-        fields = ["phone", "city", "role", "profile_image"]
+        fields = [
+            "phone",
+            "city",
+            "role",
+            "department",
+            "profile_image"
+        ]
+
+    def get_department(self, obj):
+        if obj.department:
+            return obj.department.name
+        return None
 
     def get_profile_image(self, obj):
         request = self.context.get("request")
@@ -443,8 +456,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
                 if request:
                     return request.build_absolute_uri(url)
                 return url
-        except Exception as e:
-            print("Cloudinary Image Error:", e)  # optional log
+        except Exception:
+            pass
 
         return None
 
