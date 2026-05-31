@@ -4,7 +4,10 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import ProfileBar from "./ProfileBar";
 import { UserContext } from "../UserContext";
 import axios from "axios";
-import api from "../api/axios";
+
+import "./NavigationBar.css";
+import { FaShieldAlt } from "react-icons/fa";
+
 const NavigationBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -14,7 +17,6 @@ const NavigationBar = () => {
   const [darkMode, setDarkMode] = useState(localStorage.getItem("darkMode") === "true");
   const [notifications, setNotifications] = useState([]);
   const [loadingNotifications, setLoadingNotifications] = useState(false);
-  const [hoveredNotification, setHoveredNotification] = useState(null);
 
   useEffect(() => {
     document.body.classList.toggle("dark-mode", darkMode);
@@ -65,119 +67,133 @@ const NavigationBar = () => {
 
   const unreadCount = notifications.filter((n) => !n.is_read).length;
 
-  const handleLogout = () => {
-  localStorage.clear();
-  navigate("/");
-};
 
   const isActive = (path) => location.pathname === path;
 
  return (
   <Navbar
-    fixed="top"
-    expand="lg"
-    style={{
-      background: "rgba(255,255,255,0.75)",
-      backdropFilter: "blur(12px)",
-      borderBottom: "1px solid rgba(0,0,0,0.05)",
-      boxShadow: "0 2px 20px rgba(0,0,0,0.06)"
-    }}
-  >
+  fixed="top"
+  expand="lg"
+  className="premium-navbar"
+>
     <Container fluid>
 
       {/* BRAND */}
       <Navbar.Brand
-        as={Link}
-        to="/"
-        style={{
-          fontWeight: "800",
-          letterSpacing: "0.5px",
-          color: "#0d6efd"
-        }}
-      >
-        🚨 Incident Platform
-      </Navbar.Brand>
+  as={Link}
+  to="/"
+  className="navbar-brand-custom d-flex align-items-center"
+>
+  <div className="brand-icon">
+    <FaShieldAlt />
+  </div>
+
+  <div className="brand-text">
+    <div className="brand-title">
+      Incident Platform
+    </div>
+
+    <div className="brand-subtitle">
+      Smart Incident Management
+    </div>
+  </div>
+</Navbar.Brand>
 
       <Navbar.Toggle />
 
       <Navbar.Collapse className="pt-3 pt-lg-0">
 
         {/* LEFT NAV */}
-        <Nav className="me-auto ms-lg-3 mt-2 mt-lg-0 flex-column flex-lg-row" style={{ gap: "6px" }}>
+        <Nav
+  className="me-auto ms-lg-4 mt-2 mt-lg-0 flex-column flex-lg-row"
+  style={{ gap: "10px" }}
+>
           {token && (
             <>
               {[
-                { path: "/dashboard", label: "Dashboard" },
-                { path: "/analytics", label: "Analytics" },
-                { path: "/report", label: "Report" },
-                { path: "/map", label: "City Map" }
-              ].map((item) => (
-                <Nav.Link
-                  key={item.path}
-                  as={Link}
-                  to={item.path}
-                  style={{
-                    borderRadius: "10px",
-                    padding: "6px 12px",
-                    fontWeight: isActive(item.path) ? "600" : "400",
-                    background: isActive(item.path)
-                      ? "rgba(13,110,253,0.1)"
-                      : "transparent",
-                    color: isActive(item.path) ? "#0d6efd" : "#333"
-                  }}
-                >
-                  {item.label}
-                </Nav.Link>
-              ))}
+  { path: "/dashboard", label: "Dashboard" },
+  { path: "/analytics", label: "Analytics" },
+  { path: "/report", label: "Report Incident" },
+  { path: "/map", label: "City Map" },
+].map((item) => (
+  <Nav.Link
+    key={item.path}
+    as={Link}
+    to={item.path}
+    className={
+      isActive(item.path)
+        ? "nav-link-custom nav-link-active"
+        : "nav-link-custom"
+    }
+  >
+    {item.label}
+  </Nav.Link>
+))}
 
               {user?.role === "admin" && (
                 <Nav.Link
-                  as={Link}
-                  to="/admin"
-                  style={{
-                    borderRadius: "10px",
-                    padding: "6px 12px",
-                    fontWeight: isActive("/admin") ? "600" : "400",
-                    background: isActive("/admin")
-                      ? "rgba(13,110,253,0.1)"
-                      : "transparent",
-                    color: isActive("/admin") ? "#0d6efd" : "#333"
-                  }}
-                >
-                  Admin Panel
-                </Nav.Link>
+  as={Link}
+  to="/admin"
+  className={
+    isActive("/admin")
+      ? "nav-link-custom nav-link-active"
+      : "nav-link-custom"
+  }
+>
+  Admin Panel
+</Nav.Link>
               )}
                 {user?.role === "department" && (
       <Nav.Link
-        as={Link}
-        to="/department"
-        style={{
-          borderRadius: "10px",
-          padding: "6px 12px",
-          fontWeight: isActive("/department") ? "600" : "400",
-          background: isActive("/department")
-            ? "rgba(13,110,253,0.1)"
-            : "transparent",
-          color: isActive("/department") ? "#0d6efd" : "#333"
-        }}
-      >
-        Department Dashboard
-      </Nav.Link>
+  as={Link}
+  to="/department"
+  className={
+    isActive("/department")
+      ? "nav-link-custom nav-link-active"
+      : "nav-link-custom"
+  }
+>
+  Department Dashboard
+</Nav.Link>
     )}
             </>
           )}
           {!token && (
   <>
-    <Nav.Link as={Link} to="/">
-      Home
-    </Nav.Link>
+    <Nav.Link
+  as={Link}
+  to="/"
+  className={
+    isActive("/")
+      ? "nav-link-custom nav-link-active"
+      : "nav-link-custom"
+  }
+>
+  Home
+</Nav.Link>
 
-    <Nav.Link as={Link} to="/about">
-      About
-    </Nav.Link>
+    <Nav.Link
+  as={Link}
+  to="/about"
+  className={
+    isActive("/about")
+      ? "nav-link-custom nav-link-active"
+      : "nav-link-custom"
+  }
+>
+  About
+</Nav.Link>
 
-    <Nav.Link as={Link} to="/contact">
-      Contact
+    <Nav.Link
+  as={Link}
+  to="/contact"
+  className={
+    isActive("/contact")
+      ? "nav-link-custom nav-link-active"
+      : "nav-link-custom"
+  }
+>
+  Contact
     </Nav.Link>
   </>
 )}
@@ -190,22 +206,16 @@ const NavigationBar = () => {
             <>
               {/* DARK MODE */}
               <Button
-                variant="light"
-                onClick={() => setDarkMode(!darkMode)}
-                style={{
-                  width: "38px",
-                  height: "38px",
-                  borderRadius: "50%",
-                  border: "1px solid #eee"
-                }}
-              >
-                {darkMode ? "☀️" : "🌙"}
-              </Button>
+  className="nav-icon-btn"
+  onClick={() => setDarkMode(!darkMode)}
+>
+  {darkMode ? "☀️" : "🌙"}
+</Button>
 
               {/* NOTIFICATIONS */}
               <Dropdown align="end">
                 <Dropdown.Toggle
-                  variant="light"
+                  className="nav-icon-btn"
                   style={{
                     width: "38px",
                     height: "38px",
@@ -287,22 +297,18 @@ const NavigationBar = () => {
 
               <ProfileBar />
 
-              <Button
-                variant="outline-danger"
-                size="sm"
-                className="flex-fill flex-lg-grow-0"
-                onClick={handleLogout}
-                style={{ borderRadius: "10px" }}
-              >
-                Logout
-              </Button>
+              
             </>
           ) : (
             <>
-              <Button as={Link} to="/login" variant="outline-primary">
+              <Button
+  as={Link}
+  to="/login"
+  className="login-btn"
+>
                 Login
               </Button>
-              <Button as={Link} to="/signup" variant="primary">
+              <Button as={Link} to="/signup" className="signup-btn">
                 Sign Up
               </Button>
             </>
