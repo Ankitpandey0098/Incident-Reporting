@@ -44,6 +44,7 @@ useEffect(() => {
 );
 
 console.log("All incidents:", res.data);
+console.log("First incident:", res.data[0]);
 
     const filtered = res.data.filter(
   (i) =>
