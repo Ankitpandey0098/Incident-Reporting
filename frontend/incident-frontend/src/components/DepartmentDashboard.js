@@ -17,8 +17,7 @@ import {
 const DepartmentDashboard = () => {
 
   const token = localStorage.getItem("access");
-  const role = localStorage.getItem("role");
-  console.log("Department from localStorage:", department);
+  
   const [incidents, setIncidents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
@@ -46,14 +45,14 @@ useEffect(() => {
 
 console.log("All incidents:", res.data);
 console.log("First incident:", res.data[0]);
+const userRole = localStorage.getItem("role");
+const userDepartment = localStorage.getItem("department");
 
-    const userRole = localStorage.getItem("role");
-
-const filtered =
-  userRole === "department"
-    ? res.data.filter((i) => i.department) // show all assigned incidents
-    : res.data;
-    // 👇 FIXED HERE
+const filtered = res.data.filter(
+  (i) =>
+    i.department?.toLowerCase().trim() ===
+    userDepartment?.toLowerCase().trim()
+);
     const sorted = [...filtered].sort((a, b) => {
 
       const order = {
@@ -180,7 +179,7 @@ const filtered =
         <Card className="mb-4 shadow-sm border-0 rounded-3">
           <Card.Body className="p-2 p-md-3" style={{ overflowX: "auto", overflowY: "auto", maxHeight: "600px" }}>
             <h3 className="mb-1 fw-bold fs-5 fs-md-4 text-break">
-              🏛️ {department} Department Dashboard
+              🏛️ {localStorage.getItem("role")} Department Dashboard
             </h3>
             <small className="text-muted d-block">
               Manage assigned incidents and update their status
