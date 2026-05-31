@@ -33,6 +33,7 @@ function Login() {
 
     localStorage.setItem("access", res.data.access);
     localStorage.setItem("refresh", res.data.refresh);
+    localStorage.setItem("role", response.data.user.role);
 
     const user = await api.get("/profile/");
 

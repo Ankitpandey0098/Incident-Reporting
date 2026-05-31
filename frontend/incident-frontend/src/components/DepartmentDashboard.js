@@ -17,7 +17,7 @@ import {
 const DepartmentDashboard = () => {
 
   const token = localStorage.getItem("access");
-  const department = localStorage.getItem("department");
+  const role = localStorage.getItem("role");
   console.log("Department from localStorage:", department);
   const [incidents, setIncidents] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -43,17 +43,16 @@ useEffect(() => {
   { headers: { Authorization: `Bearer ${token}` } }
 );
 
+
 console.log("All incidents:", res.data);
 console.log("First incident:", res.data[0]);
 
-    const filtered = res.data.filter(
-  (i) =>
-    i.department &&
-    department &&
-    i.department.toLowerCase().trim() ===
-      department.toLowerCase().trim()
-);
+    const userRole = localStorage.getItem("role");
 
+const filtered =
+  userRole === "department"
+    ? res.data.filter((i) => i.department) // show all assigned incidents
+    : res.data;
     // 👇 FIXED HERE
     const sorted = [...filtered].sort((a, b) => {
 
