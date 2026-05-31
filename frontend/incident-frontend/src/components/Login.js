@@ -36,7 +36,10 @@ function Login() {
 
     const user = await api.get("/profile/");
 
-console.log("PROFILE DATA:", user.data);
+console.log(
+  "PROFILE DATA:",
+  JSON.stringify(user.data, null, 2)
+);
     localStorage.setItem("role", user.data.role);
     localStorage.setItem("department", user.data.department || "");
 

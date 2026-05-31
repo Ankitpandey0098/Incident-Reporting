@@ -1,207 +1,391 @@
 // src/pages/About.js
+
 import React from "react";
-import { Container, Row, Col, Card, Badge } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Badge,
+  Button
+} from "react-bootstrap";
+import {
+  FaShieldAlt,
+  FaChartLine,
+  FaUsers,
+  FaBuilding,
+  FaBolt,
+  FaDatabase,
+  FaCloud,
+  FaMapMarkedAlt
+} from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const About = () => {
   return (
-    <Container className="py-4 px-3 px-md-4" style={{ minHeight: "100vh" }}>
+    <div
+      style={{
+        background: "#f8fafc",
+        minHeight: "100vh"
+      }}
+    >
+      {/* HERO SECTION */}
+      <section
+        style={{
+          background:
+            "linear-gradient(135deg,#0f172a,#1e3a8a,#2563eb)",
+          color: "white",
+          padding: "90px 0"
+        }}
+      >
+        <Container>
 
-      {/* Header */}
-      <Row className="mb-5">
-        <Col>
-          <Card className="shadow-sm border-0 p-3 p-md-4">
-            <h1 className="fw-bold text-primary fs-3 fs-md-2">
-              🚨 Incident Management Platform
-            </h1>
-            <p className="text-muted fs-6 fs-md-5 mt-2">
-              This Incident Management Platform is designed to help users report, track,
-              and manage various types of incidents efficiently. It allows authorities
-              and emergency services to respond quickly while providing analytics for
-              better decision-making.
-            </p>
+          <Row className="align-items-center">
 
-            <div className="mt-3 d-flex flex-wrap gap-2">
-              <Badge bg="primary" className="me-2">Real-Time</Badge>
-              <Badge bg="success" className="me-2">Analytics</Badge>
-              <Badge bg="warning" className="me-2">AI Classification</Badge>
-              <Badge bg="dark">Secure</Badge>
-            </div>
+            <Col lg={8}>
+              <Badge
+                bg="light"
+                text="dark"
+                className="mb-3 px-3 py-2"
+              >
+                Smart Incident Management Platform
+              </Badge>
 
-          </Card>
-        </Col>
-      </Row>
+              <h1
+                className="fw-bold mb-3"
+                style={{
+                  fontSize: "clamp(2.2rem,5vw,4rem)"
+                }}
+              >
+                Transforming Incident Response
+                Through Technology
+              </h1>
 
-      {/* Objectives */}
-      <Row className="mb-5">
-        <Col xs={12} md={6} className="mb-3 mb-md-0">
-          <Card className="shadow-sm border-0 h-100">
-            <Card.Body>
-              <Card.Title className="fw-bold mb-3">
-                🎯 Objectives
-              </Card.Title>
-
-              <ul className="text-muted ps-3">
-                <li>
-                  Enable users to report incidents like accidents, floods,
-                  fires, and cyber crimes.
-                </li>
-
-                <li>
-                  Provide real-time updates to administrators and emergency services.
-                </li>
-
-                <li>
-                  Maintain a detailed activity timeline for each incident.
-                </li>
-
-                <li>
-                  Generate statistics and visualizations for better analysis.
-                </li>
-
-              </ul>
-
-            </Card.Body>
-          </Card>
-        </Col>
-
-        {/* Features */}
-        <Col xs={12} md={6} className="mb-3 mb-md-0">
-          <Card className="shadow-sm border-0 h-100">
-            <Card.Body>
-
-              <Card.Title className="fw-bold mb-3">
-                ⚡ Key Features
-              </Card.Title>
-
-              <ul className="text-muted">
-                <li>User authentication and role-based access control</li>
-                <li>Admin dashboard with category and status management</li>
-                <li>Automated incident classification with confidence scores</li>
-                <li>Real-time incident updates with polling</li>
-                <li>Attachment support for images and documents</li>
-                <li>Search and filter functionality</li>
-                <li>Visual analytics through charts</li>
-              </ul>
-
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-
-      {/* Technology Stack */}
-      <Row className="mb-4 mb-md-5">
-        <Col>
-
-          <Card className="shadow-sm border-0">
-
-            <Card.Body>
-
-              <Card.Title className="fw-bold mb-4">
-                🛠️ Technology Stack
-              </Card.Title>
-
-              <Row>
-
-                <Col xs={12} sm={6} md={4} className="mb-3">
-                  <Card className="border-0 bg-light h-100">
-                    <Card.Body>
-                      <h6 className="fw-bold text-primary mb-3">
-                        Frontend
-                      </h6>
-
-                      <ul className="text-muted">
-                        <li>React.js</li>
-                        <li>Bootstrap 5 / React-Bootstrap</li>
-                        <li>Axios for API calls</li>
-                      </ul>
-
-                    </Card.Body>
-                  </Card>
-                </Col>
-
-                <Col xs={12} sm={6} md={4} className="mb-3">
-                  <Card className="border-0 bg-light h-100">
-                    <Card.Body>
-
-                      <h6 className="fw-bold text-success mb-3">
-                        Backend
-                      </h6>
-
-                      <ul className="text-muted">
-                        <li>Django & Django REST Framework</li>
-                        <li>JWT Authentication</li>
-                        <li>SQLite / PostgreSQL</li>
-                      </ul>
-
-                    </Card.Body>
-                  </Card>
-                </Col>
-
-                <Col xs={12} sm={6} md={4} className="mb-3">
-                  <Card className="border-0 bg-light h-100">
-                    <Card.Body>
-
-                      <h6 className="fw-bold text-warning mb-3">
-                        Other Tools
-                      </h6>
-
-                      <ul className="text-muted">
-                        <li>Day.js for timestamps</li>
-                        <li>Google Drive API for uploads</li>
-                        <li>Charts.js / React Charts</li>
-                      </ul>
-
-                    </Card.Body>
-                  </Card>
-                </Col>
-
-              </Row>
-
-            </Card.Body>
-
-          </Card>
-
-        </Col>
-      </Row>
-
-      {/* Call to Action */}
-      <Row className="mb-5">
-        <Col>
-          <Card className="shadow-sm border-0 text-center p-3 p-md-4">
-
-            <Card.Body>
-
-              <Card.Title className="fw-bold mb-3 fs-6 fs-md-5">
-                🚀 Get Started
-              </Card.Title>
-
-              <p className="text-muted fs-6 fs-md-5">
-                Users can register to report incidents, while admins can manage
-                incident categories, statuses, and view analytics to make
-                informed decisions.
+              <p
+                style={{
+                  fontSize: "1.1rem",
+                  opacity: 0.9,
+                  maxWidth: "700px"
+                }}
+              >
+                A centralized platform designed to help
+                organizations, departments, campuses,
+                and smart cities report, monitor,
+                manage and resolve incidents efficiently.
               </p>
 
-              <div className="mt-3 d-flex flex-wrap gap-2">
-                <Badge bg="primary" className="me-2">
-                  User Reporting
-                </Badge>
-
-                <Badge bg="success" className="me-2">
-                  Admin Dashboard
-                </Badge>
-
-                <Badge bg="dark">
-                  Analytics
-                </Badge>
+              <div className="mt-4">
+                <Button
+                  as={Link}
+                  to="/signup"
+                  size="lg"
+                  variant="light"
+                >
+                  Get Started
+                </Button>
               </div>
+            </Col>
 
-            </Card.Body>
+            <Col lg={4}>
+              <Card
+                className="border-0 shadow-lg"
+                style={{
+                  background: "rgba(255,255,255,0.15)",
+                  backdropFilter: "blur(12px)",
+                  color: "white"
+                }}
+              >
+                <Card.Body>
+                  <h5 className="fw-bold mb-3">
+                    Platform Highlights
+                  </h5>
 
-          </Card>
-        </Col>
-      </Row>
+                  <p>✔ Real-Time Reporting</p>
+                  <p>✔ Department Routing</p>
+                  <p>✔ Analytics Dashboard</p>
+                  <p>✔ Smart City Monitoring</p>
+                  <p className="mb-0">
+                    ✔ Secure Role Management
+                  </p>
+                </Card.Body>
+              </Card>
+            </Col>
 
-    </Container>
+          </Row>
+
+        </Container>
+      </section>
+
+      {/* STATS */}
+      <Container className="py-5">
+
+        <Row className="g-4 mb-5">
+
+          <Col md={3}>
+            <Card className="border-0 shadow-sm text-center h-100">
+              <Card.Body>
+                <FaUsers
+                  size={40}
+                  className="text-primary mb-3"
+                />
+                <h2 className="fw-bold">5000+</h2>
+                <p className="text-muted mb-0">
+                  Registered Users
+                </p>
+              </Card.Body>
+            </Card>
+          </Col>
+
+          <Col md={3}>
+            <Card className="border-0 shadow-sm text-center h-100">
+              <Card.Body>
+                <FaBuilding
+                  size={40}
+                  className="text-success mb-3"
+                />
+                <h2 className="fw-bold">50+</h2>
+                <p className="text-muted mb-0">
+                  Departments
+                </p>
+              </Card.Body>
+            </Card>
+          </Col>
+
+          <Col md={3}>
+            <Card className="border-0 shadow-sm text-center h-100">
+              <Card.Body>
+                <FaShieldAlt
+                  size={40}
+                  className="text-danger mb-3"
+                />
+                <h2 className="fw-bold">1000+</h2>
+                <p className="text-muted mb-0">
+                  Incidents Managed
+                </p>
+              </Card.Body>
+            </Card>
+          </Col>
+
+          <Col md={3}>
+            <Card className="border-0 shadow-sm text-center h-100">
+              <Card.Body>
+                <FaBolt
+                  size={40}
+                  className="text-warning mb-3"
+                />
+                <h2 className="fw-bold">24/7</h2>
+                <p className="text-muted mb-0">
+                  Monitoring
+                </p>
+              </Card.Body>
+            </Card>
+          </Col>
+
+        </Row>
+
+        {/* MISSION + VISION */}
+
+        <Row className="g-4 mb-5">
+
+          <Col md={6}>
+            <Card className="border-0 shadow-sm h-100">
+              <Card.Body>
+                <h4 className="fw-bold mb-3">
+                  🎯 Our Mission
+                </h4>
+
+                <p className="text-muted">
+                  To simplify incident reporting,
+                  improve emergency response,
+                  and create transparent workflows
+                  between citizens and departments.
+                </p>
+              </Card.Body>
+            </Card>
+          </Col>
+
+          <Col md={6}>
+            <Card className="border-0 shadow-sm h-100">
+              <Card.Body>
+                <h4 className="fw-bold mb-3">
+                  🚀 Our Vision
+                </h4>
+
+                <p className="text-muted">
+                  To build safer organizations and
+                  smarter cities through real-time
+                  incident intelligence and analytics.
+                </p>
+              </Card.Body>
+            </Card>
+          </Col>
+
+        </Row>
+
+        {/* FEATURES */}
+
+        <h2 className="fw-bold text-center mb-4">
+          Powerful Features
+        </h2>
+
+        <Row className="g-4 mb-5">
+
+          <Col md={3}>
+            <Card className="border-0 shadow-sm h-100">
+              <Card.Body>
+                <FaShieldAlt
+                  size={35}
+                  className="text-primary mb-3"
+                />
+                <h5>Secure Access</h5>
+                <p className="text-muted">
+                  Role-based user management.
+                </p>
+              </Card.Body>
+            </Card>
+          </Col>
+
+          <Col md={3}>
+            <Card className="border-0 shadow-sm h-100">
+              <Card.Body>
+                <FaChartLine
+                  size={35}
+                  className="text-success mb-3"
+                />
+                <h5>Analytics</h5>
+                <p className="text-muted">
+                  Powerful visual dashboards.
+                </p>
+              </Card.Body>
+            </Card>
+          </Col>
+
+          <Col md={3}>
+            <Card className="border-0 shadow-sm h-100">
+              <Card.Body>
+                <FaMapMarkedAlt
+                  size={35}
+                  className="text-warning mb-3"
+                />
+                <h5>Live Tracking</h5>
+                <p className="text-muted">
+                  Geographic incident monitoring.
+                </p>
+              </Card.Body>
+            </Card>
+          </Col>
+
+          <Col md={3}>
+            <Card className="border-0 shadow-sm h-100">
+              <Card.Body>
+                <FaUsers
+                  size={35}
+                  className="text-danger mb-3"
+                />
+                <h5>Collaboration</h5>
+                <p className="text-muted">
+                  Connect departments seamlessly.
+                </p>
+              </Card.Body>
+            </Card>
+          </Col>
+
+        </Row>
+
+        {/* TECH STACK */}
+
+        <h2 className="fw-bold text-center mb-4">
+          Technology Stack
+        </h2>
+
+        <Row className="g-4 mb-5">
+
+          <Col md={4}>
+            <Card className="border-0 shadow-sm h-100">
+              <Card.Body>
+                <FaCloud
+                  size={35}
+                  className="text-primary mb-3"
+                />
+                <h5>Frontend</h5>
+                <p className="text-muted">
+                  React.js, Bootstrap,
+                  React Router, Axios
+                </p>
+              </Card.Body>
+            </Card>
+          </Col>
+
+          <Col md={4}>
+            <Card className="border-0 shadow-sm h-100">
+              <Card.Body>
+                <FaDatabase
+                  size={35}
+                  className="text-success mb-3"
+                />
+                <h5>Backend</h5>
+                <p className="text-muted">
+                  Django REST Framework,
+                  JWT Authentication,
+                  PostgreSQL
+                </p>
+              </Card.Body>
+            </Card>
+          </Col>
+
+          <Col md={4}>
+            <Card className="border-0 shadow-sm h-100">
+              <Card.Body>
+                <FaBolt
+                  size={35}
+                  className="text-warning mb-3"
+                />
+                <h5>Integrations</h5>
+                <p className="text-muted">
+                  Google Drive,
+                  Charts,
+                  Email Notifications
+                </p>
+              </Card.Body>
+            </Card>
+          </Col>
+
+        </Row>
+
+      </Container>
+
+      {/* CTA */}
+
+      <section
+        style={{
+          background:
+            "linear-gradient(135deg,#1e3a8a,#2563eb)",
+          color: "white",
+          padding: "70px 0"
+        }}
+      >
+        <Container className="text-center">
+          <h2 className="fw-bold mb-3">
+            Ready to Improve Incident Response?
+          </h2>
+
+          <p className="mb-4">
+            Join our platform and experience
+            smarter incident management.
+          </p>
+
+          <Button
+            as={Link}
+            to="/signup"
+            size="lg"
+            variant="light"
+          >
+            Create Account
+          </Button>
+        </Container>
+      </section>
+
+    </div>
   );
 };
 
