@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import api from "../api/axios";
+
 import {
   Table,
   Card,
@@ -28,11 +28,10 @@ const DepartmentDashboard = () => {
     "Resolved": "resolved"
   };
 
- useEffect(() => {
+
+useEffect(() => {
   fetchIncidents();
-}, [fetchIncidents]);
-
-
+}, []);
   const fetchIncidents = async () => {
 
   setLoading(true);
@@ -45,12 +44,14 @@ const DepartmentDashboard = () => {
 );
 
 
+
     const filtered = res.data.filter(
-      (i) =>
-        i.department &&
-        i.department.toLowerCase().trim() ===
-        department.toLowerCase().trim()
-    );
+  (i) =>
+    i.department &&
+    department &&
+    i.department.toLowerCase().trim() ===
+      department.toLowerCase().trim()
+);
 
     // 👇 FIXED HERE
     const sorted = [...filtered].sort((a, b) => {
