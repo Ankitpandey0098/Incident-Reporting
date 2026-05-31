@@ -29,37 +29,33 @@ const DepartmentDashboard = () => {
 useEffect(() => {
   fetchIncidents();
 }, []);
-  const fetchIncidents = async () => {
 
+
+  const fetchIncidents = async () => {
   setLoading(true);
 
   try {
+    const res = await api.get("/incidents/");
 
-    api.get("/incidents/")
+    console.log("All incidents:", res.data);
+    console.log("First incident:", res.data[0]);
 
+    const userDepartment = localStorage.getItem("department");
 
-console.log("All incidents:", res.data);
-console.log("First incident:", res.data[0]);
-const userRole = localStorage.getItem("role");
-const userDepartment = localStorage.getItem("department");
+    const filtered = res.data.filter(
+      (i) =>
+        i.department?.toLowerCase().trim() ===
+        userDepartment?.toLowerCase().trim()
+    );
 
-const filtered = res.data.filter(
-  (i) =>
-    i.department?.toLowerCase().trim() ===
-    userDepartment?.toLowerCase().trim()
-);
     const sorted = [...filtered].sort((a, b) => {
-
       const order = {
         "pending": 1,
         "in progress": 2,
         "resolved": 3
       };
 
-      return (
-        order[a.status?.toLowerCase()] -
-        order[b.status?.toLowerCase()]
-      );
+      return order[a.status?.toLowerCase()] - order[b.status?.toLowerCase()];
     });
 
     setIncidents(sorted);
@@ -71,7 +67,6 @@ const filtered = res.data.filter(
   }
 };
 
-
   const updateStatus = async (incident, status) => {
 
   console.log("Updating Incident:", incident.id);
@@ -80,15 +75,9 @@ const filtered = res.data.filter(
   try {
 
     const res = await api.patch(
-      `/incidents/${incident.id}/`,
-      { status: statusMap[status] },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json"
-        }
-      }
-    );
+  `/incidents/${incident.id}/`,
+  { status: statusMap[status] }
+);
 
     console.log("Response:", res.data);
 
