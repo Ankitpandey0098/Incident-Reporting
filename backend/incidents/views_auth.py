@@ -75,13 +75,30 @@ def login_user(request):
 
     refresh = RefreshToken.for_user(user)
 
+    profile, _ = UserProfile.objects.get_or_create(user=user)
+
     return Response({
         "refresh": str(refresh),
         "access": str(refresh.access_token),
+
         "user": {
             "id": user.id,
             "username": user.username,
             "email": user.email,
+
+            # IMPORTANT
+            "role": (
+                "admin"
+                if user.is_staff
+                else profile.role
+            ),
+
+            "department": (
+                profile.department.name
+                if profile.department
+                else None
+            ),
+
             "is_staff": user.is_staff,
         }
     })

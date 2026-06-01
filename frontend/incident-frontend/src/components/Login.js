@@ -32,26 +32,28 @@ function Login() {
     console.log("LOGIN RESPONSE:", res.data);
     console.log("USER OBJECT:", res.data.user);
     
-    const role =
-      res.data.user?.role ||
-      res.data.role ||
-      res.data.user?.user_role ||
-      res.data.user?.is_staff ||   // fallback for Django admin users
-      "user";
+   const role = res.data.user.role?.toLowerCase();
 
-      console.log("🎯 FINAL ROLE USED:", role);
-    localStorage.setItem("access", res.data.access);
-    localStorage.setItem("refresh", res.data.refresh);
-    localStorage.setItem("role", role?.toString().toLowerCase());
-    localStorage.setItem("department", res.data.user.department || "");
+console.log("🎯 FINAL ROLE USED:", role);
+
+localStorage.setItem("access", res.data.access);
+localStorage.setItem("refresh", res.data.refresh);
+localStorage.setItem("role", role);
+localStorage.setItem("department", res.data.user.department || "");
 
     
 
 
 // single stable navigation
-if (role === "admin") navigate("/admin", { replace: true });
-else if (role === "department") navigate("/department", { replace: true });
-else navigate("/dashboard", { replace: true });
+if (role === "admin") {
+  navigate("/admin");
+}
+else if (role === "department") {
+  navigate("/department");
+}
+else {
+  navigate("/dashboard");
+}
 console.log("🔐 LOGIN SUCCESS DEBUG:");
 console.log("➡️ Access:", res.data.access);
 console.log("➡️ Role:", role);
