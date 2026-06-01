@@ -38,11 +38,12 @@ function Login() {
     localStorage.setItem("department", res.data.user.department || "");
 
     const role = res.data.user.role?.toLowerCase();
-    localStorage.setItem("role", role);
+localStorage.setItem("role", role || "user");
 
-    if (role === "admin") navigate("/admin");
-    else if (role === "department") navigate("/department");
-    else navigate("/dashboard");
+// single stable navigation
+if (role === "admin") navigate("/admin", { replace: true });
+else if (role === "department") navigate("/department", { replace: true });
+else navigate("/dashboard", { replace: true });
 
   } catch (err) {
     setError(err.response?.data?.detail || "Invalid username or password");

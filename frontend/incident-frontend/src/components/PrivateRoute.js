@@ -4,18 +4,13 @@ const PrivateRoute = ({ children, role }) => {
   const token = localStorage.getItem("access");
   const userRole = localStorage.getItem("role");
 
-  // 🔥 SAFE: no instant redirect glitch
-  if (token === null) {
-    return <div>Loading...</div>;
-  }
-
+  // Not logged in
   if (!token) {
     return <Navigate to="/login" replace />;
   }
 
-  if (role && role !== userRole) {
-    if (userRole === "admin") return <Navigate to="/admin" replace />;
-    if (userRole === "department") return <Navigate to="/department" replace />;
+  // Role mismatch
+  if (role && userRole !== role) {
     return <Navigate to="/dashboard" replace />;
   }
 
