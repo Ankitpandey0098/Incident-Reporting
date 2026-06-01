@@ -27,30 +27,7 @@ from rest_framework.permissions import IsAdminUser
 from django.db.models import F
 from rest_framework.views import APIView
 from .serializers import SignupOTPVerifySerializer
-# ================= CATEGORY → DEPARTMENT MAP =================
-CATEGORY_DEPARTMENT_MAP = {
-    "Drainage Issue": "Water Management",
-    "Illegal Dumping": "Waste Management",
-    "Deforestation": "Forest",
-    "Illegal Wood Smuggling": "Forest",
-    "Pollution": "Pollution",
-    "Environmental Damage": "Pollution",
-
-    "Infrastructure": "Traffic / Roads",   # ADD THIS
-    "Road Damage": "Traffic / Roads",
-
-    "Animal Injury": "Wildlife / Animal Control",
-    "Flood": "Disaster Management",
-    "Fire": "Fire Department",
-    "Power Outage": "Electricity Department",
-
-    "Accident": "Emergency Services",
-    "Medical Emergency": "Health Department",
-
-    "Crime": "Police Department",
-    "Cyber Crime": "Cyber Crime Cell",
-    "Crowd_Report": "Public Safety / Crowd Control",
-}
+from .constants import CATEGORY_DEPARTMENT_MAP
 
 # ================= INCIDENT VIEWSET =================
 class IncidentViewSet(viewsets.ModelViewSet):

@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 
-from incidents.views import CATEGORY_DEPARTMENT_MAP
+from incidents.constants import CATEGORY_DEPARTMENT_MAP
 from .models import Incident, IncidentLog, ContactMessage, UserProfile, Notification
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.conf import settings
