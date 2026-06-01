@@ -37,8 +37,16 @@ def get_csrf(request):
 @permission_classes([AllowAny])
 def register_user(request):
 
-    serializer = SignupSerializer(data=request.data)
+    
+    username = request.data.get("username")
+    email = request.data.get("email")
 
+    if User.objects.filter(username=username).exists():
+        return Response(
+            {"error": "User already exists. Please login."},
+            status=400
+        )
+    serializer = SignupSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
 

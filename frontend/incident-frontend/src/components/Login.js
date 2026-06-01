@@ -55,7 +55,11 @@ else {
 
 
   } catch (err) {
-    setError(err.response?.data?.detail || "Invalid username or password");
+      setError(
+      err.response?.data?.error ||
+      err.response?.data?.detail ||
+      "Invalid username or password"
+    );
   } finally {
     setLoading(false);
   }
