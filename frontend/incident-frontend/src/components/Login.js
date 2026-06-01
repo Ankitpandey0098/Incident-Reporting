@@ -45,6 +45,11 @@ function Login() {
 if (role === "admin") navigate("/admin", { replace: true });
 else if (role === "department") navigate("/department", { replace: true });
 else navigate("/dashboard", { replace: true });
+console.log("🔐 LOGIN SUCCESS DEBUG:");
+console.log("➡️ Access:", res.data.access);
+console.log("➡️ Role:", role);
+console.log("➡️ Department:", res.data.user.department);
+console.log("➡️ Stored localStorage role:", localStorage.getItem("role"));
 
   } catch (err) {
     setError(err.response?.data?.detail || "Invalid username or password");
