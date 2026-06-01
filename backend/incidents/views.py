@@ -107,7 +107,7 @@ class IncidentViewSet(viewsets.ModelViewSet):
         if not category or confidence < 0.4:
             category = "General Issue"
 
-        category_clean = str(category).strip().replace(" ", "_")
+        category_clean = str(category).strip()
 
         print("RAW CATEGORY:", category)
         print("CLEAN CATEGORY:", category_clean)

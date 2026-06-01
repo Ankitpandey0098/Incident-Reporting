@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 
+from backend.incidents.views import CATEGORY_DEPARTMENT_MAP
+
 from .models import Incident, IncidentLog, ContactMessage, UserProfile, Notification
 
 from django.conf import settings
@@ -17,21 +19,6 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 
 resend.api_key = settings.RESEND_API_KEY
-# ---------------- CATEGORY → DEPARTMENT MAP ----------------
-CATEGORY_DEPARTMENT_MAP = {
-    "Deforestation": "Forest",
-    "Illegal Wood Smuggling": "Forest",
-    "Drainage Issue": "Municipality",
-    "Illegal Dumping": "Waste Management",
-    "Environmental Damage": "Pollution",
-    "Pollution": "Pollution",
-    "Road Damage": "Traffic / Roads",
-    "Public Health Hazard": "Public Health",
-    "Animal Injury": "Wildlife / Animal Control",
-    "crowd_report": "Public Safety / Crowd Control",
-    "public_safety_violence": "Police Department",
-    "water_supply_sanitation": "Water Management",
-}
 
 
 # ---------------- User Serializer ----------------
@@ -189,24 +176,27 @@ class IncidentSerializer(serializers.ModelSerializer):
         # Send email to department when incident is created
         if incident.department:
             try:
-                category_key = str(incident.category).strip().lower().replace(" ", "_")
-                department_name = CATEGORY_DEPARTMENT_MAP.get(category_key, "Municipality")
-                dept = Department.objects.get(name=incident.department)
+                category_key = str(incident.category).strip()
 
-                resend.Emails.send({
-                    "from": "onboarding@resend.dev",
-                    "to": [dept.email],
-                    "subject": f"New Incident Reported: {incident.title}",
-                    "html": f"""
-                        <h2>New Incident Reported</h2>
+                dept = None
 
-                        <p><strong>Department:</strong> {incident.department}</p>
-                        <p><strong>Title:</strong> {incident.title}</p>
-                        <p><strong>Category:</strong> {incident.category}</p>
-                        <p><strong>Description:</strong> {incident.description}</p>
-                        <p><strong>Status:</strong> {incident.status}</p>
-                    """
-                })
+                if incident.department:
+                    dept = Department.objects.filter(name=incident.department).first()
+
+                if dept:
+                    resend.Emails.send({
+                        "from": "onboarding@resend.dev",
+                        "to": [dept.email],
+                        "subject": f"New Incident Reported: {incident.title}",
+                        "html": f"""
+                            <h2>New Incident Reported</h2>
+                            <p><strong>Department:</strong> {incident.department}</p>
+                            <p><strong>Title:</strong> {incident.title}</p>
+                            <p><strong>Category:</strong> {incident.category}</p>
+                            <p><strong>Description:</strong> {incident.description}</p>
+                            <p><strong>Status:</strong> {incident.status}</p>
+                        """
+                    })
 
             except Department.DoesNotExist:
                 pass
