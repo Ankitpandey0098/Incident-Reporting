@@ -38,10 +38,7 @@ const BACKGROUNDS = [
 ];
 
 function App() {
-  console.log("📦 APP RENDER:");
-console.log("Access:", localStorage.getItem("access"));
-console.log("Role:", localStorage.getItem("role"));
-
+  
 
   const [bgIndex, setBgIndex] = useState(0);
 

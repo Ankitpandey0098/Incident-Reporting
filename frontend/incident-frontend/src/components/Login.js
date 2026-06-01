@@ -29,12 +29,10 @@ function Login() {
 
   try {
     const res = await api.post("/login/", form);
-    console.log("LOGIN RESPONSE:", res.data);
-    console.log("USER OBJECT:", res.data.user);
+    
     
    const role = res.data.user.role?.toLowerCase();
 
-console.log("🎯 FINAL ROLE USED:", role);
 
 localStorage.setItem("access", res.data.access);
 localStorage.setItem("refresh", res.data.refresh);
@@ -54,11 +52,7 @@ else if (role === "department") {
 else {
   navigate("/dashboard");
 }
-console.log("🔐 LOGIN SUCCESS DEBUG:");
-console.log("➡️ Access:", res.data.access);
-console.log("➡️ Role:", role);
-console.log("➡️ Department:", res.data.user.department);
-console.log("➡️ Stored localStorage role:", localStorage.getItem("role"));
+
 
   } catch (err) {
     setError(err.response?.data?.detail || "Invalid username or password");
