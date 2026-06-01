@@ -32,13 +32,14 @@ function Login() {
     console.log("LOGIN RESPONSE:", res.data);
 
     
-
+    const role = res.data.user.role?.toLowerCase();
     localStorage.setItem("access", res.data.access);
-    localStorage.setItem("refresh", res.data.refresh);    
+    localStorage.setItem("refresh", res.data.refresh);
+    localStorage.setItem("role", role || "user");
     localStorage.setItem("department", res.data.user.department || "");
 
-    const role = res.data.user.role?.toLowerCase();
-localStorage.setItem("role", role || "user");
+    
+
 
 // single stable navigation
 if (role === "admin") navigate("/admin", { replace: true });
