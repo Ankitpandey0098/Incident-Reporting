@@ -28,7 +28,7 @@ from django.db.models import F
 from rest_framework.views import APIView
 from .serializers import SignupOTPVerifySerializer
 from .constants import CATEGORY_DEPARTMENT_MAP
-
+import numpy as np
 # ================= INCIDENT VIEWSET =================
 class IncidentViewSet(viewsets.ModelViewSet):
     serializer_class = IncidentSerializer
@@ -74,6 +74,14 @@ class IncidentViewSet(viewsets.ModelViewSet):
             category = prediction.get("category")
             confidence = float(prediction.get("confidence", 0.0))
             emergency = prediction.get("emergency", False)
+
+            
+
+            if isinstance(category, np.generic):
+                category = category.item()
+
+            category = str(category).replace("_", " ").strip()
+
             print("ML RESULT:", prediction)
         except Exception as e:
             print("ML ERROR:", e)
@@ -90,7 +98,10 @@ class IncidentViewSet(viewsets.ModelViewSet):
         print("CLEAN CATEGORY:", category_clean)
 
         # Department mapping
-        department = CATEGORY_DEPARTMENT_MAP.get(category_clean, "Municipality")
+        department = CATEGORY_DEPARTMENT_MAP.get(category_clean)
+
+        if not department:
+            department = "Municipality"
 
         print("CATEGORY:", category_clean)
 
