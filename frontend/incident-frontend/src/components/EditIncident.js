@@ -117,7 +117,7 @@ const EditIncident = () => {
 
 
       alert("✅ Incident updated successfully!");
-      navigate("/", { replace: true });
+      navigate("/dashboard", { replace: true });
 
     } catch (err) {
       console.error(err.response?.data || err.message);
@@ -327,7 +327,7 @@ const EditIncident = () => {
 
                     <Button
                       variant="secondary"
-                      onClick={() => navigate("/")}
+                      onClick={() => navigate("/dashboard")}
                     >
                       Cancel
                     </Button>
