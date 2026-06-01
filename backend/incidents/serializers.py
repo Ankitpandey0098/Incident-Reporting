@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from backend.incidents.views import CATEGORY_DEPARTMENT_MAP
 
 from .models import Incident, IncidentLog, ContactMessage, UserProfile, Notification
-
+from rest_framework_simplejwt.tokens import RefreshToken
 from django.conf import settings
 
 import resend
@@ -356,7 +356,16 @@ class SignupSerializer(serializers.ModelSerializer):
         except ValidationError as e:
             raise serializers.ValidationError({"password": e.messages})
 
-        user = User.objects.create_user(**validated_data)
+        user = User.objects.create_user(
+            username=validated_data["username"],
+            email=validated_data.get("email"),
+            first_name=validated_data.get("first_name", ""),
+            last_name=validated_data.get("last_name", "")
+        )
+
+        user.set_password(validated_data["password"])
+        user.is_active = False
+        user.save()
         
         user.is_active = False
         user.save()

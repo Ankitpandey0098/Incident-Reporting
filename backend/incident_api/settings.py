@@ -160,19 +160,21 @@ CORS_ALLOWED_ORIGIN_REGEXES = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "https://incident-reporting-rjwi.vercel.app",  # ADD THIS (IMPORTANT)
+    "https://incident-reporting-rjwi.vercel.app",
     "https://incident-reporting-rjwi.onrender.com",
     "http://localhost:3000",
-    "http://127.0.0.1:3000",
+    "https://incident-reporting-ijfoh64u3-ankit-pandeys-projects-240c6364.vercel.app",
 ]
-
+CORS_ALLOW_ALL_ORIGINS = True
 CSRF_TRUSTED_ORIGINS = [
     "https://incident-reporting-rjwi.vercel.app",
     "https://incident-reporting-rjwi.onrender.com",
     "http://localhost:3000",
     "http://127.0.0.1:3000",
 ]
-
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
 USE_TZ = True
 TIME_ZONE = "Asia/Kolkata"  # or your server timezone
 

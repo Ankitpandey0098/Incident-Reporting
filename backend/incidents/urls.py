@@ -74,7 +74,7 @@ urlpatterns = [
     "contact/<int:id>/read/",
     mark_contact_read
     ),
-
+    path("login/", login_user, name="login_user"),
     path(
         "contact/<int:id>/resolve/",
         mark_contact_resolved
