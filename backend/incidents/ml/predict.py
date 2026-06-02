@@ -43,27 +43,36 @@ def predict_category(text):
 
     if not text or category_model is None or vectorizer is None:
         return {
-            "category": None,
+            "category": "General Issue",
             "confidence": 0.0,
             "emergency": False
         }
 
     cleaned_text = clean_text(text)
-
     X = vectorizer.transform([cleaned_text])
 
-    # -------- CATEGORY PREDICTION --------
     probs = category_model.predict_proba(X)[0]
     confidence = float(probs.max())
     category = category_model.classes_[probs.argmax()]
 
-    # -------- EMERGENCY PREDICTION --------
-    emergency = False
+    confidence = round(confidence, 3)
 
+    # ===============================
+    # 🔥 FIX 1: LOW CONFIDENCE HANDLING
+    # ===============================
+    if confidence < 0.15:
+        category = "General Issue"
+
+    # ===============================
+    # 🚨 EMERGENCY OVERRIDE LOGIC
+    # ===============================
+    emergency = False
     if emergency_model:
         emergency = bool(emergency_model.predict(X)[0])
 
-    confidence = round(confidence, 3)
+    # If emergency detected, override category
+    if emergency:
+        category = "Emergency Issue"
 
     return {
         "category": category,

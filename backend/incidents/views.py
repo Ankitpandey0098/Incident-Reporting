@@ -75,13 +75,22 @@ class IncidentViewSet(viewsets.ModelViewSet):
             category = prediction.get("category")
             confidence = float(prediction.get("confidence", 0.0))
             emergency = prediction.get("emergency", False)
+            if emergency:
+                severity = "HIGH"
 
-            
+            elif confidence >= 0.75:
+                severity = "HIGH"
 
+            elif confidence >= 0.45:
+                severity = "MEDIUM"
+
+            else:
+                severity = "LOW"
             if isinstance(category, np.generic):
                 category = category.item()
 
-            category = str(category).replace("_", " ").strip()
+            category = str(category).strip()
+            
 
             print("ML RESULT:", prediction)
         except Exception as e:
@@ -93,7 +102,7 @@ class IncidentViewSet(viewsets.ModelViewSet):
         if not category or confidence < 0.4:
             category = "General Issue"
 
-        category_clean = str(category).strip()
+        category_clean = str(category).replace("_", " ").strip().title()
 
         print("RAW CATEGORY:", category)
         print("CLEAN CATEGORY:", category_clean)
@@ -116,6 +125,7 @@ class IncidentViewSet(viewsets.ModelViewSet):
             confidence=confidence,
             department=department,
             status="pending",
+            severity=severity,
         )
         try:
             dept = Department.objects.filter(

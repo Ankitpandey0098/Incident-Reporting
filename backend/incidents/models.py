@@ -30,10 +30,10 @@ class Incident(models.Model):
         ("resolved", "Resolved"),
     ]
     SEVERITY_CHOICES = [
-        ("low", "Low"),
-        ("medium", "Medium"),
-        ("high", "High"),
-        ("critical", "Critical"),
+        ("LOW", "Low"),
+        ("MEDIUM", "Medium"),
+        ("HIGH", "High"),
+        ("CRITICAL", "Critical"),
     ]
 
     title = models.CharField(max_length=100)
@@ -58,10 +58,8 @@ class Incident(models.Model):
     severity = models.CharField(
         max_length=20,
         choices=SEVERITY_CHOICES,
-        default="medium"
+        default="LOW"
     )
-
-
     # ✅ NEW: Prevent duplicate department reporting
     reported_to_department = models.BooleanField(default=False)
     reported_at = models.DateTimeField(null=True, blank=True)
