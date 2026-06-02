@@ -171,36 +171,6 @@ class IncidentSerializer(serializers.ModelSerializer):
             action="Incident created",
             performed_by=request.user if request else None,
         )
-
-        # Send email to department when incident is created
-        if incident.department:
-            try:
-                category_key = str(incident.category).strip()
-
-                dept = None
-
-                if incident.department:
-                    dept = Department.objects.filter(name=incident.department).first()
-
-                if dept:
-                    resend.Emails.send({
-                        "from": "onboarding@resend.dev",
-                        "to": [dept.email],
-                        "subject": f"New Incident Reported: {incident.title}",
-                        "html": f"""
-                            <h2>New Incident Reported</h2>
-                            <p><strong>Department:</strong> {incident.department}</p>
-                            <p><strong>Title:</strong> {incident.title}</p>
-                            <p><strong>Category:</strong> {incident.category}</p>
-                            <p><strong>Description:</strong> {incident.description}</p>
-                            <p><strong>Status:</strong> {incident.status}</p>
-                        """
-                    })
-
-            except Department.DoesNotExist:
-                pass
-
-
         return incident
 
     # -------- FIX ATTACHMENT URL --------

@@ -3,7 +3,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
-
+from .models import Department
+import resend
 from django.contrib.auth.models import User
 from django.db.models import Count
 from django.db.models.functions import TruncDate
@@ -116,7 +117,28 @@ class IncidentViewSet(viewsets.ModelViewSet):
             department=department,
             status="pending",
         )
+        try:
+            dept = Department.objects.filter(
+                name__iexact=str(incident.department).strip()
+            ).first()
 
+            if dept and dept.email:
+                resend.Emails.send({
+                    "from": "onboarding@resend.dev",
+                    "to": [dept.email],
+                    "subject": f"New Incident Reported: {incident.title}",
+                    "html": f"""
+                        <h2>New Incident Reported</h2>
+                        <p><strong>Department:</strong> {incident.department}</p>
+                        <p><strong>Title:</strong> {incident.title}</p>
+                        <p><strong>Category:</strong> {incident.category}</p>
+                        <p><strong>Description:</strong> {incident.description}</p>
+                        <p><strong>Status:</strong> {incident.status}</p>
+                    """
+                })
+
+        except Exception as e:
+            print("Department email failed (non-blocking):", e)
         # Log creation
         IncidentLog.objects.create(
             incident=incident,
